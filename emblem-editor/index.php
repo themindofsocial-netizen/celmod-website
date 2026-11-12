@@ -4,11 +4,12 @@ require __DIR__ . '/../includes/bootstrap.php';
 $head = <<<'HEAD'
 <style type="text/css">
 #editor { text-align: left; }
-#editor .panel { background-color: #333333; border: 1px solid black; padding: 8px; margin-bottom: 10px; }
 #editor .title { text-align: center; margin: 14px 0 6px; }
 #editor .hint { color: #AA8; font-size: 0.8em; margin: 6px 0 0; }
 #editor code { color: #71E100; }
-#list { list-style: none; margin: 0; padding: 0; max-height: 190px; overflow: auto; columns: 2; column-gap: 6px; }
+#list { list-style: none; margin: 0; padding: 0; max-height: 190px; overflow: auto; columns: 3; column-gap: 6px; }
+.ed-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+@media (max-width: 860px) { .ed-cols { grid-template-columns: 1fr; } #list { columns: 2; } }
 #list li { padding: 3px 6px; cursor: pointer; display: flex; gap: 6px; align-items: center; break-inside: avoid; }
 #list li:nth-child(odd) { background-color: #444444; }
 #list li:hover { color: #FFCD5B; }
@@ -34,7 +35,7 @@ $head = <<<'HEAD'
 </style>
 HEAD;
 
-cm_page_start('|CelMod| - Emblem Editor', $head);
+cm_page_start('|CelMod| - Emblem Editor', $head, ['wide' => true]);
 ?>
 
 <h2><span class="celColor">|CelMod| Emblem Editor</span><br>
@@ -55,6 +56,8 @@ cm_page_start('|CelMod| - Emblem Editor', $head);
 		</div>
 	</div>
 
+	<div class="ed-cols">
+	<div>
 	<p class="title"><b>:Preview:</b></p>
 	<div class="panel">
 		<canvas id="stage"></canvas>
@@ -62,6 +65,8 @@ cm_page_start('|CelMod| - Emblem Editor', $head);
 		<div class="skins" id="skins"></div>
 	</div>
 
+	</div>
+	<div>
 	<p class="title"><b>:Settings:</b></p>
 	<div class="panel">
 		<form id="form" autocomplete="off">
@@ -97,6 +102,9 @@ cm_page_start('|CelMod| - Emblem Editor', $head);
 			<option value="sprites/steam1.vmt"><option value="sprites/purpleglow1.vmt"><option value="sprites/blueglow2.vmt">
 			<option value="sprites/orangeglow1.vmt"><option value="sprites/redglow1.vmt"><option value="sprites/light_glow03.vmt">
 		</datalist>
+	</div>
+
+	</div>
 	</div>
 
 	<p class="title"><b>:Export / Import:</b></p>

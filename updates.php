@@ -1,12 +1,14 @@
-<?php require __DIR__ . '/includes/bootstrap.php'; cm_head('|CelMod| - Updates'); ?>
-    <?php cm_logo(false); ?>
-    <h2><span class="celColor">|CelMod|</span> Updates<br>
-</h2>
+<?php require __DIR__ . '/includes/bootstrap.php'; cm_head('|CelMod| - Updates', '', ['wide' => true]); ?>
+<?php cm_logo(); ?>
+<div id="main">
+<div id="content" class="left">
+    <div style="text-align:center"><h2><span class="celColor">|CelMod|</span> Updates<br>
+</h2></div>
 <p><span class="headColor">Latest Updates</span><br>
 New commands in <b><i>bold italics</i></b>, existing commands in <i>normal italics</i>.<br>
 Chat commands in <span class="highlight">green italics</span>.<br>
 
-<table border="0" bordercolor="#000000" style="background-color:#333333" width="1100" cellpadding="10" cellspacing="3">
+<table class="changelog" border="0" bordercolor="#000000" style="background-color:#333333" cellpadding="10" cellspacing="3">
     <tr><td><b>-=- 06/30/25: </b>Added cels <span class="highlight">!music</span>/<b><i>v_music</i></b> and <span class="highlight">!sound</span>/<b><i>v_sound</i></b> to spawn music and sound cels.<br>
     <tr><td><b>-=- 06/09/25: </b>Added commands <span class="highlight">!replace</span>/<b><i>v_replace</i></b> to replace the model of a prop and <span class="highlight">!owner</span>/<b><i>v_owner</i></b> to print the owner of the entity.<br>
     <span class="indent"></span>Updated <span class="highlight">!lock</span>/<b><i>v_lock</i></b> and <span class="highlight">!unlock</span>/<b><i>v_unlock</i></b> to be their own commands instead of being hidden in <i>!freeze</i>/<i>!unfreeze</i>.<br>
@@ -33,8 +35,9 @@ Chat commands in <span class="highlight">green italics</span>.<br>
     <tr><td><b>-=- 04/23/24: </b>Added commands <span class="highlight">!dm</span>/<b><i>v_dm</i></b> and <span class="highlight">!gravity</span>/<b><i>v_gravity</i></b> to change the respective settings for your land.<br>
     <span class="indent"></span>Added more command options for <span class="highlight">!alpha (all)</span>, <span class="highlight">!color (all, hud)</span> and <span class="highlight">!delete (all, land)</span>.</td></tr>
 </td></table>
+</div>
+</div>
+<?php cm_footer_bar(); ?>
 <script type="text/javascript" src="<?= cm_base() ?>scripts/updates.js"></script>
-<script type="text/javascript">
-disableSelection(document.body)
-</script>
+<?php cm_bg_script(); ?>
 </html>

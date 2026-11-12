@@ -6,7 +6,7 @@
 </h2>
 <p>These commands go into the chat. To activate chat press <span class="h">Y</span> on your keyboard.</p>
 <p>Click on a category below:</p>
-<p><b><a href="javascript:toggleList(1);" style="text-decoration:none;"><span class="h">Say Commands</span></a></b></p>
+<p class="cat"><a id="cat1" href="javascript:toggleList(1);">Say Commands</a></p>
 <div id="say1">
 <p><a>!&lt;prop name&gt; &lt;spawn condition&gt; Ex: <span class="h">!blastdoor3</span></a><br>
   ---  <a href="props/"><b>Props List</b></a><br>
@@ -44,7 +44,7 @@
   <!--<a>!text &lt;message&gt;</a><br>-->
   <a>!owner</a></p>
   </div>
-<p><b><a href="javascript:toggleList(2);" style="text-decoration:none;"><span class="h">Bank Say Commands</span></a></b></p>
+<p class="cat"><a id="cat2" href="javascript:toggleList(2);">Bank Say Commands</a></p>
 <div id="say2">
 <p><!--<a>!bank ("<span class="h">remove</span>" to remove from bank/"<span class="h">add</span>" to add something to bank)</a><br>-->
   <a>!buy Optinal:&lt;object&gt;</a><br>
@@ -54,7 +54,7 @@
   <a>!cl &lt;amount&gt;</a><br>-->
   <a>!balance</a></p>
   </div>
-<p><b><a href="javascript:toggleList(3);" style="text-decoration:none;"><span class="h">Cel Say Commands</span></a></b></p>
+<p class="cat"><a id="cat3" href="javascript:toggleList(3);">Cel Say Commands</a></p>
 <div id="say3">
 <p><a>!light <i>Optional:</i> &lt;distance&gt;</a><br>
   <a>!fire</a><br>
@@ -70,13 +70,13 @@
   <a>!internet</a><br>
   <a>!seturl &lt;url&gt;</a><br></p>
   </div>
-<p><b><a href="javascript:toggleList(4);" style="text-decoration:none;"><span class="h">Control Cels</span></a></b></p>
+<p class="cat"><a id="cat4" href="javascript:toggleList(4);">Control Cels</a></p>
 <div id="say4">
 <p><a>!button<!-- &lt;switch, open, lock, break&gt;--></a><br>
    <!--<a>!trigger &lt;switch, open, lock, break&gt;</a><br>-->
    <a>!link<!-- &lt;"<span class="h">create</span>" if making the link&gt;--></a></p>
    </div>
-<p><b><a href="javascript:toggleList(5);" style="text-decoration:none;"><span class="h">Bit Say Commands</span></a></b></p>
+<p class="cat"><a id="cat5" href="javascript:toggleList(5);">Bit Say Commands</a></p>
 <div id="say5">
 <p><a>!wep &lt;gravgun, stunstick, crowbar, pistol, magnum, smg, ar2, shotgun,<br>
 crossbow, grenade, rpg, slam&gt;</a><br>
@@ -85,7 +85,7 @@ crossbow, grenade, rpg, slam&gt;</a><br>
   <a>!charger &lt;health or suit&gt;</a><br>
   <!--<a>!spawnpoint</a></p>-->
   </div>
-<p><b><a href="javascript:toggleList(6);" style="text-decoration:none;"><span class="h">Extra Prop Say Commands</span></a></b></p>
+<p class="cat"><a id="cat6" href="javascript:toggleList(6);">Extra Prop Say Commands</a></p>
 <div id="say6">
 <p><a>!solid<!-- &lt;on of off&gt;--></a><br>
   <a>!god<!-- &lt;on or off&gt;--></a><br>
@@ -103,7 +103,7 @@ crossbow, grenade, rpg, slam&gt;</a><br>
   <a>!anim &lt;name&gt; (<span class="h">#clear</span> to delete)</a><br>
   <a>!view &lt;name&gt; (<span class="h">#loop</span> to loop animation)</a><br>--></p>
   </div>
-<p><b><a href="javascript:toggleList(7);" style="text-decoration:none;"><span class="h">Land Say Commands</span></a></b></p>
+<p class="cat"><a id="cat7" href="javascript:toggleList(7);">Land Say Commands</a></p>
 <div id="say7">
 <p><!--<a>!noclip</a><br>-->
   <a>!coop</a><br>
@@ -126,7 +126,7 @@ crossbow, grenade, rpg, slam&gt;</a><br>
   <a>!landskin &lt;number&gt;</a><br>
   <a>!cland</a><br>--></p>
   </div>
-  <p><b><a href="javascript:toggleList(8);" style="text-decoration:none;"><span class="h">Extra Say Commands</span></a></b></p>
+  <p class="cat"><a id="cat8" href="javascript:toggleList(8);">Extra Say Commands</a></p>
   <div id="say8">
   <p><!--<a>!dispute</a><br>-->
   <a>!switch</a><br>
@@ -172,11 +172,7 @@ for(var j = 1; j <= 8; j++)
 {
 	var row = document.getElementById('say'+j);
 	row.style.display = 'none';
-	row.style.border = "solid";
-	row.style.width = '550px';
-	row.style.textAlign = "center";
-	row.style.marginLeft = "auto";
-	row.style.marginRight = "auto";
+	row.className = 'cmdlist';
 }
 function toggleList(num)
 {
@@ -189,10 +185,14 @@ function toggleList(num)
 		}
 	}
 	var row = document.getElementById('say'+num);
+	for(var k = 1; k <= 8; k++)
+		document.getElementById('cat'+k).className = '';
 	if(row.style.display != 'none')
 		row.style.display = 'none';
-	else
+	else {
 		row.style.display = 'block';
+		document.getElementById('cat'+num).className = 'open';
+	}
 }
 -->
 </script>

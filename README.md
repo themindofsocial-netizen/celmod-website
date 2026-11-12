@@ -93,3 +93,20 @@ location ~ \.php$ { include fastcgi_params; fastcgi_param SCRIPT_FILENAME $docum
 "Sign in through Steam" uses Steam's OpenID, so no API key is needed. Add a
 `steam_api_key` to `config.php` if you also want Steam avatars on profiles.
 Players need to have joined the server once before the web shop unlocks for them.
+
+## Page layout
+Every page is built from `includes/layout.php`: the logo, the navigation bar
+(edit `cm_nav_items()` to change the links), the framed page and the footer.
+
+```php
+cm_page_start('|CelMod| - My Page');                        // classic 677px frame
+cm_page_start('|CelMod| - My Page', '', ['wide' => true]);  // 940px frame for tables and tools
+// ... page content ...
+cm_page_end();
+```
+
+The frame is the original `cmtextbg` artwork sliced into `images/frame/`
+(side bars, a seamless centre tile and the bottom cap), so it stretches to the
+wide layout and shrinks to fit phones. Useful classes: `tiles`/`tile` (home
+page buttons), `btngrid` (rows of small buttons), `cmtable` (striped tables),
+`stat` (number tiles), `panel` (dark inset box) and `cmbutton`.

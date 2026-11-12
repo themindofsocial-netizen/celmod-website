@@ -1,12 +1,14 @@
-<?php require __DIR__ . '/includes/bootstrap.php'; cm_head('|CelMod| - Original Updates'); ?>
-<?php cm_logo(false); ?>
-    <h2>Original <span class="celColor">|CelMod|</span> Updates<br>
-</h2>
+<?php require __DIR__ . '/includes/bootstrap.php'; cm_head('|CelMod| - Original Updates', '', ['wide' => true]); ?>
+<?php cm_logo(); ?>
+<div id="main">
+<div id="content" class="left">
+    <div style="text-align:center"><h2>Original <span class="celColor">|CelMod|</span> Updates<br>
+</h2></div>
 <p><span class="headColor">Latest Updates</span><br>
 New commands in <b><i>bold italics</i></b>, existing commands in <i>normal italics</i>.<br>
 Chat commands in <span class="highlight">green italics</span>.<br>
 <br>
-<table border="0" bordercolor="#000000" style="background-color:#333333" width="1100" cellpadding="10" cellspacing="3">
+<table class="changelog" border="0" bordercolor="#000000" style="background-color:#333333" cellpadding="10" cellspacing="3">
 <tr><td><b>-=- 3/15/12: </b>The maps <u>Park</u> and <u>Cubicle</u> have been updated for the spring season.<br>
 <span class="indent"></span>The map <u>Bloody Construct</u> has been officially updated.</td></tr>
 <tr><td><b>-=- 2/15/12: </b>The <span class="highlight">sign</span> prop has been given 4 more skins.<br>
@@ -208,8 +210,9 @@ Chat commands in <span class="highlight">green italics</span>.<br>
 </td>
 </tr>
 </table>
+</div>
+</div>
+<?php cm_footer_bar(); ?>
 <script type="text/javascript" src="<?= cm_base() ?>scripts/updates.js"></script>
-<script type="text/javascript">
-disableSelection(document.body)
-</script>
+<?php cm_bg_script(); ?>
 </html>

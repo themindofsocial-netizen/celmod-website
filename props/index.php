@@ -15,13 +15,37 @@
   <b>unfrozen</b> - Spawns the prop unfrozen<br>
   <b>nogod</b> - Spawns the prop and makes it breakable<br>
   <b>drop</b> - Spawns the prop at the floor<br>
-  <br>
-  <br>
-  <a href="a.php"><b><u>A</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="b.php"><b><u>B</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="c.php"><b><u>C</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="d.php"><b><u>D</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="e.php"><b><u>E</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="f.php"><b><u>F</u></b></a><br>
-  <a href="g.php"><b><u>G</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="h.php"><b><u>H</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="i.php"><b><u>I</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="j.php"><b><u>J</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="k.php"><b><u>K</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="l.php"><b><u>L</u></b></a><br>
-  <a href="m.php"><b><u>M</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="n.php"><b><u>N</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="o.php"><b><u>O</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="p.php"><b><u>P</u></b></a><span class="indent"></span>-<span class="indent"></span><b>Q</b><span class="indent"></span>-<span class="indent"></span><a href="r.php"><b><u>R</u></b></a><br>
-  <a href="s.php"><b><u>S</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="t.php"><b><u>T</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="u.php"><b><u>U</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="v.php"><b><u>V</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="w.php"><b><u>W</u></b></a><span class="indent"></span>-<span class="indent"></span><b>X</b><br>
-  <b>Y</b><span class="indent"></span>-<span class="indent"></span><a href="z.php"><b><u>Z</u></b></a><span class="indent"></span>-<span class="indent"></span><a href="dis.php"><b><u>Discontinued</u></b></a>
+</p>
+<div class="btngrid letters">
+<a href="a.php">A</a>
+<a href="b.php">B</a>
+<a href="c.php">C</a>
+<a href="d.php">D</a>
+<a href="e.php">E</a>
+<a href="f.php">F</a>
+<a href="g.php">G</a>
+<a href="h.php">H</a>
+<a href="i.php">I</a>
+<a href="j.php">J</a>
+<a href="k.php">K</a>
+<a href="l.php">L</a>
+<a href="m.php">M</a>
+<a href="n.php">N</a>
+<a href="o.php">O</a>
+<a href="p.php">P</a>
+<b title="No props yet">Q</b>
+<a href="r.php">R</a>
+<a href="s.php">S</a>
+<a href="t.php">T</a>
+<a href="u.php">U</a>
+<a href="v.php">V</a>
+<a href="w.php">W</a>
+<b title="No props yet">X</b>
+<b title="No props yet">Y</b>
+<a href="z.php">Z</a>
+</div>
+<div class="btngrid"><a href="dis.php">Discontinued Props</a></div>
+<p>
 </p>
 </div>
 </div>
