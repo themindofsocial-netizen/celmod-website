@@ -77,3 +77,90 @@ width: 550px;
 body {
 font-family: Pu;
 }
+/* ---- Live site additions (same palette as above) ---- */
+#userbar {
+margin-left: auto;
+margin-right: auto;
+margin-bottom: 4px;
+background-image: url(images/cmtextbg.png);
+width: 675px;
+border: 1px solid black;
+text-align: center;
+font-size: 0.85em;
+padding: 3px 0;
+}
+#userbar.left {
+margin-left: 0;
+}
+.cmtable {
+width: 100%;
+border-collapse: separate;
+border-spacing: 0 2px;
+text-align: left;
+}
+.cmtable th {
+color: #9CF;
+padding: 4px 6px;
+}
+.cmtable td {
+padding: 4px 6px;
+}
+.cmtable tr:nth-child(even) td {
+background-color: #333333;
+}
+.cmtable tr:nth-child(odd) td {
+background-color: #444444;
+}
+.cmtable .num {
+text-align: right;
+}
+.stat {
+display: inline-block;
+width: 160px;
+margin: 4px;
+padding: 6px 0;
+background-color: #333333;
+border: 1px solid black;
+}
+.stat b {
+display: block;
+font-size: 1.5em;
+color: #71E100;
+}
+.cmbutton {
+font-family: Pu;
+font-weight: bold;
+color: #FFB200;
+background-color: #444444;
+border: 1px solid black;
+padding: 2px 10px;
+cursor: pointer;
+}
+.cmbutton:hover {
+color: #FFCD5B;
+background-color: #555555;
+transition: color 0.5s;
+}
+.cmbutton[disabled] {
+color: #777;
+cursor: default;
+}
+.muted {
+color: #AA8;
+font-size: 0.85em;
+}
+.chart {
+display: block;
+margin: 6px auto;
+background-color: #333333;
+border: 1px solid black;
+}
+.chart g:hover .bar {
+fill: #FFCD5B;
+}
+.tabs a {
+margin: 0 6px;
+}
+.tabs a.active {
+color: #71E100;
+}
