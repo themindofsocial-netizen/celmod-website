@@ -34,6 +34,11 @@ return [
 	// Seconds after the last heartbeat before the server is shown as offline.
 	'offline_after' => 90,
 
+	// Emblem Editor: path to the game server's collectibles.txt, if this site runs
+	// on the same machine, so the editor always shows the live emblems.
+	// Leave empty to use the copy in emblem-editor/collectibles.txt.
+	'collectibles_file' => '',
+
 	// SteamID64s that can see the admin order log on /admin.php
 	'admins' => [
 		// '76561198000000000',

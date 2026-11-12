@@ -24,6 +24,8 @@ The <u>Power Booth</u> is located randomly in the map.<br>
 <br>
 * This only changes when the <u>Emblem Engine</u> is reset.<br>
 ** Some emblems cannot be upgraded.<br>
+<br>
+<a href="emblem-editor/"><b>Design your own emblem in the Emblem Editor</b></a><br>
 </p>
 </div>
 </div>

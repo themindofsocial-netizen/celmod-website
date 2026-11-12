@@ -10,6 +10,7 @@ It keeps the classic look and adds live data from the server:
 | `statistics.php` | Totals, players-online chart (24h), joins and props per day, top maps, popular items |
 | `leaderboard.php` | Richest players, most time played, most props / cels spawned |
 | `player.php?id=<steamid64>` | Player profile: balance, playtime, unlocks, recent sessions |
+| `emblem-editor/` | Design emblems in 3D and export them for `collectibles.txt`. Opens with the server's current emblems |
 | `admin.php` | Web order log (SteamIDs listed in `admins` in `config.php`) |
 | `api/status.php` | Live server snapshot as JSON (for Discord bots, widgets...) |
 

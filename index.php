@@ -17,6 +17,7 @@ cm_page_start('|CelMod| - A Living Project');
 <p><a href="shop.php"><div id="listview"><img id="listimg" src="images/icn_shop.png"/> The Shop <img id="listimg" src="images/icn_shop.png"/></div></a></p>
 <p><a href="statistics.php"><div id="listview"><img id="listimg" src="images/icn_orgupdates.png"/> Statistics <img id="listimg" src="images/icn_orgupdates.png"/></div></a></p>
 <p><a href="leaderboard.php"><div id="listview"><img id="listimg" src="images/icn_props.png"/> Leaderboards <img id="listimg" src="images/icn_props.png"/></div></a></p>
+<p><a href="emblem-editor/"><div id="listview"><img id="listimg" src="images/icn_fx.png"/> Emblem Editor <img id="listimg" src="images/icn_fx.png"/></div></a></p>
 <p><a href="cmds.php"><div id="listview"><img id="listimg" src="images/icn_cmds.png"/> Commands List <img id="listimg" src="images/icn_cmds.png"/></div></a></p>
 <p><a href="props/"><div id="listview"><img id="listimg" src="images/icn_props.png"/> Props List <img id="listimg" src="images/icn_props.png"/></div></a></p>
 <p><a href="colors.php"><div id="listview"><img id="listimg" src="images/icn_colors.png"/> Colors List <img id="listimg" src="images/icn_colors.png"/></div></a></p>
@@ -28,10 +29,10 @@ cm_page_start('|CelMod| - A Living Project');
 <p><a href="https://github.com/rockzehh/celmod"><div id="listview"><img id="listimg" src="./images/icn_github-code.png"/> GitHub Repository <img id="listimg" src="./images/icn_github-code.png"/></div></a></p>
 <br>
 Extras:<br>
-<!--<a href="top5.php"><b>Top 5 Builders</b></a><br>
-<!--<a href="emblems.php"><b>Emblems Info.</b></a><br>
+<!--<a href="top5.php"><b>Top 5 Builders</b></a><br>-->
+<a href="emblems.php"><b>Emblems Info.</b></a><br>
 <!--<a href="embstats.php"><b>Emblem Stats.</b></a><br>
-<!--<a href="anims.php"><b>Animation Help</b></a><br>-->
+<a href="anims.php"><b>Animation Help</b></a><br>-->
 <a href="buyhelp.php"><b>Bank Help</b></a><br>
 <a href="maphistory.php"><b>Map History</b></a><br>
 <!--<a href="maparchive.php"><b>Map Archive</b></a><br>-->
