@@ -47,12 +47,19 @@ DNS at the new host when you switch over.
    -- game server: full access to its tables
    CREATE USER 'celmod_server'@'%' IDENTIFIED BY '...';
    GRANT SELECT, INSERT, UPDATE, DELETE, CREATE ON celmod.* TO 'celmod_server'@'%';
-   -- website: read everything, only write orders + avatars
-   CREATE USER 'celmod_web'@'localhost' IDENTIFIED BY '...';
-   GRANT SELECT ON celmod.* TO 'celmod_web'@'localhost';
-   GRANT INSERT, UPDATE ON celmod.cm_web_orders TO 'celmod_web'@'localhost';
-   GRANT UPDATE (avatar_url) ON celmod.cm_players TO 'celmod_web'@'localhost';
+   -- website: read everything, only write orders + avatars.
+   -- WEBHOST is where the website connects FROM, as MySQL sees it:
+   --   same machine as MySQL, config host '127.0.0.1' -> '127.0.0.1'
+   --   same machine as MySQL, config host 'localhost' -> 'localhost'
+   --   different machine                               -> that machine's IP
+   CREATE USER 'celmod_web'@'WEBHOST' IDENTIFIED BY '...';
+   GRANT SELECT ON celmod.* TO 'celmod_web'@'WEBHOST';
+   GRANT INSERT, UPDATE ON celmod.cm_web_orders TO 'celmod_web'@'WEBHOST';
+   GRANT UPDATE (avatar_url) ON celmod.cm_players TO 'celmod_web'@'WEBHOST';
    ```
+
+   MySQL treats `'user'@'localhost'` and `'user'@'127.0.0.1'` as two different
+   accounts, so the host must match how the website connects.
 
 2. **Website.** Copy `config.sample.php` to `config.php` and fill in the
    database login, `site_url` (used for Steam sign in) and the server address.
@@ -88,6 +95,33 @@ location @html2php { rewrite ^(.+)\.html$ $1.php permanent; }
 location / { index index.php; try_files $uri $uri/ =404; }
 location ~ \.php$ { include fastcgi_params; fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; fastcgi_pass unix:/run/php/php-fpm.sock; }
 ```
+
+## Troubleshooting: "The |CelMod| database is offline"
+
+Run the setup check. It names the exact problem and how to fix it:
+
+```
+php check.php                      # on the web server
+https://your-site/check.php        # in a browser: signed-in admins from config.php only
+```
+
+It checks PHP's MySQL extension, that `config.php` exists (without it the
+site falls back to the sample's placeholder password), the login, the
+tables, and that `server.id` matches the game server's `cm_db_server_id`.
+Signed-in admins also see the raw error on any page that says the database
+is offline.
+
+Common causes when the game server connects but the website doesn't:
+
+- **The website is on a different machine.** MySQL usually only listens on
+  127.0.0.1. Set `bind-address = 0.0.0.0` in `my.cnf`, restart MySQL, allow
+  port 3306 from the web server's IP only in the firewall, create the
+  `celmod_web` user for the web server's IP, and put the database server's IP
+  in `config.php`.
+- **User/host mismatch** (error 1045 or 1130), see the note under Setup.
+- **`config.php` missing or in the wrong folder.** It must sit next to `index.php`.
+- **No `pdo_mysql`.** Install `php-mysql` and restart PHP-FPM/Apache.
+- **Different database name** than the game server's `databases.cfg`.
 
 ## Signing in
 "Sign in through Steam" uses Steam's OpenID, so no API key is needed. Add a

@@ -140,5 +140,11 @@ function cm_page_end(string $extraScripts = ''): void
 
 function cm_db_offline_notice(): void
 {
-	echo '<p class="notice"><span class="bloody"><b>The |CelMod| database is offline right now.</b></span><br>Live stats will be back shortly.</p>';
+	echo '<p class="notice"><span class="bloody"><b>The |CelMod| database is offline right now.</b></span><br>Live stats will be back shortly.';
+	if (cm_is_admin() || !CM_CONFIG_FOUND) {
+		$err = cm_db_error();
+		echo '<br><br><span class="muted">' . (!CM_CONFIG_FOUND ? 'config.php is missing.' : h('[' . ($err['code'] ?? '?') . '] ' . ($err['message'] ?? ''))) . '</span>'
+			. '<br><a href="' . cm_base() . 'check.php"><b>Open the setup check</b></a>';
+	}
+	echo '</p>';
 }

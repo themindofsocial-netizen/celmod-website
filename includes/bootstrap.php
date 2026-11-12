@@ -7,7 +7,10 @@ declare(strict_types=1);
 define('CM_ROOT', dirname(__DIR__));
 
 $cmConfigFile = CM_ROOT . '/config.php';
-$CM_CONFIG = is_file($cmConfigFile) ? require $cmConfigFile : require CM_ROOT . '/config.sample.php';
+// Without config.php the site still runs on the sample settings, but check.php
+// and the offline notice say so loudly, since the sample password never works.
+define('CM_CONFIG_FOUND', is_file($cmConfigFile));
+$CM_CONFIG = CM_CONFIG_FOUND ? require $cmConfigFile : require CM_ROOT . '/config.sample.php';
 
 if (session_status() === PHP_SESSION_NONE) {
 	session_name('celmod');

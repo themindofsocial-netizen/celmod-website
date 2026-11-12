@@ -10,8 +10,9 @@
  */
 return [
 	'db' => [
-		'host'    => '127.0.0.1',
+		'host'    => '127.0.0.1',       // the database server's IP if MySQL is on another machine
 		'port'    => 3306,
+		'socket'  => '',                // optional: MySQL socket path, used instead of host/port
 		'name'    => 'celmod',
 		'user'    => 'celmod_web',
 		'pass'    => 'change-me',
