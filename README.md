@@ -10,8 +10,8 @@ It keeps the classic look and adds live data from the server:
 | `statistics.php` | Totals, players-online chart (24h), joins and props per day, top maps, popular items |
 | `leaderboard.php` | Richest players, most time played, most props / cels spawned |
 | `player.php?id=<steamid64>` | Player profile: balance, playtime, unlocks, recent sessions |
-| `emblem-editor/` | Design emblems in 3D and export them for `collectibles.txt`. Opens with the server's current emblems |
-| `admin.php` | Web order log (SteamIDs listed in `admins` in `config.php`) |
+| `emblem-editor/` | Public: design emblems in 3D and suggest them to the admins. Edits stay in the player's browser; the server's emblems can't be changed from it |
+| `admin.php` | Web order log and the emblem suggestion review (SteamIDs listed in `admins` in `config.php`) |
 | `api/status.php` | Live server snapshot as JSON (for Discord bots, widgets...) |
 
 Every other page (commands, props, colors, updates...) is the original content,
@@ -56,6 +56,7 @@ DNS at the new host when you switch over.
    GRANT SELECT ON celmod.* TO 'celmod_web'@'WEBHOST';
    GRANT INSERT, UPDATE ON celmod.cm_web_orders TO 'celmod_web'@'WEBHOST';
    GRANT UPDATE (avatar_url) ON celmod.cm_players TO 'celmod_web'@'WEBHOST';
+   GRANT INSERT, UPDATE ON celmod.cm_emblem_suggestions TO 'celmod_web'@'WEBHOST';
    ```
 
    MySQL treats `'user'@'localhost'` and `'user'@'127.0.0.1'` as two different

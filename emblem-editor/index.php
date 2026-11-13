@@ -35,14 +35,31 @@ $head = <<<'HEAD'
 </style>
 HEAD;
 
+$user = cm_user();
+$mine = ($user && cm_db()) ? cm_rows('SELECT id, emblem_id, title, status, admin_note, created_at FROM cm_emblem_suggestions WHERE steamid64 = ? ORDER BY id DESC LIMIT 10', [$user['steamid64']]) : [];
+$open = null;
+if (isset($_GET['suggestion']) && $user && cm_db()) {
+	$open = cm_row('SELECT id, steamid64, player_name, kv FROM cm_emblem_suggestions WHERE id = ?', [(int)$_GET['suggestion']]);
+	if ($open && !cm_is_admin() && $open['steamid64'] !== $user['steamid64']) {
+		$open = null;
+	}
+}
+$head .= '<meta name="csrf" content="' . h(cm_csrf_token()) . '">';
+
 cm_page_start('|CelMod| - Emblem Editor', $head, ['wide' => true]);
 ?>
 
 <h2><span class="celColor">|CelMod| Emblem Editor</span><br>
 </h2>
-<p>Design an emblem, see it in 3D, then paste the result into<br>
-<span class="h">addons/sourcemod/data/celmod/collectibles.txt</span> on the server.</p>
-<p class="muted">The editor opens with every emblem currently on the server. Pick one to start from, or press New.</p>
+<p>Design your own emblem, see it in 3D, and suggest it to the admins.</p>
+<p class="notice">Everything you change here stays in <b>your browser</b>. New, Delete and edits only change your copy:<br>
+the emblems on the server can't be changed or removed from this page.</p>
+<?php if ($open): ?>
+<p class="flash h"><b>Opened suggestion #<?= (int)$open['id'] ?> by <?= h($open['player_name']) ?>.</b></p>
+<script type="application/json" id="preload"><?= json_encode($open['kv'], JSON_HEX_TAG | JSON_HEX_AMP) ?></script>
+<?php else: ?>
+<p class="muted">The editor opens with every emblem on the server. Pick one to start from and press Duplicate, or press New.</p>
+<?php endif; ?>
 
 <div id="editor">
 	<p class="title"><b>:Emblems:</b></p>
@@ -105,6 +122,35 @@ cm_page_start('|CelMod| - Emblem Editor', $head, ['wide' => true]);
 	</div>
 
 	</div>
+	</div>
+
+	<p class="title"><b>:Suggest This Emblem:</b></p>
+	<div class="panel">
+<?php if (!$user): ?>
+		<p><a href="../login.php?return=<?= urlencode($_SERVER['REQUEST_URI'] ?? '/emblem-editor/') ?>"><b>Sign in through Steam</b></a> to suggest your emblem to the admins.</p>
+<?php else: ?>
+		<p class="hint" style="margin-top:0">Sends the selected emblem to the admins. It needs a new id (not one already on the server) and a name.
+		Admins add the ones they like to the server by hand.</p>
+		<label class="wide" style="display:flex;flex-direction:column;gap:2px;font-size:0.8em;color:#9CF">Note for the admins (optional)
+			<textarea id="note" maxlength="500" style="min-height:60px;white-space:normal;font-family:Pu;color:#FFB200" placeholder="What is it for? How should it drop?"></textarea></label>
+		<div class="row">
+			<button class="cmbutton" id="suggest">Suggest this emblem</button>
+			<span id="suggestStatus"></span>
+		</div>
+<?php if ($mine): ?>
+		<p class="title" style="margin-top:12px">Your suggestions</p>
+		<table class="cmtable">
+<?php foreach ($mine as $m): ?>
+			<tr>
+				<td><a href="?suggestion=<?= (int)$m['id'] ?>"><b><?= h($m['title']) ?></b></a> <span class="muted"><?= h($m['emblem_id']) ?></span></td>
+				<td><span class="<?= ['accepted' => 'grassy', 'rejected' => 'bloody', 'withdrawn' => 'muted'][$m['status']] ?? 'highlight' ?>"><?= h(ucfirst($m['status'])) ?></span><?= $m['admin_note'] !== '' ? '<br><span class="muted">' . h($m['admin_note']) . '</span>' : '' ?></td>
+				<td class="num"><?= h(cm_ago($m['created_at'])) ?></td>
+				<td class="num"><?php if ($m['status'] === 'pending'): ?><button class="cmbutton" data-withdraw="<?= (int)$m['id'] ?>">Withdraw</button><?php endif; ?></td>
+			</tr>
+<?php endforeach; ?>
+		</table>
+<?php endif; ?>
+<?php endif; ?>
 	</div>
 
 	<p class="title"><b>:Export / Import:</b></p>

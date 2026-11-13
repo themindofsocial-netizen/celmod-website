@@ -148,7 +148,7 @@ if (!$db) {
 	$add('ok', 'Database connection', 'connected as ' . $info['who'] . ' to ' . $info['version'] . ' on ' . $info['host'] . ', database "' . $info['db'] . '"');
 
 	$tables = array_map(static fn ($r) => array_values($r)[0], cm_rows('SHOW TABLES'));
-	$needed = ['cm_players', 'cm_purchases', 'cm_shop_items', 'cm_web_orders', 'cm_servers', 'cm_online_players', 'cm_sessions', 'cm_events', 'cm_stats_daily', 'cm_player_samples', 'cm_maps'];
+	$needed = ['cm_players', 'cm_purchases', 'cm_shop_items', 'cm_web_orders', 'cm_servers', 'cm_online_players', 'cm_sessions', 'cm_events', 'cm_stats_daily', 'cm_player_samples', 'cm_maps', 'cm_emblem_suggestions'];
 	$missing = array_diff($needed, $tables);
 	if ($missing) {
 		$add('fail', 'Tables', 'missing: ' . implode(', ', $missing) . '. The game server creates these when celmod-database connects, so if it is connected it is probably using a different database name or server. Compare with its databases.cfg, or import sql/schema.sql.');
@@ -187,6 +187,8 @@ if (!$db) {
 	$canOrder = preg_match('/GRANT (ALL|.*INSERT.*UPDATE|.*UPDATE.*INSERT)[^\n]*ON (\*|`?' . preg_quote($c['name'], '/') . '`?)\.(\*|`?cm_web_orders`?)/i', $grants);
 	$add($canSelect ? 'ok' : 'fail', 'Read access', $canSelect ? 'yes' : 'the user cannot SELECT; run the GRANT lines from the README');
 	$add($canOrder ? 'ok' : 'warn', 'Web shop orders', $canOrder ? 'can place orders' : 'cannot INSERT/UPDATE cm_web_orders, so buying on the website will fail');
+	$canSuggest = preg_match('/GRANT (ALL|.*INSERT.*UPDATE|.*UPDATE.*INSERT)[^\n]*ON (\*|`?' . preg_quote($c['name'], '/') . '`?)\.(\*|`?cm_emblem_suggestions`?)/i', $grants);
+	$add($canSuggest ? 'ok' : 'warn', 'Emblem suggestions', $canSuggest ? 'can save suggestions' : 'cannot INSERT/UPDATE cm_emblem_suggestions, so suggesting emblems will fail (see README grants)');
 }
 
 $fails = count(array_filter($checks, static fn ($x) => $x[0] === 'fail'));

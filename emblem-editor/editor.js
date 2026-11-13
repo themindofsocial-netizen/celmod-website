@@ -320,6 +320,47 @@ $('server').onclick = () => {
 	loadServerEmblems(false);
 };
 
+// ---- Suggestions -------------------------------------------------------------------------------
+// The server's ids, to warn before sending: suggestions must be new emblems (suggest.php enforces it).
+let serverIds = new Set();
+const csrf = document.querySelector('meta[name=csrf]')?.content || '';
+function post(body) {
+	return fetch('suggest.php', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf }, body: JSON.stringify(body) })
+		.then((r) => r.json().catch(() => ({ ok: false, error: 'The server sent an unexpected answer.' })));
+}
+function sayS(msg, ok) { const el = $('suggestStatus'); if (el) { el.textContent = msg; el.className = ok ? 'h' : 'bloody'; } }
+if ($('suggest')) {
+	$('suggest').onclick = () => {
+		readForm();
+		const e = emblems[current];
+		if (serverIds.has(e.id)) {
+			return sayS('"' + e.id + '" is already on the server. Press Duplicate (or change the id) to make it a new emblem first.', false);
+		}
+		if (!(e.kv.name || '').trim()) return sayS('Give your emblem a name first.', false);
+		$('suggest').disabled = true;
+		sayS('Sending...', true);
+		post({ action: 'submit', kv: emblemText(e, ''), note: ($('note') || {}).value || '' })
+			.then((d) => { sayS(d.ok ? d.message : d.error, d.ok); if (d.ok) setTimeout(() => location.reload(), 2500); })
+			.finally(() => { $('suggest').disabled = false; });
+	};
+}
+document.querySelectorAll('[data-withdraw]').forEach((b) => {
+	b.onclick = () => {
+		if (!confirm('Withdraw this suggestion?')) return;
+		post({ action: 'withdraw', id: +b.dataset.withdraw }).then((d) => d.ok ? location.reload() : sayS(d.error, false));
+	};
+});
+
 fillForm();
-loadServerEmblems(true).then(() => { if (emblems.length > 1) say('Showing the ' + emblems.length + ' emblems on the server. Pick one to start from, or press New.'); });
+const preload = document.getElementById('preload');
+fetch('../api/emblems.php', { cache: 'no-store' }).then((r) => r.ok ? r.text() : '').then((text) => {
+	try { serverIds = new Set(findEmblemBlocks(parseKV(text)).filter(([, v]) => Array.isArray(v)).map(([id]) => id.toLowerCase())); } catch { /* list stays empty; the server still checks */ }
+}).catch(() => {}).finally(() => {
+	if (preload) {
+		importText(JSON.parse(preload.textContent));
+		say('Opened a suggested emblem. Changes stay in your browser.');
+	} else {
+		loadServerEmblems(true).then(() => { if (emblems.length > 1) say('Showing the ' + emblems.length + ' emblems on the server. Pick one to start from, or press New.'); });
+	}
+});
 

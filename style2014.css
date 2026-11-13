@@ -379,6 +379,7 @@ h2 {
 }
 
 .cmbutton {
+	font-size: 13px;
 	font-family: Pu, sans-serif;
 	font-weight: bold;
 	color: var(--gold);
@@ -447,4 +448,40 @@ h2 {
 	h2 {
 		font-size: 1.35em;
 	}
+}
+
+/* Shop */
+.shoptable td {
+	vertical-align: middle;
+}
+.shoptable .usage {
+	font-size: 0.8em;
+	color: var(--blue);
+}
+.shoptable tr.soldout td {
+	opacity: 0.55;
+}
+
+/* Admin: suggestion review */
+.kvbox {
+	width: 100%;
+	box-sizing: border-box;
+	font: 12px/1.4 Consolas, monospace;
+	color: var(--green);
+	background-color: #222222;
+	border: 1px solid #000;
+	tab-size: 4;
+	resize: vertical;
+}
+.kvnote {
+	flex: 1;
+	min-width: 0;
+	font-family: Pu, sans-serif;
+	color: var(--gold);
+	background-color: #222222;
+	border: 1px solid #000;
+	padding: 2px 6px;
+}
+a.cmbutton {
+	display: inline-block;
 }

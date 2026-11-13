@@ -39,12 +39,19 @@ CREATE TABLE IF NOT EXISTS cm_purchases (
 	PRIMARY KEY (steamid64, item)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Synced from data/celmod/shop.txt every time the plugin connects.
+-- The celmod-shop catalog (shop.txt + priced player models), synced by the game
+-- server on connect, each map and about once a minute.
 CREATE TABLE IF NOT EXISTS cm_shop_items (
-	item         VARCHAR(64)  NOT NULL,
+	item         VARCHAR(64)  NOT NULL,              -- what players type: fire, prop_dog, model_gman
 	display_name VARCHAR(64)  NOT NULL DEFAULT '',
 	price        INT UNSIGNED NOT NULL DEFAULT 0,
 	category     VARCHAR(32)  NOT NULL DEFAULT 'Commands',
+	kind         VARCHAR(16)  NOT NULL DEFAULT 'command', -- command, prop, model, emblem, hat, weapon
+	target       VARCHAR(64)  NOT NULL DEFAULT '',   -- the command / prop alias / model or item id
+	description  VARCHAR(255) NOT NULL DEFAULT '',
+	stock_left   INT          NULL,                  -- NULL = no limit
+	repeatable   TINYINT(1)   NOT NULL DEFAULT 0,    -- can be bought again (emblems stack)
+	sort_order   INT          NOT NULL DEFAULT 0,
 	enabled      TINYINT(1)   NOT NULL DEFAULT 1,
 	updated_at   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (item)
@@ -135,6 +142,26 @@ CREATE TABLE IF NOT EXISTS cm_player_samples (
 	recorded_at DATETIME NOT NULL,
 	players     INT      NOT NULL,
 	PRIMARY KEY (server_id, recorded_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Emblems players designed in the Emblem Editor and suggested. Written by the
+-- website only; nothing here is ever copied to the server automatically.
+CREATE TABLE IF NOT EXISTS cm_emblem_suggestions (
+	id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	steamid64   VARCHAR(20)  NOT NULL,
+	player_name VARCHAR(128) NOT NULL DEFAULT '',
+	emblem_id   VARCHAR(64)  NOT NULL,
+	title       VARCHAR(64)  NOT NULL DEFAULT '',
+	kv          TEXT         NOT NULL,              -- the cleaned emblem block
+	note        VARCHAR(500) NOT NULL DEFAULT '',
+	status      VARCHAR(12)  NOT NULL DEFAULT 'pending', -- pending, accepted, rejected, withdrawn
+	admin_note  VARCHAR(255) NOT NULL DEFAULT '',
+	reviewed_by VARCHAR(20)  NULL,
+	created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	reviewed_at DATETIME     NULL,
+	PRIMARY KEY (id),
+	KEY idx_status (status),
+	KEY idx_player (steamid64)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS cm_maps (

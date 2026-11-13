@@ -74,7 +74,8 @@ function cm_navbar(): void
 		$active = $path === ''
 			? $current === 'index.php'
 			: ($current === $path || (substr($path, -1) === '/' && strpos($current, $path) === 0));
-		echo '<a href="' . $b . $path . '"' . ($active ? ' class="active"' : '') . '>' . h($label) . '</a>';
+		$href = ($b . $path) === '' ? './' : $b . $path; // "" would reload the current page
+		echo '<a href="' . $href . '"' . ($active ? ' class="active"' : '') . '>' . h($label) . '</a>';
 	}
 	echo "</div>\n" . '<div class="nav-status">';
 
