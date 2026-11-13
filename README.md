@@ -118,6 +118,22 @@ Common causes when the game server connects but the website doesn't:
   port 3306 from the web server's IP only in the firewall, create the
   `celmod_web` user for the web server's IP, and put the database server's IP
   in `config.php`.
+- **Unraid: the website container is on `br0` and MariaDB runs on the same
+  Unraid server.** Containers on `br0` (macvlan/ipvlan, with their own LAN
+  IP) cannot reach their own host's IP, so the site gets "Host is unreachable"
+  for the server's address while other machines (like the game server)
+  connect fine. Either:
+  - **Allow it:** Settings > Docker > stop Docker > Advanced View >
+    *Host access to custom networks* = **Enabled** > Apply, start Docker.
+    Keep `host` = the Unraid server's IP in `config.php`.
+  - **Or connect container to container**, skipping the LAN: create a shared
+    network (`docker network create celmod`), set MariaDB's *Network Type* to
+    `celmod` (its published port keeps working for the game server), add
+    `&& docker network connect celmod <web container name>` to the web
+    container's *Post Arguments*, then use the MariaDB container's name as
+    `host` in `config.php`. MySQL then sees the site's address on the
+    `celmod` network, so create `celmod_web` for that range, e.g.
+    `'celmod_web'@'172.%'`.
 - **"Host is unreachable" from a website running in Docker.** A Docker
   network on the web server is using an address range that covers your LAN
   (Docker takes 192.168.x.0/20 ranges once its 172.x ones run out), so the

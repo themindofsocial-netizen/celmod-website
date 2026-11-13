@@ -101,7 +101,19 @@ if (empty($c['socket'])) {
 			$route = cm_route_for($ip);
 			$docker = is_file('/.dockerenv') || is_file('/run/.containerenv');
 			$direct = $route && $route['via'] === null && $route['bits'] > 0;
-			if ($docker && $direct) {
+			// This container's own address: if it sits inside the same subnet as the database, the
+			// container is on a macvlan/ipvlan LAN network (Unraid br0) rather than a Docker bridge.
+			$self = $_SERVER['SERVER_ADDR'] ?? gethostbyname(gethostname());
+			[$netIp, $bits] = $direct ? explode('/', $route['net']) : ['', 0];
+			$mask = $bits ? (-1 << (32 - (int)$bits)) & 0xFFFFFFFF : 0;
+			$sameLan = $direct && ip2long($self) !== false && ((ip2long($self) & $mask) === (ip2long($netIp) & $mask));
+			if ($docker && $sameLan) {
+				$add('fail', 'Network', "$ip is unreachable. This site runs in a container with its own LAN address ($self, a macvlan/ipvlan network "
+					. "such as Unraid's br0). Containers on those networks cannot reach their own Docker host, so if the database runs on that host "
+					. "(e.g. MariaDB in Docker on the same Unraid server) every connection fails like this, while other machines connect fine. "
+					. "On Unraid: Settings > Docker > stop Docker > Advanced View > \"Host access to custom networks\" = Enabled > apply and start Docker. "
+					. "See README: Troubleshooting for other options.");
+			} elseif ($docker && $direct) {
 				$add('fail', 'Network', "$ip is unreachable. This site runs in a container, and the container thinks $ip is on its own network "
 					. "{$route['net']} ({$route['iface']}), so it looks for it there instead of going out to your LAN. A Docker network on the host "
 					. "is using an address range that overlaps your LAN. Fix: give that Docker network a different subnet (see README: Troubleshooting).");
