@@ -40,6 +40,37 @@ if (($c['pass'] ?? '') === '' || $c['pass'] === 'change-me') {
 	$add('fail', 'Database password', 'still the placeholder from config.sample.php');
 }
 
+// ---- Network: can this web server reach the database port at all? ----
+if (empty($c['socket'])) {
+	$host = (string)$c['host'];
+	$port = (int)($c['port'] ?? 3306);
+	$ip = filter_var($host, FILTER_VALIDATE_IP) ? $host : gethostbyname($host);
+	$loopback = $host === 'localhost' || strpos($ip, '127.') === 0 || $ip === '::1';
+
+	if ($loopback) {
+		$add('warn', 'Database host', "'$host' means THIS web server. If MySQL runs on another machine, set 'host' in config.php to that machine's IP address.");
+	} elseif ($ip === $host && !filter_var($host, FILTER_VALIDATE_IP)) {
+		$add('fail', 'Database host', "'$host' could not be resolved to an IP address. Use the database server's IP.");
+	}
+
+	if ($host !== 'localhost') {
+		$start = microtime(true);
+		$sock = @fsockopen($ip, $port, $errno, $errstr, 4);
+		$ms = (int)round((microtime(true) - $start) * 1000);
+		if ($sock) {
+			fclose($sock);
+			$add('ok', 'Network', "port $port on $ip is reachable ({$ms} ms)");
+		} elseif ($errno === 111 || stripos($errstr, 'refused') !== false) {
+			$add('fail', 'Network', "$ip refused the connection on port $port. Either MySQL is only listening on 127.0.0.1 "
+				. "(set bind-address = 0.0.0.0 or its LAN IP in my.cnf / 50-server.cnf, then restart MySQL), or a firewall on it is rejecting this web server "
+				. "(allow it, e.g. \"ufw allow from <web server IP> to any port $port\").");
+		} else {
+			$add('fail', 'Network', "no answer from $ip:$port after {$ms} ms ($errstr). A firewall is dropping this web server's traffic, or the IP is wrong. "
+				. "On the database server allow port $port from this web server, e.g. \"ufw allow from <web server IP> to any port $port\".");
+		}
+	}
+}
+
 // ---- Connection ----
 $db = cm_db();
 if (!$db) {
