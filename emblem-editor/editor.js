@@ -42,13 +42,27 @@ const FX = [
 // Skins of the emblem model. Skins without a texture here use stock game textures in game.
 // scroll = [texture widths per second, angle in degrees], frames = [count, per second], pulse = seconds per cycle;
 // these come from the skins' materials.
+// Each skin as its material is set up in game (materials/models/celmod/emblem3/sN.vmt):
+//   self: $selfillum, the texture shows at full brightness from every side; phong: [exponent, boost] highlights;
+//   rim: $rimlight; bump: normal map; env: reflection strength ($envmap); glass: see-through.
+const PHONG = [7, 0.4];
 const SKINS = [
-	{ c: '#a9c0cb', note: 'glass' }, { t: 's2', c: '#30343a', note: 'chrome' }, { c: '#eef3f7', note: 'snow' },
-	{ t: 's4', frames: [66, 20], scroll: [1.0, 0] }, { c: '#ff5a48', note: 'pulsing light', pulse: 0.5 },
-	{ t: 's6', scroll: [0.1, -45] }, { t: 's7', frames: [121, 30] },
-	{ c: '#3fd0ff', note: 'combine shield' }, { t: 's9', scroll: [0.01, 0] }, { c: '#cfd6dd', wire: true, note: 'wireframe' },
-	{ t: 's11_3', scroll: [0.5, 270] }, { c: '#6b6f73', note: 'tram metal' }, { c: '#2b3440', note: 'citadel metal' },
-	{ t: 's14', scroll: [0.1, -45] }, { t: 's15' }, { c: '#808080', note: 'no preview' }, { c: '#808080', note: 'no preview' },
+	{ c: '#a9c0cb', note: 'glass', self: true, phong: PHONG, rim: true, env: 0.45, glass: 0.55 },
+	{ t: 's2', c: '#30343a', note: 'chrome', self: true, env: 1.0 },
+	{ c: '#eef3f7', note: 'snow', self: true, phong: PHONG, rim: true },
+	{ t: 's4', frames: [66, 20], scroll: [1.0, 0], self: true, phong: PHONG, rim: true },
+	{ c: '#ff5a48', note: 'pulsing light', pulse: 0.5, self: true, phong: PHONG, rim: true },
+	{ t: 's6', scroll: [0.1, -45], self: true, phong: PHONG, rim: true, bump: 's6_n' },
+	{ t: 's7', frames: [121, 30], self: true },
+	{ c: '#3fd0ff', note: 'combine shield', self: true, phong: PHONG, rim: true },
+	{ t: 's9', scroll: [0.01, 0] },
+	{ c: '#cfd6dd', wire: true, note: 'wireframe', self: true },
+	{ t: 's11_3', scroll: [0.5, 270], self: true, phong: PHONG, rim: true, env: 0.3 },
+	{ c: '#6b6f73', note: 'tram metal', self: true, phong: [10, 0.5], rim: true, bump: 's12_n' },
+	{ c: '#2b3440', note: 'citadel metal', self: true, phong: PHONG, rim: true },
+	{ t: 's14', scroll: [0.1, -45], self: true, phong: PHONG, rim: true, bump: 's14_n' },
+	{ t: 's15', bump: 's15_n' },
+	{ c: '#808080', note: 'no preview', self: true }, { c: '#808080', note: 'no preview', self: true },
 ];
 const DEFAULTS = {
 	name: 'New Emblem', model: 'models/celmod/phys8.mdl', skin: '0', color: '255 255 255 255', handscale: '1.0',
@@ -115,9 +129,41 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(35, 4 / 3, 0.1, 50);
 const pivot = new THREE.Group(); scene.add(pivot);
-// Unlit: the emblem is shown at full brightness from every side, as its self-lit materials are in game.
-const material = new THREE.MeshBasicMaterial();
-const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.28 });
+// Shaded like the game's VertexLitGeneric materials: most skins are self-lit (the texture at full, even
+// brightness from every side), with soft phong highlights, a rim light, normal maps and reflections on top, all
+// under even lighting, so each material reads as what it is.
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.NoToneMapping;
+const material = new THREE.MeshPhongMaterial({ side: THREE.DoubleSide });
+const rimUniforms = { rimColor: { value: new THREE.Color(0, 0, 0) }, rimExponent: { value: 2.0 } };
+material.onBeforeCompile = (shader) => {
+	shader.uniforms.rimColor = rimUniforms.rimColor;
+	shader.uniforms.rimExponent = rimUniforms.rimExponent;
+	shader.fragmentShader = 'uniform vec3 rimColor;\nuniform float rimExponent;\n' + shader.fragmentShader.replace(
+		'#include <opaque_fragment>',
+		'outgoingLight += rimColor * pow(1.0 - clamp(abs(dot(normal, normalize(vViewPosition))), 0.0, 1.0), rimExponent);\n#include <opaque_fragment>');
+};
+// Even light: soft light from above and below, plus a gentle light from the viewer that makes the highlights.
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8f96, 1.1));
+const headLight = new THREE.DirectionalLight(0xffffff, 1.0);
+headLight.position.set(-1, 1.5, 2);
+camera.add(headLight);
+scene.add(camera);
+// A soft studio surrounding, for chrome and glass to reflect.
+function makeEnvironment() {
+	const cv = document.createElement('canvas'); cv.width = 512; cv.height = 256;
+	const ctx = cv.getContext('2d');
+	const g = ctx.createLinearGradient(0, 0, 0, 256);
+	g.addColorStop(0, '#f4f7fb'); g.addColorStop(0.42, '#b9c2cc'); g.addColorStop(0.5, '#6c7480'); g.addColorStop(0.62, '#3a3f46'); g.addColorStop(1, '#16181b');
+	ctx.fillStyle = g; ctx.fillRect(0, 0, 512, 256);
+	ctx.fillStyle = 'rgba(255,255,255,0.85)';
+	ctx.fillRect(60, 40, 90, 26); ctx.fillRect(300, 30, 140, 20);
+	const tex = new THREE.CanvasTexture(cv);
+	tex.mapping = THREE.EquirectangularReflectionMapping;
+	tex.colorSpace = THREE.SRGBColorSpace;
+	return tex;
+}
+const environment = makeEnvironment();
 const animated = {};
 let activeSkin = SKINS[0], tintColor = new THREE.Color(1, 1, 1), clock = performance.now();
 const loader = new THREE.TextureLoader();
@@ -131,14 +177,20 @@ fetch('model.json').then((r) => r.json()).then((d) => {
 	g.setAttribute('uv', new THREE.Float32BufferAttribute(d.uvs, 2));
 	g.setIndex(d.indices);
 	mesh = new THREE.Mesh(g, material);
-	material.side = THREE.DoubleSide;
 	pivot.add(mesh);
-	// Thin outlines keep the shape readable now that nothing is shaded.
-	pivot.add(new THREE.LineSegments(new THREE.EdgesGeometry(g, 25), edgeMaterial));
 	applyLook();
 }).catch(() => { $('status').textContent = 'The 3D model could not be loaded (model.json).'; });
 
-function wrap(tex) { tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.colorSpace = THREE.SRGBColorSpace; return tex; }
+function wrap(tex, linear) {
+	tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+	tex.colorSpace = linear ? THREE.NoColorSpace : THREE.SRGBColorSpace;
+	tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+	return tex;
+}
+function loadTexture(name, linear) {
+	if (!textures[name]) textures[name] = wrap(loader.load('textures/' + name + '.png'), linear);
+	return textures[name];
+}
 // Animated skins are stored as a vertical strip of frames and drawn one frame at a time onto a small canvas.
 function animatedTexture(name, count) {
 	if (animated[name]) return animated[name];
@@ -154,26 +206,63 @@ function applyLook() {
 	activeSkin = skin;
 	tintColor = new THREE.Color(toHex(e.kv.color));
 	material.wireframe = !!skin.wire;
+
+	let map = null;
 	if (skin.t) {
-		if (skin.frames) {
-			material.map = animatedTexture(skin.t, skin.frames[0]).tex;
-		} else {
-			if (!textures[skin.t]) textures[skin.t] = wrap(loader.load('textures/' + skin.t + '.png'));
-			material.map = textures[skin.t];
-		}
-		material.color.copy(tintColor);
-	} else {
-		material.map = null;
-		material.color.set(skin.c).multiply(tintColor);
+		map = skin.frames ? animatedTexture(skin.t, skin.frames[0]).tex : loadTexture(skin.t);
+		map.offset.set(0, 0);
 	}
-	if (material.map) material.map.offset.set(0, 0);
+	const base = skin.t ? tintColor.clone() : new THREE.Color(skin.c).multiply(tintColor);
+
+	// Self-lit: the texture is the light (emissive), lighting only adds highlights. Otherwise it is lit normally.
+	if (skin.self) {
+		material.color.set(0x000000);
+		material.map = null;
+		material.emissive.copy(base);
+		material.emissiveMap = map;
+	} else {
+		material.color.copy(base);
+		material.map = map;
+		material.emissive.set(0x000000);
+		material.emissiveMap = null;
+	}
+	material.emissiveIntensity = 1;
+
+	// Phong highlights: Source's exponent is for reflected light; three.js uses the half vector, about 4x sharper.
+	if (skin.phong) {
+		material.specular.setScalar(skin.phong[1]);
+		material.shininess = skin.phong[0] * 4;
+	} else {
+		material.specular.setScalar(skin.self ? 0 : 0.08);
+		material.shininess = 12;
+	}
+
+	material.normalMap = skin.bump ? loadTexture(skin.bump, true) : null;
+	material.normalScale.set(1, 1);
+
+	material.envMap = skin.env ? environment : null;
+	material.combine = THREE.AddOperation;
+	material.reflectivity = skin.env || 0;
+
+	material.transparent = !!skin.glass;
+	material.opacity = skin.glass || 1;
+	material.depthWrite = !skin.glass;
+
+	// Rim light: a soft glow along the edges, in a light version of the emblem's colour.
+	if (skin.rim) {
+		rimUniforms.rimColor.value.copy(base).lerp(new THREE.Color(1, 1, 1), 0.5).multiplyScalar(0.35);
+	} else {
+		rimUniforms.rimColor.value.setRGB(0, 0, 0);
+	}
+
 	material.needsUpdate = true;
 }
 // Plays the selected skin's animation: frame flipping, scrolling and pulsing.
 function animate(now) {
 	const dt = Math.min(0.1, (now - clock) / 1000); clock = now;
 	const skin = activeSkin, t = now / 1000;
-	if (skin.frames && material.map) {
+	const tex = material.emissiveMap || material.map;
+	if (skin.frames && tex) {
 		const a = animated[skin.t], f = Math.floor(t * skin.frames[1]) % skin.frames[0];
 		if (a && a.img.complete && a.img.naturalWidth && f !== a.frame) {
 			a.frame = f;
@@ -181,14 +270,14 @@ function animate(now) {
 			a.tex.needsUpdate = true;
 		}
 	}
-	if (skin.scroll && material.map) {
+	if (skin.scroll && tex) {
 		const ang = skin.scroll[1] * Math.PI / 180;
-		material.map.offset.x = (material.map.offset.x + Math.cos(ang) * skin.scroll[0] * dt) % 1;
-		material.map.offset.y = (material.map.offset.y + Math.sin(ang) * skin.scroll[0] * dt) % 1;
+		tex.offset.x = (tex.offset.x + Math.cos(ang) * skin.scroll[0] * dt) % 1;
+		tex.offset.y = (tex.offset.y + Math.sin(ang) * skin.scroll[0] * dt) % 1;
 	}
 	if (skin.pulse) {
-		const k = 0.55 + 0.45 * Math.sin(t * 2 * Math.PI / skin.pulse);
-		material.color.set(skin.c).multiply(tintColor).multiplyScalar(k);
+		// The light pulses between 10% and full brightness, as its Sine proxy does in game.
+		material.emissiveIntensity = 0.1 + 0.9 * (0.5 + 0.5 * Math.sin(t * 2 * Math.PI / skin.pulse));
 	}
 }
 function frame() {
