@@ -139,6 +139,9 @@ function cm_db_hint(array $error): string
 				return "PHP looked for MySQL's local socket file and it isn't there. Set 'host' to '127.0.0.1' in config.php, "
 					. "or set 'socket' to the path MySQL actually uses (run: mysql -e \"SELECT @@socket\").";
 			}
+			if (stripos($msg, 'unreachable') !== false || stripos($msg, 'No route') !== false) {
+				return "There is no network path from this web server to {$c['host']}. See the Network and Route lines above for why.";
+			}
 			return "Nothing answered at {$c['host']}:{$c['port']}. If the database is on another machine (e.g. the game server box), "
 				. "use that machine's IP in config.php, make MySQL listen on the network (bind-address = 0.0.0.0 in my.cnf, then restart it) "
 				. 'and open port ' . (int)$c['port'] . ' in its firewall for this web server only.';

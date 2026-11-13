@@ -118,6 +118,34 @@ Common causes when the game server connects but the website doesn't:
   port 3306 from the web server's IP only in the firewall, create the
   `celmod_web` user for the web server's IP, and put the database server's IP
   in `config.php`.
+- **"Host is unreachable" from a website running in Docker.** A Docker
+  network on the web server is using an address range that covers your LAN
+  (Docker takes 192.168.x.0/20 ranges once its 172.x ones run out), so the
+  container looks for the database inside Docker. `check.php` shows the route
+  it takes. On the web server host, list the networks' ranges:
+
+  ```
+  docker network inspect -f '{{.Name}} {{range .IPAM.Config}}{{.Subnet}}{{end}}' $(docker network ls -q)
+  ```
+
+  Any subnet that contains your LAN (e.g. `192.168.0.0/20` contains
+  192.168.2.x) is the culprit. Move it: set an explicit subnet in that
+  stack's compose file and recreate it (`docker compose down && docker compose up -d`)
+
+  ```yaml
+  networks:
+    default:
+      ipam:
+        config:
+          - subnet: 172.30.0.0/24
+  ```
+
+  and stop Docker choosing LAN ranges again with `/etc/docker/daemon.json`
+  (then `systemctl restart docker`):
+
+  ```json
+  { "default-address-pools": [ { "base": "172.17.0.0/12", "size": 24 } ] }
+  ```
 - **User/host mismatch** (error 1045 or 1130), see the note under Setup.
 - **`config.php` missing or in the wrong folder.** It must sit next to `index.php`.
 - **No `pdo_mysql`.** Install `php-mysql` and restart PHP-FPM/Apache.

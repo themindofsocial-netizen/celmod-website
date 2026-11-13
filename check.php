@@ -21,6 +21,38 @@ if (!$cli && !$local && !cm_is_admin()) {
 	exit;
 }
 
+/**
+ * Which route this machine (or container) would use for $ip, from /proc/net/route.
+ * Returns ['iface' => 'eth1', 'net' => '192.168.0.0/20', 'via' => null|'gateway IP'] or null.
+ */
+function cm_route_for(string $ip, string $table = '/proc/net/route'): ?array
+{
+	$lines = @file($table, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+	$target = ip2long($ip);
+	if (!$lines || $target === false) {
+		return null;
+	}
+	$hex = static fn (string $h) => unpack('V', pack('H*', $h))[1]; // little-endian hex -> int
+	$best = null;
+	foreach (array_slice($lines, 1) as $line) {
+		$f = preg_split('/\s+/', trim($line));
+		if (count($f) < 8) {
+			continue;
+		}
+		$dest = $hex($f[1]);
+		$mask = $hex($f[7]);
+		if (($target & $mask) !== ($dest & $mask)) {
+			continue;
+		}
+		$bits = substr_count(decbin($mask), '1');
+		if ($best === null || $bits > $best['bits']) {
+			$gw = $hex($f[2]);
+			$best = ['iface' => $f[0], 'net' => long2ip($dest) . '/' . $bits, 'via' => $gw ? long2ip($gw) : null, 'bits' => $bits];
+		}
+	}
+	return $best;
+}
+
 $c = cm_config('db');
 $checks = []; // [status ok|warn|fail, label, detail]
 $add = static function (string $status, string $label, string $detail = '') use (&$checks) {
@@ -54,6 +86,7 @@ if (empty($c['socket'])) {
 	}
 
 	if ($host !== 'localhost') {
+		$route = null;
 		$start = microtime(true);
 		$sock = @fsockopen($ip, $port, $errno, $errstr, 4);
 		$ms = (int)round((microtime(true) - $start) * 1000);
@@ -64,9 +97,30 @@ if (empty($c['socket'])) {
 			$add('fail', 'Network', "$ip refused the connection on port $port. Either MySQL is only listening on 127.0.0.1 "
 				. "(set bind-address = 0.0.0.0 or its LAN IP in my.cnf / 50-server.cnf, then restart MySQL), or a firewall on it is rejecting this web server "
 				. "(allow it, e.g. \"ufw allow from <web server IP> to any port $port\").");
+		} elseif ($errno === 113 || stripos($errstr, 'unreachable') !== false || stripos($errstr, 'no route') !== false) {
+			$route = cm_route_for($ip);
+			$docker = is_file('/.dockerenv') || is_file('/run/.containerenv');
+			$direct = $route && $route['via'] === null && $route['bits'] > 0;
+			if ($docker && $direct) {
+				$add('fail', 'Network', "$ip is unreachable. This site runs in a container, and the container thinks $ip is on its own network "
+					. "{$route['net']} ({$route['iface']}), so it looks for it there instead of going out to your LAN. A Docker network on the host "
+					. "is using an address range that overlaps your LAN. Fix: give that Docker network a different subnet (see README: Troubleshooting).");
+			} elseif ($direct) {
+				$add('fail', 'Network', "$ip is unreachable ({$ms} ms). This machine expects it directly on {$route['net']} via {$route['iface']} but nothing answered. "
+					. "Check the database server is on and on the same network, or that a Docker/VPN interface on this machine isn't claiming that range (ip route).");
+			} else {
+				$add('fail', 'Network', "$ip is unreachable ({$ms} ms, $errstr). A router or a firewall on the database server is rejecting this machine "
+					. "(firewalld rejects this way: firewall-cmd --permanent --add-rich-rule='rule family=ipv4 source address=<web server IP> port port=$port protocol=tcp accept' && firewall-cmd --reload).");
+			}
 		} else {
 			$add('fail', 'Network', "no answer from $ip:$port after {$ms} ms ($errstr). A firewall is dropping this web server's traffic, or the IP is wrong. "
 				. "On the database server allow port $port from this web server, e.g. \"ufw allow from <web server IP> to any port $port\".");
+		}
+
+		$route = $route ?? ($loopback ? null : cm_route_for($ip));
+		if ($route) {
+			$add('ok', 'Route to database', "$ip goes out " . $route['iface'] . ($route['via'] ? ' via gateway ' . $route['via'] : ' directly') . ' (route ' . $route['net'] . ')'
+				. ((is_file('/.dockerenv') || is_file('/run/.containerenv')) ? ', inside a container' : ''));
 		}
 	}
 }
