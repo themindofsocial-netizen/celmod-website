@@ -141,6 +141,11 @@ $byCategory = [];
 foreach ($items as $it) {
 	$byCategory[$it['category']][] = $it;
 }
+// Seasonal shops (Christmas Shop, Halloween Shop, ...) are only synced while they are open: show them first.
+$seasonal = array_values(array_filter(array_keys($byCategory), static fn ($c) => preg_match('/ Shop$/', $c)));
+if ($seasonal) {
+	$byCategory = array_merge(array_intersect_key($byCategory, array_flip($seasonal)), $byCategory);
+}
 $filter = (string)($_GET['c'] ?? '');
 if ($filter !== '' && !isset($byCategory[$filter])) {
 	$filter = '';
@@ -161,6 +166,10 @@ cm_page_start('|CelMod| - Shop');
 
 <?php if (!$db): ?>
 <?php cm_db_offline_notice(); ?>
+<?php endif; ?>
+
+<?php if ($seasonal): ?>
+<p class="notice">The <span class="h"><?= h(implode(' and the ', $seasonal)) ?></span> <?= count($seasonal) > 1 ? 'are' : 'is' ?> open! Seasonal props are only sold for a few days, but once bought they are yours all year.</p>
 <?php endif; ?>
 
 <?php if ($items): ?>

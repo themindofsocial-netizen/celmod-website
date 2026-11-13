@@ -170,3 +170,19 @@ CREATE TABLE IF NOT EXISTS cm_maps (
 	last_played   DATETIME     NULL,
 	PRIMARY KEY (map)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Announcements written in the admin panel; the game server shows them in chat.
+CREATE TABLE IF NOT EXISTS cm_announcements (
+	id              INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	message         VARCHAR(255) NOT NULL,
+	server_id       INT          NULL,
+	repeat_minutes  INT UNSIGNED NOT NULL DEFAULT 0,
+	show_on_join    TINYINT(1)   NOT NULL DEFAULT 0,
+	active          TINYINT(1)   NOT NULL DEFAULT 1,
+	starts_at       DATETIME     NULL,
+	ends_at         DATETIME     NULL,
+	created_by      VARCHAR(20)  NULL,
+	created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (id),
+	KEY idx_active (active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
