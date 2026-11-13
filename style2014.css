@@ -1,33 +1,84 @@
+/*
+ * |CelMod| - A Living Project
+ * The 2014 look (Raleway, gold on the cloudy blue-framed plate, grass floor),
+ * rebuilt so the frame can stretch: images/frame/ holds the original
+ * cmtextbg artwork sliced into side bars, a seamless centre and the bottom cap.
+ */
+
 @font-face {
 	font-family: Pu;
 	font-style: normal;
 	font-weight: normal;
-	src: url('https://raw.githubusercontent.com/rockzehh/celmod-website/refs/heads/main/fonts/Raleway-Regular.ttf');;
+	font-display: swap;
+	src: url('fonts/Raleway-Regular.ttf');
 }
+@font-face {
+	font-family: Pu;
+	font-style: normal;
+	font-weight: bold;
+	font-display: swap;
+	src: url('fonts/Raleway-Bold.ttf');
+}
+@font-face {
+	font-family: Pu;
+	font-style: italic;
+	font-weight: normal;
+	font-display: swap;
+	src: url('fonts/Raleway-Italic.ttf');
+}
+@font-face {
+	font-family: Pu;
+	font-style: italic;
+	font-weight: bold;
+	font-display: swap;
+	src: url('fonts/Raleway-BoldItalic.ttf');
+}
+
+/* ---- Palette (unchanged from 2014) ---- */
+:root {
+	--gold: #FFB200;
+	--gold-hover: #FFCD5B;
+	--green: #71E100;
+	--blue: #9CF;
+	--olive: #AA2;
+	--grass: #2A0;
+	--blood: #F20;
+	--muted: #AA8;
+	--row-a: #333333;
+	--row-b: #444444;
+	--well: rgba(0, 0, 0, 0.28);
+	--well-hover: rgba(255, 255, 200, 0.12);
+	--frame: 677px;
+}
+body.wide {
+	--frame: 940px;
+}
+
 a {
 	text-decoration: none;
 }
 a:hover {
-	color: #FFCD5B;
+	color: var(--gold-hover);
 	transition: color 0.5s;
 }
-.highlight {
-	color: #71E100;
-}
-.h {
-	color: #71E100;
+.highlight, .h {
+	color: var(--green);
 }
 .celColor {
-	color: #9CF;
+	color: var(--blue);
+}
+.headColor {
+	color: var(--blue);
+	font-weight: bold;
 }
 .splitter {
-	color: #AA2;
+	color: var(--olive);
 }
 .grassy {
-	color: #2A0;
+	color: var(--grass);
 }
 .bloody {
-	color: #F20;
+	color: var(--blood);
 }
 .blk {
 	color: #000;
@@ -41,39 +92,396 @@ a:hover {
 .indent {
 	margin-left: 1em;
 }
-#listview {
-text-align: center;
-margin-left: 51px;
-margin-right: 51px;
-height: 20px;
-font-size: 24;
-font-weight: bold;
+.muted {
+	color: var(--muted);
+	font-size: 0.85em;
 }
-#listview a:hover {
-transition: background 0.5s;
-background: rgba(255, 255, 200, 0.2);
+
+body {
+	font-family: Pu, 'Raleway', sans-serif;
+	line-height: 1.35;
+	margin: 0;
+	padding: 8px 0 0;
+	background-color: #222222;
 }
-#listimg {
-height: 30px;
-width: 30px;
-vertical-align:middle;
-border: 1px solid black;
+
+/* ---- Page chrome: logo, nav plate, frame, bottom cap ---- */
+#logo, #navbar, #main, #footer, #sitefoot {
+	width: min(var(--frame), calc(100% - 16px));
+	margin-left: auto;
+	margin-right: auto;
+	box-sizing: border-box;
+}
+#logo {
+	text-align: center;
+}
+#logo img {
+	display: block;
+	margin: 0 auto;
+	max-width: 100%;
+	height: auto;
+	border: 1px solid #000;
+	box-sizing: border-box;
+}
+.plate, #main {
+	background:
+		url(images/frame/left.png) left top repeat-y,
+		url(images/frame/right.png) right top repeat-y,
+		url(images/frame/center.png) center top repeat,
+		#3a3a3a;
+	border: 1px solid #000;
 }
 #main {
-margin-left: auto;
-margin-right: auto;
-background-image: url(https://raw.githubusercontent.com/rockzehh/celmod-website/refs/heads/main/images/cmtextbg.png);
-width: 675px;
-height: 100%;
-border: 1px solid black;
-text-align: center;
-word-wrap: break-word;
+	text-align: center;
+	overflow-wrap: break-word;
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.55);
 }
 #content {
-margin-left:auto;
-margin-right:auto;
-width: 550px;
+	padding: 6px 62px 16px;
 }
-body {
-font-family: Pu;
+#content.left {
+	text-align: left;
+}
+#footer {
+	height: 25px;
+	background:
+		url(images/frame/bottom-left.png) left top no-repeat,
+		url(images/frame/bottom-right.png) right top no-repeat,
+		url(images/frame/bottom.png) left top repeat-x;
+}
+#sitefoot {
+	margin-top: 6px;
+	margin-bottom: 24px;
+	text-align: center;
+	font-size: 0.8em;
+	color: var(--muted);
+	text-shadow: 0 1px 2px #000, 0 0 6px #000;
+}
+
+/* Navigation bar: the same plate as the page, slimmer */
+#navbar {
+	margin-top: 4px;
+	margin-bottom: 4px;
+	padding: 5px 58px 4px;
+	text-align: center;
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+}
+#navbar .nav-links {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 2px 1px;
+}
+#navbar .nav-links a {
+	font-weight: bold;
+	font-size: 0.86em;
+	padding: 1px 5px 2px;
+	border-bottom: 2px solid transparent;
+}
+#navbar .nav-links a.active {
+	color: var(--green);
+	border-bottom-color: var(--green);
+}
+#navbar .nav-status {
+	margin-top: 3px;
+	padding-top: 3px;
+	border-top: 1px solid rgba(0, 0, 0, 0.45);
+	font-size: 0.8em;
+}
+
+/* ---- Content pieces ---- */
+h2 {
+	margin: 14px 0 12px;
+	font-size: 1.6em;
+}
+.title, .section {
+	margin: 18px 0 6px;
+	font-weight: bold;
+}
+.flash {
+	margin: 10px 0;
+	padding: 6px 10px;
+	background: var(--well);
+	border: 1px solid #000;
+}
+.flash.h {
+	border-left: 3px solid var(--green);
+}
+.flash.bloody {
+	border-left: 3px solid var(--blood);
+}
+.notice {
+	padding: 8px;
+	background: var(--well);
+	border: 1px solid #000;
+}
+.panel {
+	background: var(--well);
+	border: 1px solid #000;
+	padding: 8px;
+	margin-bottom: 10px;
+}
+
+/* Home page tiles (the old #listview rows, as a grid) */
+.tiles {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 6px;
+	margin: 6px 0 16px;
+}
+.tile {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 6px 8px;
+	background: var(--well);
+	border: 1px solid #000;
+	font-weight: bold;
+	font-size: 1.08em;
+	text-align: left;
+	transition: background 0.5s, color 0.5s;
+}
+.tile:hover {
+	background: var(--well-hover);
+}
+.tile img, #listimg {
+	width: 30px;
+	height: 30px;
+	vertical-align: middle;
+	border: 1px solid #000;
+	flex: none;
+}
+.tile small {
+	display: block;
+	font-weight: normal;
+	font-size: 0.72em;
+	color: var(--muted);
+}
+.group-title {
+	margin: 14px 0 4px;
+	color: var(--blue);
+	font-weight: bold;
+	letter-spacing: 0.04em;
+}
+
+/* Grids of small buttons: command categories, prop letters, leaderboard tabs */
+.btngrid {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 5px;
+	margin: 8px 0 12px;
+}
+.btngrid a, .btngrid b, .tabs a, .cat a {
+	display: inline-block;
+	padding: 3px 10px;
+	background: var(--well);
+	border: 1px solid #000;
+	font-weight: bold;
+	transition: background 0.5s, color 0.5s;
+}
+.btngrid b {
+	color: #776;
+}
+.btngrid a:hover, .tabs a:hover, .cat a:hover {
+	background: var(--well-hover);
+}
+.btngrid.letters {
+	display: grid;
+	grid-template-columns: repeat(13, 1fr);
+}
+.btngrid.letters a, .btngrid.letters b {
+	padding: 3px 0;
+	text-align: center;
+}
+/* Prop names flow into columns instead of one long list */
+.proplist {
+	columns: 3;
+	column-gap: 12px;
+	column-rule: 1px solid rgba(0, 0, 0, 0.35);
+}
+.tabs a.active, .cat a.open {
+	color: var(--green);
+	background: rgba(0, 0, 0, 0.45);
+}
+.tabs {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 5px;
+}
+.tabs a {
+	margin: 0;
+}
+
+/* Command list categories */
+.cat {
+	margin: 5px 0;
+}
+.cat a {
+	display: block;
+}
+.cmdlist {
+	margin: -5px 0 8px;
+	padding: 2px 10px;
+	background: rgba(0, 0, 0, 0.35);
+	border: 1px solid #000;
+	border-top: none;
+}
+
+/* Tables */
+.cmtable {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0 2px;
+	text-align: left;
+}
+.cmtable th {
+	color: var(--blue);
+	padding: 4px 6px;
+}
+.cmtable td {
+	padding: 4px 6px;
+}
+.cmtable tr:nth-child(even) td {
+	background-color: var(--row-a);
+}
+.cmtable tr:nth-child(odd) td {
+	background-color: var(--row-b);
+}
+.cmtable tr:hover td {
+	background-color: #4d4d44;
+}
+.cmtable .num {
+	text-align: right;
+	white-space: nowrap;
+}
+.changelog {
+	width: 100%;
+	text-align: left;
+}
+
+/* Stat tiles */
+.stat {
+	display: inline-block;
+	width: calc(33.333% - 16px);
+	min-width: 130px;
+	margin: 4px;
+	padding: 6px 0;
+	background: var(--well);
+	border: 1px solid #000;
+	vertical-align: top;
+}
+.stat b {
+	display: block;
+	font-size: 1.5em;
+	color: var(--green);
+}
+
+.cmbutton {
+	font-size: 13px;
+	font-family: Pu, sans-serif;
+	font-weight: bold;
+	color: var(--gold);
+	background-color: #444444;
+	border: 1px solid #000;
+	padding: 2px 10px;
+	cursor: pointer;
+}
+.cmbutton:hover {
+	color: var(--gold-hover);
+	background-color: #555555;
+	transition: color 0.5s;
+}
+.cmbutton[disabled] {
+	color: #777;
+	cursor: default;
+}
+
+.chart {
+	display: block;
+	width: 100%;
+	height: auto;
+	margin: 6px auto;
+	background-color: var(--row-a);
+	border: 1px solid #000;
+}
+.chart g:hover .bar {
+	fill: var(--gold-hover);
+}
+
+#content img {
+	max-width: 100%;
+	height: auto;
+}
+
+/* ---- Phones ---- */
+@media (max-width: 640px) {
+	body {
+		padding-top: 6px;
+	}
+	.plate, #main {
+		background-size: 14px 100px, 14px 100px, auto, auto;
+	}
+	#content {
+		padding: 4px 22px 14px;
+	}
+	#navbar {
+		padding: 4px 18px;
+	}
+	#footer {
+		background-size: 30px 25px, 30px 25px, auto;
+	}
+	.tiles {
+		grid-template-columns: 1fr;
+	}
+	.btngrid.letters {
+		grid-template-columns: repeat(7, 1fr);
+	}
+	.proplist {
+		columns: 2;
+	}
+	.stat {
+		width: calc(50% - 16px);
+		min-width: 0;
+	}
+	h2 {
+		font-size: 1.35em;
+	}
+}
+
+/* Shop */
+.shoptable td {
+	vertical-align: middle;
+}
+.shoptable .usage {
+	font-size: 0.8em;
+	color: var(--blue);
+}
+.shoptable tr.soldout td {
+	opacity: 0.55;
+}
+
+/* Admin: suggestion review */
+.kvbox {
+	width: 100%;
+	box-sizing: border-box;
+	font: 12px/1.4 Consolas, monospace;
+	color: var(--green);
+	background-color: #222222;
+	border: 1px solid #000;
+	tab-size: 4;
+	resize: vertical;
+}
+.kvnote {
+	flex: 1;
+	min-width: 0;
+	font-family: Pu, sans-serif;
+	color: var(--gold);
+	background-color: #222222;
+	border: 1px solid #000;
+	padding: 2px 6px;
+}
+a.cmbutton {
+	display: inline-block;
 }

@@ -1,0 +1,18 @@
+# |CelMod| website (Apache + PHP). See README.md for nginx.
+DirectoryIndex index.php index.html
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+
+	# Old .html links (in-game MOTD URLs, bookmarks) -> the new .php pages
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} ^(.+)\.html$
+	RewriteCond %1.php -f
+	RewriteRule ^(.+)\.html$ $1.php [R=301,L]
+
+	# Never serve internals directly
+	RewriteRule ^(includes|sql)/ - [F,L]
+	RewriteRule ^config(\.sample)?\.php$ - [F,L]
+	RewriteRule ^old/.*\.zip$ - [F,L]
+</IfModule>
