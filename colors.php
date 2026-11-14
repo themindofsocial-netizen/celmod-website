@@ -1,7 +1,4 @@
-<?php require __DIR__ . '/includes/bootstrap.php'; cm_head('|CelMod| - Color List'); ?>
-<?php cm_logo(true); ?>
-<div id="main">
-<div id="content">
+<?php require __DIR__ . '/includes/bootstrap.php'; cm_page_start('|CelMod| - Color List'); ?>
 
 <h2><span class="celColor">|CelMod| Colors</span><br>
 </h2>
@@ -45,8 +42,4 @@ Error - <img src="images/error.gif"><br>
   Land - Colors the object as your land color.<br>
   Random - Colors the object a random color.<br>
 </p>
-</div>
-</div>
-<?php cm_footer_bar(); ?>
-<?php cm_bg_script(); ?>
-</html>
+<?php cm_page_end(); ?>

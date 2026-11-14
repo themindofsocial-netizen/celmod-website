@@ -1,7 +1,4 @@
-<?php require __DIR__ . '/includes/bootstrap.php'; cm_head('|CelMod| - Command List'); ?>
-<?php cm_logo(true); ?>
-<div id="main"> 
-<div id="content">
+<?php require __DIR__ . '/includes/bootstrap.php'; cm_page_start('|CelMod| - Command List'); ?>
 <h2><span class="celColor">|CelMod| Commands</span><br>
 </h2>
 <p>These commands go into the chat. To activate chat press <span class="h">Y</span> on your keyboard.</p>
@@ -144,11 +141,7 @@ crossbow, grenade, rpg, slam&gt;</a><br>
   Main Exceptions: <b>!del = v_remove</b><br>
   <b>!flip|!r|!roll = v_rotate &lt;flip&gt; &lt;r&gt; &lt;roll&gt;</b><br>
   <b>!paint|!color = v_color &lt;r&gt; &lt;g&gt; &lt;b&gt;</b><br></p>
-  </div>
-  </div>
-  <?php cm_footer_bar(); ?>
-  <?php cm_bg_script(); ?>
-
+<?php cm_page_end(<<<'JS'
 <script language="javascript">
 <!--script
 var main = document.getElementById('main');
@@ -196,4 +189,5 @@ function toggleList(num)
 }
 -->
 </script>
-</html>
+JS
+); ?>

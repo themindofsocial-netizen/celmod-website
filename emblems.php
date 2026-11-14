@@ -1,9 +1,6 @@
-<?php require __DIR__ . '/includes/bootstrap.php'; cm_head('|CelMod| - Emblems'); ?>
-<?php cm_logo(true); ?>
-<div id="main">
-<div id="content">
+<?php require __DIR__ . '/includes/bootstrap.php'; cm_page_start('|CelMod| - Emblems'); ?>
 
-<h2><FONT style="COLOR: #99CCFF">|CelMod| Emblems</FONT><br>
+<h2><span class="celColor">|CelMod| Emblems</span><br>
 </h2>
 
 <p><IMG SRC="images/emblems.jpg"></IMG></p>
@@ -27,8 +24,4 @@ The <u>Power Booth</u> is located randomly in the map.<br>
 <br>
 <a href="emblem-editor/"><b>Design your own emblem in the Emblem Editor</b></a><br>
 </p>
-</div>
-</div>
-<?php cm_footer_bar(); ?>
-<?php cm_bg_script(); ?>
-</html>
+<?php cm_page_end(); ?>

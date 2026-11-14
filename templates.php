@@ -1,7 +1,4 @@
-<?php require __DIR__ . '/includes/bootstrap.php'; cm_head('|CelMod| - Template List'); ?>
-<?php cm_logo(true); ?>
-<div id="main">
-<div id="content">
+<?php require __DIR__ . '/includes/bootstrap.php'; cm_page_start('|CelMod| - Template List'); ?>
 
 <h2><span class="celColor">|CelMod| Templates</span><br>
 </h2>
@@ -26,8 +23,4 @@ weps<br>
 woodhouse<br>
 <br>
 </p>
-</div>
-</div>
-<?php cm_footer_bar(); ?>
-<?php cm_bg_script(); ?>
-</html>
+<?php cm_page_end(); ?>

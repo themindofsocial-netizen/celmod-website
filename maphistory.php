@@ -1,7 +1,4 @@
-<?php require __DIR__ . '/includes/bootstrap.php'; cm_head('|CelMod| - Map History'); ?>
-<?php cm_logo(true); ?>
-<div id="main">
-<div id="content">
+<?php require __DIR__ . '/includes/bootstrap.php'; cm_page_start('|CelMod| - Map History'); ?>
 
 <h2><span class="celColor">|CelMod| Map History</span><br>
 </h2>
@@ -12,8 +9,4 @@
 <b>Build Map (COMING SOON)</b><br>
 <b>Cubicle (COMING SOON)</b><br>
 </p>
-</div>
-</div>
-<?php cm_footer_bar(); ?>
-<?php cm_bg_script(); ?>
-</html>
+<?php cm_page_end(); ?>

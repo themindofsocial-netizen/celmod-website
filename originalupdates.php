@@ -1,7 +1,5 @@
-<?php require __DIR__ . '/includes/bootstrap.php'; cm_head('|CelMod| - Original Updates', '', ['wide' => true]); ?>
-<?php cm_logo(); ?>
-<div id="main">
-<div id="content" class="left">
+<?php require __DIR__ . '/includes/bootstrap.php'; cm_page_start('|CelMod| - Original Updates', '', ['wide' => true]); ?>
+<div class="left">
     <div style="text-align:center"><h2>Original <span class="celColor">|CelMod|</span> Updates<br>
 </h2></div>
 <p><span class="headColor">Latest Updates</span><br>
@@ -211,8 +209,4 @@ Chat commands in <span class="highlight">green italics</span>.<br>
 </tr>
 </table>
 </div>
-</div>
-<?php cm_footer_bar(); ?>
-<script type="text/javascript" src="<?= cm_base() ?>scripts/updates.js"></script>
-<?php cm_bg_script(); ?>
-</html>
+<?php cm_page_end("<script type=\"text/javascript\" src=\"" . cm_base() . "scripts/updates.js\"></script>\n"); ?>

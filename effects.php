@@ -1,7 +1,4 @@
-<?php require __DIR__ . '/includes/bootstrap.php'; cm_head('|CelMod| - Effect List'); ?>
-<?php cm_logo(true); ?>
-<div id="main">
-<div id="content">
+<?php require __DIR__ . '/includes/bootstrap.php'; cm_page_start('|CelMod| - Effect List'); ?>
 
 <h2><span class="celColor">|CelMod| Effects</span><br>
 </h2>
@@ -28,8 +25,4 @@ bomb<br>
 <b>Note: Blood, vort, antlion, and bomb may not<br>
 appear unless looped (!effect bomb 1)<b><br>
 </p>
-</div>
-</div>
-<?php cm_footer_bar(); ?>
-<?php cm_bg_script(); ?>
-</html>
+<?php cm_page_end(); ?>

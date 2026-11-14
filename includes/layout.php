@@ -35,20 +35,27 @@ function cm_head(string $title, string $extraHead = '', array $opts = []): void
 {
 	$b = cm_base();
 	$GLOBALS['CM_PAGE_OPTS'] = $opts;
+	$season = cm_current_season();
+	$classes = [!empty($opts['wide']) ? 'wide' : 'classic'];
+	if ($season) {
+		$classes[] = 'season';
+		$classes[] = 'season-' . $season[0];
+	}
 	?>
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#222222">
 
 <title><?= h($title) ?></title>
-<link rel=stylesheet href="<?= $b ?>style2014.css"/>
+<link rel=stylesheet href="<?= $b ?>style2014.css?v=<?= (int)@filemtime(CM_ROOT . '/style2014.css') ?>"/>
 <link rel="shortcut icon" type="image/png" href="<?= $b ?>favicon.ico"/>
 <meta property="og:title" content="<?= h($title) ?>">
 <meta property="og:image" content="<?= $b ?>images/logo-og.png">
 <?= $extraHead ?>
-</head><body class="<?= !empty($opts['wide']) ? 'wide' : 'classic' ?>" alink="#FFB200" bgcolor="#222222" vlink="#FFB200" link="#FFB200" text="#FFB200" background="<?= $b ?>images/grassfloor002a.png">
+</head><body class="<?= h(implode(' ', $classes)) ?>"<?= $season ? ' data-season="' . h($season[0]) . '"' : '' ?> alink="#FFB200" bgcolor="#222222" vlink="#FFB200" link="#FFB200" text="#FFB200" background="<?= $b ?>images/grassfloor002a.png">
 <?php
 }
 
@@ -56,7 +63,9 @@ function cm_head(string $title, string $extraHead = '', array $opts = []): void
 function cm_logo(bool $centered = true): void
 {
 	$b = cm_base();
-	echo '<div id="logo"><a href="' . ($b ?: './') . '"><img src="' . $b . 'images/logo.png" width="675" height="60" alt="|CelMod| - A Living Project"></a></div>' . "\n";
+	$season = cm_current_season();
+	echo '<div id="logo"><a href="' . ($b ?: './') . '"><img src="' . $b . 'images/logo.png" width="675" height="60" alt="|CelMod| - A Living Project"></a>'
+		. ($season ? '<span class="season-badge">' . h($season[1]['greeting']) . '</span>' : '') . '</div>' . "\n";
 	cm_navbar();
 }
 
@@ -97,7 +106,16 @@ function cm_navbar(): void
 		echo '<a href="' . $b . 'login.php?return=' . urlencode($here) . '"><b>Sign in through Steam</b></a>';
 	}
 
-	echo "</div>\n</div>\n";
+	echo "</div>\n";
+
+	// The holiday banner, while a seasonal theme is on.
+	$season = cm_current_season();
+	if ($season) {
+		echo '<div class="season-banner"><b>' . h($season[1]['greeting']) . '</b> ' . h($season[1]['line'])
+			. ' <a href="' . $b . 'shop.php?c=' . urlencode($season[1]['shop']) . '"><b>Visit the ' . h($season[1]['shop']) . '</b></a></div>' . "\n";
+	}
+
+	echo "</div>\n";
 }
 
 function cm_footer_bar(): void
@@ -113,6 +131,10 @@ function cm_footer_bar(): void
 function cm_bg_script(): void
 {
 	echo '<script type="text/javascript" src="' . cm_base() . 'scripts/dynamicbg.js"></script>' . "\n";
+	// Falling snow, bats, confetti or clocks while a seasonal theme is on.
+	if (cm_current_season()) {
+		echo '<script type="text/javascript" src="' . cm_base() . 'scripts/season.js?v=' . (int)@filemtime(CM_ROOT . '/scripts/season.js') . '"></script>' . "\n";
+	}
 }
 
 /**

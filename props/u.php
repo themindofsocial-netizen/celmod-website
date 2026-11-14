@@ -1,7 +1,4 @@
-<?php require __DIR__ . '/../includes/bootstrap.php'; cm_head('|CelMod| - Prop List - U'); ?>
-<?php cm_logo(true); ?>
-<div id="main">
-<div id="content">
+<?php require __DIR__ . '/../includes/bootstrap.php'; cm_page_start('|CelMod| - Prop List - U'); ?>
 
 <h2><span class="celColor">|CelMod| Props - U</span><br>
 </h2>
@@ -43,8 +40,4 @@
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>
   </p>
-  </div>
-</div>
-<?php cm_footer_bar(); ?>
-<?php cm_bg_script(); ?>
-</html>
+<?php cm_page_end(); ?>

@@ -21,6 +21,13 @@ CREATE TABLE IF NOT EXISTS cm_players (
 	cels_spawned     INT UNSIGNED NOT NULL DEFAULT 0,
 	effects_spawned  INT UNSIGNED NOT NULL DEFAULT 0,
 	entities_removed INT UNSIGNED NOT NULL DEFAULT 0,
+	-- Leaderboard stats reported by the server's plugins (celmod-database adds them to older tables).
+	land_bans        INT UNSIGNED NOT NULL DEFAULT 0, -- times banned from someone's land ("Most Hated")
+	kills            INT UNSIGNED NOT NULL DEFAULT 0,
+	deaths           INT UNSIGNED NOT NULL DEFAULT 0,
+	enemy_kills      INT UNSIGNED NOT NULL DEFAULT 0, -- dungeon enemies (spawn pads)
+	presents_given   INT UNSIGNED NOT NULL DEFAULT 0,
+	emblems_owned    INT UNSIGNED NOT NULL DEFAULT 0,
 	is_online        TINYINT(1)   NOT NULL DEFAULT 0,
 	first_seen       DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	last_seen        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -185,4 +192,24 @@ CREATE TABLE IF NOT EXISTS cm_announcements (
 	created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (id),
 	KEY idx_active (active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Updates written in the admin panel (Updates tab), shown on updates.php with the older ones.
+CREATE TABLE IF NOT EXISTS cm_updates (
+	id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	posted_on  DATE         NOT NULL,
+	body       TEXT         NOT NULL,
+	published  TINYINT(1)   NOT NULL DEFAULT 1,
+	created_by VARCHAR(20)  NULL,
+	created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (id),
+	KEY idx_posted (posted_on)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Website settings changed in the admin panel, e.g. season = auto / none / halloween / christmas / newyears / clockday.
+CREATE TABLE IF NOT EXISTS cm_site_settings (
+	name       VARCHAR(64)  NOT NULL,
+	value      VARCHAR(255) NOT NULL DEFAULT '',
+	updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

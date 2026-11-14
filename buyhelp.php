@@ -1,9 +1,6 @@
-<?php require __DIR__ . '/includes/bootstrap.php'; cm_head('|CelMod| - Bank Help'); ?>
-<?php cm_logo(true); ?>
-<div id="main">
-<div id="content">
+<?php require __DIR__ . '/includes/bootstrap.php'; cm_page_start('|CelMod| - Bank Help'); ?>
 
-<h2><FONT style="COLOR: #99CCFF">|CelMod| The Bank Update</FONT><br>
+<h2><span class="celColor">|CelMod| The Bank Update</span><br>
 </h2>
 <p><b>:Making Money:</b></p>
 <p> The currency of |CelMod| is referred to as cleers, or in short, <b>CL</b>.<br>
@@ -36,8 +33,4 @@
 	There is much more to come!
 	</p>
 </p>
-</div>
-</div>
-<?php cm_footer_bar(); ?>
-<?php cm_bg_script(); ?>
-</html>
+<?php cm_page_end(); ?>

@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
+require __DIR__ . '/includes/updates.php';
 
 $server = cm_db() ? cm_server_status() : null;
 $address = cm_config('server')['address'];
@@ -22,13 +23,21 @@ cm_page_start('|CelMod| - A Living Project');
 <p>Choose a page to go to:</p>
 <?php endif; ?>
 
+<?php $latest = cm_all_updates()[0] ?? null; if ($latest): ?>
+<div class="panel" style="text-align:left">
+	<b class="celColor">Latest update</b> <span class="muted"><?= h(date('F j, Y', strtotime($latest['date']))) ?></span><br>
+	<?= $latest['html'] ?><br>
+	<a href="updates.php"><b>All updates</b></a>
+</div>
+<?php endif; ?>
+
 <div class="group-title">- On The Server -</div>
 <div class="tiles">
 <?php
 cm_tile('live.php', 'icn_updates.png', 'Live Server', 'Who is building right now');
 cm_tile('shop.php', 'icn_shop.png', 'The Shop', 'Unlock commands and props');
 cm_tile('statistics.php', 'icn_orgupdates.png', 'Statistics', 'Players, props and maps');
-cm_tile('leaderboard.php', 'icn_props.png', 'Leaderboards', 'Richest and busiest builders');
+cm_tile('leaderboard.php', 'icn_props.png', 'Leaderboards', 'Richest, busiest and most hated');
 ?>
 </div>
 

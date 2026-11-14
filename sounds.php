@@ -1,7 +1,4 @@
-<?php require __DIR__ . '/includes/bootstrap.php'; cm_head('|CelMod| - Sound List'); ?>
-<?php cm_logo(true); ?>
-<div id="main">
-<div id="content">
+<?php require __DIR__ . '/includes/bootstrap.php'; cm_page_start('|CelMod| - Sound List'); ?>
 
 <h2><span class="celColor">|CelMod| Sounds</span><br>
 </h2>
@@ -182,8 +179,4 @@ warning1<br>
 warning2<br>
 wound<br>
 yes</p>
-</div>
-</div>
-<?php cm_footer_bar(); ?>
-<?php cm_bg_script(); ?>
-</html>
+<?php cm_page_end(); ?>

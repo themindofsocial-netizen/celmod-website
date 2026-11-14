@@ -151,74 +151,117 @@ if ($filter !== '' && !isset($byCategory[$filter])) {
 	$filter = '';
 }
 
-cm_page_start('|CelMod| - Shop');
+/** A short label for an item's kind. */
+function cm_shop_kind(string $kind): string
+{
+	return ['prop' => 'Prop', 'model' => 'Player Model', 'emblem' => 'Emblem', 'hat' => 'Hat', 'weapon' => 'Celwep'][$kind] ?? 'Command';
+}
+
+$season = cm_current_season();
+$seasonShop = $season ? $season[1]['shop'] : '';
+$counts = array_map('count', $byCategory);
+
+cm_page_start('|CelMod| - Shop', '', ['wide' => true]);
 ?>
 
 <h2><span class="celColor">|CelMod| Shop</span><br>
 </h2>
-<p>Buy in game with <span class="h">!buy</span> (<span class="h">name</span>), list everything with <span class="h">!catalog</span>,<br>or buy right here on the website.</p>
-<?php if ($user): ?>
-<p>Your balance: <span class="h"><b><?= h(cm_cl($spendable)) ?></b></span><?php if ($reserved): ?> <span class="muted">(<?= h(cm_cl($reserved)) ?> reserved for pending orders)</span><?php endif; ?><br>
-<span class="muted">Balances update every few seconds while you are on the server.</span></p>
-<?php else: ?>
-<p><a href="login.php?return=shop.php"><b>Sign in through Steam</b></a> to buy from the website.</p>
-<?php endif; ?>
+<p>Buy in game with <span class="h">!buy name</span> (see everything with <span class="h">!catalog</span>), or right here.<br>
+<span class="muted">Web orders are delivered in game within a few seconds if you are on the server, or the next time you join.</span></p>
 
 <?php if (!$db): ?>
 <?php cm_db_offline_notice(); ?>
 <?php endif; ?>
 
+<div class="shop-top">
+<?php if ($user): ?>
+	<span class="stat"><b><?= h(cm_cl($spendable)) ?></b>Ready to spend<?php if ($reserved): ?><br><span class="muted"><?= h(cm_cl($reserved)) ?> held for orders</span><?php endif; ?></span>
+	<span class="stat"><b><?= count(array_filter($owned, static fn ($v) => $v === true)) ?></b>Things you own here</span>
+<?php else: ?>
+	<span class="stat"><b><a href="login.php?return=shop.php">Sign in through Steam</a></b>to buy from the website</span>
+<?php endif; ?>
+	<span class="stat"><b><?= count($items) ?></b>For sale right now</span>
+</div>
+
 <?php if ($seasonal): ?>
-<p class="notice">The <span class="h"><?= h(implode(' and the ', $seasonal)) ?></span> <?= count($seasonal) > 1 ? 'are' : 'is' ?> open! Seasonal props are only sold for a few days, but once bought they are yours all year.</p>
+<p class="season-callout">The <span class="h"><?= h(implode(' and the ', $seasonal)) ?></span> <?= count($seasonal) > 1 ? 'are' : 'is' ?> open<?php
+	if ($season && in_array($seasonShop, $seasonal, true) && cm_season_in_dates($season[1])):
+		$left = cm_season_ends($season[1]) - time();
+		echo ' for <b>' . h($left > 86400 ? ceil($left / 86400) . ' more days' : 'less than a day') . '</b>';
+	endif; ?>! Seasonal items are only sold for a few days, but once bought they are yours all year.</p>
+<?php elseif ($db): $next = cm_upcoming_seasons()[0] ?? null; ?>
+<?php if ($next): ?><p class="muted">Next seasonal shop: the <b><?= h($next[1]['shop']) ?></b>, opening <?= h(date('F j', $next[2])) ?>.</p><?php endif; ?>
 <?php endif; ?>
 
 <?php if ($items): ?>
 <div class="tabs">
-	<a href="shop.php" class="<?= $filter === '' ? 'active' : '' ?>">Everything</a>
+	<a href="shop.php" class="<?= $filter === '' ? 'active' : '' ?>">Everything <span class="count"><?= count($items) ?></span></a>
 <?php foreach (array_keys($byCategory) as $cat): ?>
-	<a href="shop.php?c=<?= h(urlencode($cat)) ?>" class="<?= $filter === $cat ? 'active' : '' ?>"><?= h($cat) ?></a>
+	<a href="shop.php?c=<?= h(urlencode($cat)) ?>" class="<?= $filter === $cat ? 'active' : '' ?>"><?= h($cat) ?> <span class="count"><?= (int)$counts[$cat] ?></span></a>
 <?php endforeach; ?>
 </div>
 
+<div class="shop-tools">
+	<input type="search" id="shop-search" placeholder="Search the shop..." aria-label="Search the shop">
+	<select id="shop-sort" aria-label="Sort">
+		<option value="">Shop order</option>
+		<option value="price-asc">Cheapest first</option>
+		<option value="price-desc">Priciest first</option>
+		<option value="name">A to Z</option>
+	</select>
+<?php if ($user): ?>
+	<label class="muted"><input type="checkbox" id="shop-afford"> Only what I can afford</label>
+	<label class="muted"><input type="checkbox" id="shop-hide-owned"> Hide what I own</label>
+<?php endif; ?>
+</div>
+<p class="notice shop-empty" id="shop-empty">Nothing matches that search.</p>
+
 <?php foreach ($byCategory as $category => $list): if ($filter !== '' && $filter !== $category) continue; ?>
+<div class="shop-section">
 <p class="title">- <?= h($category) ?> -</p>
-<table class="cmtable shoptable">
-<?php foreach ($list as $it):
+<div class="shop-grid">
+<?php foreach ($list as $n => $it):
 	$state = $owned[$it['item']] ?? false;
 	$left = cm_shop_available($it, $pendingByItem);
 	$repeat = (bool)$it['repeatable'];
+	$price = (int)$it['price'];
+	$afford = $user && $spendable >= $price;
+	$isOwned = $state === true && !$repeat;
+	$classes = ['shop-card'];
+	if ($isOwned) $classes[] = 'owned';
+	if ($left === 0 && $state !== true) $classes[] = 'soldout';
+	if (in_array($category, $seasonal, true)) $classes[] = 'seasonal';
 ?>
-<tr class="<?= $left === 0 && $state !== true ? 'soldout' : '' ?>">
-	<td>
-		<b><?= h($it['display_name']) ?></b> <span class="muted">!buy <?= h($it['item']) ?></span><br>
-		<span class="usage"><?= h(cm_shop_usage($it)) ?><?= $repeat ? ' - can be bought more than once' : '' ?></span>
-		<?php if ($it['description'] !== ''): ?><br><span class="muted"><?= h($it['description']) ?></span><?php endif; ?>
-	</td>
-	<td class="num">
-		<b><?= h(cm_cl($it['price'])) ?></b>
-		<?php if ($left !== null): ?><br><span class="<?= $left === 0 ? 'bloody' : ($left <= 5 ? 'splitter' : 'muted') ?>"><?= $left === 0 ? 'Sold out' : $left . ' left' ?></span><?php endif; ?>
-	</td>
-	<td class="num" style="width: 120px;">
-	<?php if ($state === true && !$repeat): ?>
-		<span class="grassy"><b>Owned</b></span>
-	<?php elseif ($state === 'pending' || isset($owned[$it['item'] . '#pending'])): ?>
-		<span class="highlight">On the way</span>
-	<?php elseif ($left === 0): ?>
-		<span class="muted">Sold out</span>
-	<?php elseif ($user): ?>
-		<form method="post" style="margin:0" onsubmit="return confirm('Buy <?= h(addslashes($it['display_name'])) ?> for <?= h(cm_cl($it['price'])) ?>?');">
-			<input type="hidden" name="csrf" value="<?= h(cm_csrf_token()) ?>">
-			<input type="hidden" name="action" value="buy">
-			<input type="hidden" name="item" value="<?= h($it['item']) ?>">
-			<input type="hidden" name="c" value="<?= h($filter) ?>">
-			<button class="cmbutton" <?= $spendable < (int)$it['price'] ? 'disabled title="Not enough CL"' : '' ?>><?= $state === true ? 'Buy another' : 'Buy' ?></button>
-		</form>
-		<?php if ($state === true): ?><span class="muted">You own 1+</span><?php endif; ?>
-	<?php endif; ?>
-	</td>
-</tr>
+	<div class="<?= implode(' ', $classes) ?>" data-name="<?= h(mb_strtolower($it['display_name'] . ' ' . $it['item'] . ' ' . $it['description'])) ?>" data-price="<?= $price ?>" data-order="<?= $n ?>" data-afford="<?= $afford ? 1 : 0 ?>" data-owned="<?= $isOwned ? 1 : 0 ?>">
+		<span class="name"><?= h($it['display_name']) ?></span>
+		<span class="price<?= $user && !$afford && !$isOwned ? ' short' : '' ?>" title="<?= h(number_format($price)) ?> CL"><?= h(cm_cl($price)) ?></span>
+		<span><span class="pill"><?= h(cm_shop_kind((string)$it['kind'])) ?></span><?php if ($repeat): ?> <span class="pill gold" title="Can be bought more than once">Stacks</span><?php endif; ?><?php if ($left !== null && $left > 0): ?> <span class="pill <?= $left <= 5 ? 'red' : 'green' ?>"><?= $left <= 5 ? 'Only ' . $left : $left ?> left</span><?php endif; ?></span>
+		<span class="usage"><?= h(cm_shop_usage($it)) ?></span>
+		<?php if ($it['description'] !== ''): ?><span class="desc"><?= h($it['description']) ?></span><?php endif; ?>
+		<div class="buy">
+			<span class="cmd">!buy <?= h($it['item']) ?></span>
+		<?php if ($isOwned): ?>
+			<span class="grassy"><b>Yours</b></span>
+		<?php elseif ($state === 'pending' || isset($owned[$it['item'] . '#pending'])): ?>
+			<span class="highlight"><b>On the way</b></span>
+		<?php elseif ($left === 0): ?>
+			<span class="bloody"><b>Sold out</b></span>
+		<?php elseif ($user): ?>
+			<form method="post" class="buyform">
+				<input type="hidden" name="csrf" value="<?= h(cm_csrf_token()) ?>">
+				<input type="hidden" name="action" value="buy">
+				<input type="hidden" name="item" value="<?= h($it['item']) ?>">
+				<input type="hidden" name="c" value="<?= h($filter) ?>">
+				<button class="cmbutton<?= $afford ? ' go' : '' ?>" data-confirm="Buy for <?= h(cm_cl($price)) ?>?" <?= $afford ? '' : 'disabled title="You need ' . h(cm_cl($price - $spendable)) . ' more"' ?>><?= $state === true ? 'Buy another' : 'Buy' ?></button>
+			</form>
+		<?php else: ?>
+			<a href="login.php?return=shop.php" class="muted">Sign in to buy</a>
+		<?php endif; ?>
+		</div>
+	</div>
 <?php endforeach; ?>
-</table>
+</div>
+</div>
 <?php endforeach; ?>
 <?php elseif ($db): ?>
 <p class="notice">The shop is empty right now. It fills in as soon as the game server is online.</p>
@@ -227,16 +270,17 @@ cm_page_start('|CelMod| - Shop');
 <?php if ($orders): ?>
 <p class="title">:Your Web Orders:</p>
 <table class="cmtable">
-<tr><th>Item</th><th class="num">Price</th><th>Status</th><th></th></tr>
+<tr><th>Item</th><th class="num">Price</th><th>Status</th><th>Placed</th><th></th></tr>
 <?php foreach ($orders as $o): ?>
 <tr>
 	<td><span class="h"><?= h($o['display_name'] ?? $o['item']) ?></span></td>
 	<td class="num"><?= h(cm_cl($o['price'])) ?></td>
 	<td><?php
 		$cls = ['completed' => 'grassy', 'failed' => 'bloody', 'cancelled' => 'muted'][$o['status']] ?? 'highlight';
-		echo '<span class="' . $cls . '">' . h(ucfirst($o['status'])) . '</span>';
+		echo '<span class="' . $cls . '"><b>' . h(ucfirst($o['status'])) . '</b></span>';
 		if ($o['message'] !== '') echo '<br><span class="muted">' . h($o['message']) . '</span>';
 	?></td>
+	<td><span class="muted"><?= h(cm_ago($o['created_at'])) ?></span></td>
 	<td class="num"><?php if ($o['status'] === 'pending'): ?>
 		<form method="post" style="margin:0">
 			<input type="hidden" name="csrf" value="<?= h(cm_csrf_token()) ?>">
@@ -250,6 +294,5 @@ cm_page_start('|CelMod| - Shop');
 <?php endforeach; ?>
 </table>
 <?php endif; ?>
-<br>
-<a href="buyhelp.php"><b>Bank Help</b></a><br>
-<?php cm_page_end(); ?>
+<p><a href="buyhelp.php"><b>Bank Help</b></a> <span class="splitter">|</span> <a href="player.php"><b>Your Profile</b></a></p>
+<?php cm_page_end('<script type="text/javascript" src="' . cm_base() . 'scripts/shop.js?v=' . (int)@filemtime(CM_ROOT . '/scripts/shop.js') . '"></script>' . "\n"); ?>

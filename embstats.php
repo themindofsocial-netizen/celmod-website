@@ -1,7 +1,4 @@
-<?php require __DIR__ . '/includes/bootstrap.php'; cm_head('|CelMod| - A Living Project'); ?>
-<?php cm_logo(true); ?>
-<div id="main">
-<div id="content">
+<?php require __DIR__ . '/includes/bootstrap.php'; cm_page_start('|CelMod| - A Living Project'); ?>
 
 <h2><span class="celColor">|CelMod| Statistics: Emblems</span><br>
 </h2>
@@ -67,8 +64,4 @@ Green: <span class='highlight'>112</span><br>
 Dark-blue: <span class='highlight'>118</span><br>
 Pink: <span class='highlight'>147</span><br>
 </p>
-</div>
-</div>
-<?php cm_footer_bar(); ?>
-<?php cm_bg_script(); ?>
-</html>
+<?php cm_page_end(); ?>

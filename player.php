@@ -34,6 +34,16 @@ cm_page_start('|CelMod| - ' . ($player ? $player['name'] : 'Player'));
 	<span class="stat"><b><?= number_format((int)$player['props_spawned']) ?></b>Props Spawned</span>
 	<span class="stat"><b><?= number_format((int)$player['cels_spawned']) ?></b>Cels Spawned</span>
 	<span class="stat"><b><?= number_format((int)$player['effects_spawned']) ?></b>Effects Spawned</span>
+<?php if (isset($player['kills'])): ?>
+	<br>
+	<span class="stat"><b><?= number_format((int)$player['kills']) ?></b>Kills (<?= h(number_format((int)$player['kills'] / max(1, (int)$player['deaths']), 2)) ?> K/D)</span>
+	<span class="stat"><b><?= number_format((int)$player['enemy_kills']) ?></b>Enemies Killed</span>
+	<span class="stat"><b><?= number_format((int)$player['emblems_owned']) ?></b>Emblems Owned</span>
+	<br>
+	<span class="stat"><b><?= number_format((int)$player['land_bans']) ?></b>Times Land-Banned</span>
+	<span class="stat"><b><?= number_format((int)$player['presents_given']) ?></b>Presents Given</span>
+	<span class="stat"><b><?= number_format((int)$player['deaths']) ?></b>Deaths</span>
+<?php endif; ?>
 </p>
 <p>First joined: <span class="highlight"><?= h(date('F j, Y', strtotime($player['first_seen']))) ?></span></p>
 

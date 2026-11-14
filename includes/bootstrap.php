@@ -25,4 +25,5 @@ if (session_status() === PHP_SESSION_NONE) {
 require __DIR__ . '/helpers.php';
 require __DIR__ . '/db.php';
 require __DIR__ . '/auth.php';
+require __DIR__ . '/season.php';
 require __DIR__ . '/layout.php';
