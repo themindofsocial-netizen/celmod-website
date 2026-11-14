@@ -114,7 +114,7 @@ cm_page_start('|CelMod| - Admin', '', ['wide' => true]);
 	$announcements = $db ? cm_rows('SELECT a.*, p.name FROM cm_announcements a LEFT JOIN cm_players p ON p.steamid64 = a.created_by ORDER BY a.active DESC, a.id DESC LIMIT 100') : [];
 	$servers = $db ? cm_rows('SELECT server_id, hostname FROM cm_servers ORDER BY server_id') : [];
 ?>
-<p class="notice">Announcements show in chat on the game server as <span class="h">|CelMod| Announcement: ...</span>
+<p class="notice">Announcements show in chat on the game server as <span class="h">|CelMod| your message</span>
 within about 30 seconds. A new one is shown to everyone once; set <span class="h">Repeat</span> to show it again every few
 minutes, and <span class="h">Show on join</span> to show it to players as they join. Color tags such as
 <span class="h">{green}</span> and <span class="h">{default}</span> work. Times use the database server's clock.</p>
