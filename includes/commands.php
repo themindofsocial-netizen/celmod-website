@@ -67,6 +67,7 @@ return [
 		[['sound'], '<sound name>', 'Spawns a sound cel that plays a sound when used.'],
 		[['spawnpoint'], '', 'Spawns a spawn point in your land: anyone who dies in your land respawns on it.'],
 		[['teleport'], '', 'Spawns a teleport pad. Use it twice: the first pad sends players to the second.'],
+		[['text'], '<words> (^ in front for small text)', 'Writes words in the world out of text screens where you aim: !text <words> (^ in front for small text).'],
 		[['wep'], '<weapon>', 'Creates a weapon bit that will give a weapon when the player touches it.'],
 	],
 	'Land' => [
@@ -147,9 +148,6 @@ return [
 		[['reportbug'], '<what happened>', 'Reports a bug or glitch to the admins: !reportbug <what happened>.'],
 		[['rules'], '', 'Shows the server\'s welcome page and rules.'],
 		[['updates', 'updatelist'], '', 'Displays the update list.'],
-	],
-	'Other' => [
-		[['text'], '', 'Writes words in the world out of text screens where you aim: !text <words> (^ in front for small text).'],
 	],
 	'Admin' => [
 		[['auction'], '<kind> <item> <starting bid> <minutes>', 'Auctions an emblem, hat or weapon above the Guess Booth, or cancels the auction.'],
