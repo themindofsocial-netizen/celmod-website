@@ -7,10 +7,48 @@
  * scratch, so what an admin copies to the server can only ever be one well-formed emblem.
  */
 
-/** The file the server's emblems are read from (read only). */
+/** The copy of collectibles.txt shipped with the site (or the server's own file, when config.php points at it). */
 function cm_collectibles_file(): string
 {
 	return cm_config('collectibles_file') ?: CM_ROOT . '/emblem-editor/collectibles.txt';
+}
+
+/**
+ * The game server's collectibles.txt, newest first from:
+ *   1. collectibles_file in config.php (the server's own file, when the site runs on the same machine);
+ *   2. the copy celmod-database sends to cm_collectibles every map when it has changed;
+ *   3. the copy shipped in emblem-editor/collectibles.txt.
+ * Returns ['text' => ..., 'source' => 'file'|'server'|'copy', 'updated' => unix time], or null.
+ */
+function cm_collectibles(): ?array
+{
+	static $found = false;
+	if ($found !== false) {
+		return $found;
+	}
+
+	$configured = (string)cm_config('collectibles_file');
+	if ($configured !== '' && is_readable($configured) && ($text = @file_get_contents($configured)) !== false) {
+		return $found = ['text' => $text, 'source' => 'file', 'updated' => (int)filemtime($configured)];
+	}
+
+	if (cm_db()) {
+		try {
+			$row = cm_db()->query('SELECT content, UNIX_TIMESTAMP(updated_at) AS t FROM cm_collectibles ORDER BY updated_at DESC LIMIT 1')->fetch(PDO::FETCH_ASSOC);
+			if ($row && $row['content'] !== '') {
+				return $found = ['text' => $row['content'], 'source' => 'server', 'updated' => (int)$row['t']];
+			}
+		} catch (Throwable $e) {
+			// The game server hasn't created the table yet.
+		}
+	}
+
+	$copy = CM_ROOT . '/emblem-editor/collectibles.txt';
+	if (is_readable($copy) && ($text = @file_get_contents($copy)) !== false) {
+		return $found = ['text' => $text, 'source' => 'copy', 'updated' => (int)filemtime($copy)];
+	}
+
+	return $found = null;
 }
 
 /**
@@ -76,7 +114,7 @@ function cm_server_emblem_ids(): array
 		return $ids;
 	}
 	$ids = [];
-	$text = @file_get_contents(cm_collectibles_file());
+	$text = cm_collectibles()['text'] ?? false;
 	if ($text === false) {
 		return $ids;
 	}

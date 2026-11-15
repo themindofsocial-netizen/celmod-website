@@ -10,7 +10,7 @@
  * collectibles.txt from here.
  */
 require __DIR__ . '/../includes/bootstrap.php';
-require __DIR__ . '/../includes/emblems.php';
+require_once __DIR__ . '/../includes/emblems.php';
 
 const CM_SUGGEST_MAX_PENDING = 3;   // open suggestions per player
 const CM_SUGGEST_MAX_PER_DAY = 10;

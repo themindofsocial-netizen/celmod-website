@@ -1,15 +1,15 @@
 <?php
 /*
- * The emblem list the game server uses, for the Emblem Editor.
- * Reads `collectibles_file` from config.php (point it at the server's
- * addons/sourcemod/data/celmod/collectibles.txt if the site runs on the same
- * machine), otherwise the copy shipped in emblem-editor/collectibles.txt.
+ * The emblem list the game server uses, for the Emblem Editor: the server's collectibles.txt
+ * (see cm_collectibles(): config.php's collectibles_file, the copy the game server sends to the
+ * database every map, or the copy shipped in emblem-editor/collectibles.txt).
  */
 require __DIR__ . '/../includes/bootstrap.php';
+require_once __DIR__ . '/../includes/emblems.php';
 
-$file = cm_config('collectibles_file') ?: CM_ROOT . '/emblem-editor/collectibles.txt';
+$list = cm_collectibles();
 
-if (!is_file($file) || !is_readable($file)) {
+if ($list === null) {
 	http_response_code(404);
 	header('Content-Type: text/plain; charset=utf-8');
 	echo 'No emblem list found.';
@@ -18,5 +18,6 @@ if (!is_file($file) || !is_readable($file)) {
 
 header('Content-Type: text/plain; charset=utf-8');
 header('Cache-Control: public, max-age=300');
-header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($file)) . ' GMT');
-readfile($file);
+header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $list['updated']) . ' GMT');
+header('X-CelMod-Source: ' . $list['source']);
+echo $list['text'];

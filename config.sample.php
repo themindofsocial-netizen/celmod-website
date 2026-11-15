@@ -35,9 +35,10 @@ return [
 	// Seconds after the last heartbeat before the server is shown as offline.
 	'offline_after' => 90,
 
-	// Emblem Editor: path to the game server's collectibles.txt, if this site runs
-	// on the same machine, so the editor always shows the live emblems.
-	// Leave empty to use the copy in emblem-editor/collectibles.txt.
+	// The emblem list (admin panel, Emblem Editor, suggestions) comes from the game server:
+	// celmod-database sends its collectibles.txt to the database whenever it changes.
+	// Only set this to read the server's file directly (when the site runs on the same machine).
+	// Until the server has sent it, the copy in emblem-editor/collectibles.txt is used.
 	'collectibles_file' => '',
 
 	// SteamID64s that can see the admin order log on /admin.php

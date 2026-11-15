@@ -476,8 +476,13 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>), and th
 </div>
 
 <?php if (!$emblems): ?>
-<p class="flash bloody">The emblem list couldn't be read from <span class="h">collectibles.txt</span> (see collectibles_file in config.php).</p>
-<?php else: ?>
+<p class="flash bloody">The emblem list couldn't be read: the game server hasn't sent its collectibles.txt yet, and there's no copy in emblem-editor/collectibles.txt.</p>
+<?php else: $src = cm_collectibles(); ?>
+<p class="muted" style="margin:10px 0 0">Emblem list: <?= [
+	'file'   => 'the game server\'s collectibles.txt (collectibles_file in config.php)',
+	'server' => 'sent by the game server',
+	'copy'   => '<span class="bloody">the copy saved with the website</span> (the game server hasn\'t sent its own yet: it does when celmod-database connects)',
+][$src['source']] ?>, updated <?= h(cm_ago(date('Y-m-d H:i:s', $src['updated']))) ?>.</p>
 <form method="post" id="droppool">
 	<input type="hidden" name="csrf" value="<?= h(cm_csrf_token()) ?>">
 	<div class="drop-tools">

@@ -239,3 +239,13 @@ CREATE TABLE IF NOT EXISTS cm_drop_schedule (
 	PRIMARY KEY (id),
 	KEY idx_due (active, run_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- The game server's collectibles.txt, sent by celmod-database whenever it changes, so the website
+-- (Emblem Drops tab, Emblem Editor, suggestions) always knows the server's emblems.
+CREATE TABLE IF NOT EXISTS cm_collectibles (
+	server_id   INT        NOT NULL,
+	content     MEDIUMTEXT NOT NULL,
+	file_hash   INT        NOT NULL DEFAULT 0,
+	updated_at  DATETIME   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (server_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

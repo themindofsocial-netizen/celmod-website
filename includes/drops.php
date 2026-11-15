@@ -22,7 +22,7 @@ const CM_RARITIES = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
  */
 function cm_drop_emblems(): array
 {
-	$text = @file_get_contents(cm_collectibles_file());
+	$text = cm_collectibles()['text'] ?? false;
 	if ($text === false) {
 		return [];
 	}
