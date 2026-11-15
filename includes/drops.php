@@ -5,6 +5,9 @@
  * cm_drop_pool    an admin's choice of whether an emblem can drop, overriding collectibles.txt.
  *                 Only emblems an admin changed have a row; the rest keep the server's own setting.
  * cm_drop_schedule drops to start at a set time, once or every few minutes.
+ * cm_site_settings "gift_list": the emblems the one-time free emblem in a player's build is picked from
+ *                 (comma separated ids), in place of the server's cm_emblem_gift_list. Empty = the server's list,
+ *                 which the server reports as "gift_list_default".
  *
  * celmod-database on the game server reads both about every 30 seconds and applies them.
  */
@@ -81,4 +84,18 @@ function cm_drop_swatch(string $color): string
 		return '';
 	}
 	return sprintf('#%02x%02x%02x', ...array_map(static fn ($n) => max(0, min(255, (int)$n)), array_slice($p, 0, 3)));
+}
+
+/** The server's own build emblem list (cm_emblem_gift_list, as it reports it), as lowercase ids. */
+function cm_gift_default(): array
+{
+	$list = cm_setting('gift_list_default', 'fire,water,speed,orange,grey,peach,pink,crimson,lime,cyan');
+	return array_values(array_filter(array_map(static fn ($id) => strtolower(trim($id)), explode(',', $list))));
+}
+
+/** The emblems that can appear in builds now: the admin panel's list, or the server's own. */
+function cm_gift_current(): array
+{
+	$list = cm_setting('gift_list', '');
+	return $list === '' ? cm_gift_default() : array_values(array_filter(array_map(static fn ($id) => strtolower(trim($id)), explode(',', $list))));
 }

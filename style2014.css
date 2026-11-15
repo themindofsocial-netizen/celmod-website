@@ -910,7 +910,6 @@ textarea {
 	border: 1px solid #000;
 	background: rgba(0, 0, 0, 0.28);
 	text-align: left;
-	cursor: pointer;
 	line-height: 1.25;
 }
 .drop-card:hover {
@@ -919,11 +918,22 @@ textarea {
 .drop-card.changed {
 	box-shadow: inset 3px 0 0 var(--green);
 }
-.drop-card:has(input:not(:checked)) .drop-name {
+.drop-card.off .drop-name > b,
+.drop-card.off .swatch {
 	opacity: 0.55;
 }
-.drop-card input {
-	margin: 2px 0 0;
+.drop-ticks {
+	display: flex;
+	gap: 12px;
+	margin-top: 3px;
+}
+.drop-ticks label {
+	cursor: pointer;
+	white-space: nowrap;
+}
+.drop-ticks input {
+	margin: 0 2px 0 0;
+	vertical-align: -2px;
 }
 .drop-card .swatch {
 	flex: none;

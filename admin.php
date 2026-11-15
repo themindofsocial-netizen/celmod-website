@@ -118,9 +118,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db && isset($_POST['drops'])) {
 				$clear = $db->prepare('DELETE FROM cm_drop_pool WHERE emblem_id = ?');
 				$changed = 0;
 				$db->beginTransaction();
+				$saveGifts = static function (string $value) use ($db): void {
+					$db->prepare("INSERT INTO cm_site_settings (name, value) VALUES ('gift_list', ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_at = NOW()")->execute([$value]);
+				};
 				if ($action === 'reset') {
 					$db->exec('DELETE FROM cm_drop_pool');
+					$saveGifts('');
 				} else {
+					// Build emblems: kept as the server's own list (empty) until it differs from it.
+					$gifts = array_values(array_filter(array_keys($emblems), static fn ($id) => in_array($id, array_map('strtolower', array_map('strval', (array)($_POST['gift'] ?? []))), true)));
+					$default = array_values(array_filter(cm_gift_default(), static fn ($id) => isset($emblems[$id])));
+					$same = count($gifts) === count($default) && !array_diff($gifts, $default);
+					$saveGifts($same ? '' : implode(',', $gifts));
+					if (!$same) {
+						$changed += count(array_diff($gifts, $default)) + count(array_diff($default, $gifts));
+					}
 					foreach ($emblems as $id => $e) {
 						$want = isset($on[$id]);
 						if ($want === $e['default']) {
@@ -132,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db && isset($_POST['drops'])) {
 					}
 				}
 				$db->commit();
-				cm_flash($action === 'reset' ? 'Every emblem is back to its collectibles.txt setting.' : 'Drop list saved (' . $changed . ' emblem' . ($changed === 1 ? '' : 's') . ' changed from collectibles.txt). The server picks it up within about 30 seconds.', 'h');
+				cm_flash($action === 'reset' ? 'Every emblem is back to the server\'s own settings.' : 'Saved (' . $changed . ' change' . ($changed === 1 ? '' : 's') . ' from the server\'s own settings). The server picks it up within about 30 seconds.', 'h');
 			} elseif ($action === 'schedule' || $action === 'now') {
 				$boxes = max(1, min(30, (int)($_POST['boxes'] ?? 5)));
 				$repeat = $action === 'now' ? 0 : max(0, min(10080, (int)($_POST['repeat_minutes'] ?? 0)));
@@ -160,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db && isset($_POST['drops'])) {
 			if ($db->inTransaction()) {
 				$db->rollBack();
 			}
-			cm_flash('The database refused that: the website needs INSERT, UPDATE and DELETE on cm_drop_pool and cm_drop_schedule, and the game server must have created the tables (see the README).', 'bloody');
+			cm_flash('The database refused that: the website needs INSERT, UPDATE and DELETE on cm_drop_pool and cm_drop_schedule (and INSERT, UPDATE on cm_site_settings), and the game server must have created the tables (see the README).', 'bloody');
 		}
 	}
 	header('Location: admin.php?tab=drops');
@@ -373,10 +385,14 @@ On <span class="h">automatic</span> the look follows the game server: when a sea
 		$schedule = [];
 	}
 	$servers = $db ? cm_rows('SELECT server_id, hostname FROM cm_servers ORDER BY server_id') : [];
+	$giftDefault = array_flip(cm_gift_default());
+	$giftNow = array_flip(cm_gift_current());
 	$tiers = array_fill(0, count(CM_RARITIES), []);
 	foreach ($emblems as $id => $e) {
 		$e['on'] = $overrides[$id] ?? $e['default'];
-		$e['changed'] = isset($overrides[$id]) && $overrides[$id] !== $e['default'];
+		$e['gift'] = isset($giftNow[$id]);
+		$e['giftDefault'] = isset($giftDefault[$id]);
+		$e['changed'] = (isset($overrides[$id]) && $overrides[$id] !== $e['default']) || $e['gift'] !== $e['giftDefault'];
 		$tiers[$e['rarity']][$id] = $e;
 	}
 	foreach ($tiers as &$list) {
@@ -387,8 +403,10 @@ On <span class="h">automatic</span> the look follows the game server: when a sea
 ?>
 <p class="notice">Emblem boxes fall from the sky during a drop. Each box first rolls a rarity
 (<?= implode(', ', array_map(static fn ($n, $c) => h($n) . ' ' . $c, CM_RARITIES, $tierChances)) ?> by default,
-<span class="h">cm_drop_tier_chances</span>), then picks one of the ticked emblems of that rarity. Untick an emblem to keep it
-out of drops (for event exclusives), or tick one that collectibles.txt leaves out. The server picks up changes within
+<span class="h">cm_drop_tier_chances</span>), then picks one of the emblems ticked <span class="h">Drops</span> of that rarity.
+Untick an emblem to keep it out of drops (for event exclusives), or tick one that collectibles.txt leaves out.
+<span class="h">Build</span> picks the emblems the one-time free emblem that appears in a player's build can be
+(the server's <span class="h">cm_emblem_gift_list</span> until you change it). The server picks up changes within
 about 30 seconds. Times use the database server's clock.</p>
 
 <?php if (!$poolOk): ?>
@@ -426,6 +444,7 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>), and th
 	<tr><td><span class="rarity r<?= $r ?>"><?= h(CM_RARITIES[$r]) ?></span></td><td class="num"><?= $n ?> / <?= count($list) ?></td><td class="num"><?= $n ? $tierChances[$r] : '<span class="muted" title="Nothing of this rarity can drop, so its rolls fall to the next rarity down">-</span>' ?></td></tr>
 	<?php endforeach; ?>
 	</table>
+	<p class="muted" style="margin:6px 0 0">Build emblems: <b class="h"><?= count(array_intersect_key($giftNow, $emblems)) ?></b> to pick from<?= cm_setting('gift_list', '') === '' ? ' (the server\'s own list)' : ' (set here)' ?>.</p>
 </div>
 </div>
 
@@ -465,23 +484,27 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>), and th
 		<input type="search" id="dropfind" placeholder="Find an emblem..." class="kvnote">
 		<label class="muted"><input type="checkbox" id="droponly"> Only changed</label>
 		<span class="spacer"></span>
-		<button class="cmbutton go" name="drops" value="pool">Save drop list</button>
-		<button class="cmbutton" name="drops" value="reset" onclick="return confirm('Put every emblem back to its collectibles.txt setting?')">Reset to collectibles.txt</button>
+		<button class="cmbutton go" name="drops" value="pool">Save</button>
+		<button class="cmbutton" name="drops" value="reset" onclick="return confirm('Put every emblem back to the server\'s own settings (collectibles.txt and cm_emblem_gift_list)?')">Reset to the server's settings</button>
 	</div>
 	<?php foreach ($tiers as $r => $list): if (!$list) continue; ?>
 	<div class="drop-tier">
 		<p class="drop-head"><span class="rarity r<?= $r ?>"><?= h(CM_RARITIES[$r]) ?></span>
 			<span class="muted"><?= count($list) ?> emblem<?= count($list) === 1 ? '' : 's' ?></span>
-			<a href="#" class="muted" data-tier="<?= $r ?>" data-set="1">all</a> <a href="#" class="muted" data-tier="<?= $r ?>" data-set="0">none</a></p>
+			<span class="muted">Drops:</span><a href="#" class="muted" data-tier="<?= $r ?>" data-box="drop" data-set="1">all</a> <a href="#" class="muted" data-tier="<?= $r ?>" data-box="drop" data-set="0">none</a>
+			<span class="muted" style="margin-left:8px">Build:</span><a href="#" class="muted" data-tier="<?= $r ?>" data-box="gift" data-set="1">all</a> <a href="#" class="muted" data-tier="<?= $r ?>" data-box="gift" data-set="0">none</a></p>
 		<div class="drop-grid">
 		<?php foreach ($list as $id => $e): $sw = cm_drop_swatch($e['color']); ?>
-			<label class="drop-card<?= $e['changed'] ? ' changed' : '' ?>" data-tier="<?= $r ?>" data-find="<?= h(strtolower($e['name'] . ' ' . $id . ' ' . $e['exclusive'])) ?>">
-				<input type="checkbox" name="drop[]" value="<?= h($id) ?>"<?= $e['on'] ? ' checked' : '' ?> data-default="<?= $e['default'] ? 1 : 0 ?>">
+			<div class="drop-card<?= $e['changed'] ? ' changed' : '' ?><?= $e['on'] || $e['gift'] ? '' : ' off' ?>" data-tier="<?= $r ?>" data-find="<?= h(strtolower($e['name'] . ' ' . $id . ' ' . $e['exclusive'])) ?>">
 				<span class="swatch"<?= $sw ? ' style="background:' . h($sw) . '"' : '' ?>></span>
 				<span class="drop-name"><b><?= h($e['name']) ?></b><br><span class="muted"><?= h($id) ?> &middot; weight <?= (int)$e['weight'] ?></span>
+				<span class="drop-ticks">
+					<label title="Can come from emblem drops"><input type="checkbox" name="drop[]" value="<?= h($id) ?>"<?= $e['on'] ? ' checked' : '' ?> data-default="<?= $e['default'] ? 1 : 0 ?>"> Drops</label>
+					<label title="Can be the free emblem that appears in a player's build"><input type="checkbox" name="gift[]" value="<?= h($id) ?>"<?= $e['gift'] ? ' checked' : '' ?> data-default="<?= $e['giftDefault'] ? 1 : 0 ?>"> Build</label>
+				</span>
 				<?php if ($e['exclusive'] !== ''): ?><br><span class="pill gold" title="exclusive in collectibles.txt"><?= h($e['exclusive']) ?></span><?php endif; ?>
 				<?php if ($e['changed']): ?><span class="pill green">changed</span><?php endif; ?></span>
-			</label>
+			</div>
 		<?php endforeach; ?>
 		</div>
 	</div>
@@ -491,7 +514,13 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>), and th
 (function () {
 	var form = document.getElementById('droppool'), find = document.getElementById('dropfind'), only = document.getElementById('droponly');
 	function mark(box) {
-		box.parentNode.classList.toggle('changed', (box.checked ? '1' : '0') !== box.getAttribute('data-default'));
+		var card = box.closest('.drop-card'), changed = false, on = false;
+		card.querySelectorAll('input').forEach(function (b) {
+			changed = changed || (b.checked ? '1' : '0') !== b.getAttribute('data-default');
+			on = on || b.checked;
+		});
+		card.classList.toggle('changed', changed);
+		card.classList.toggle('off', !on);
 	}
 	function filter() {
 		var q = find.value.trim().toLowerCase();
@@ -500,13 +529,13 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>), and th
 		});
 	}
 	form.addEventListener('change', function (e) {
-		if (e.target.name === 'drop[]') { mark(e.target); }
+		if (e.target.name === 'drop[]' || e.target.name === 'gift[]') { mark(e.target); }
 	});
 	form.querySelectorAll('a[data-tier]').forEach(function (a) {
 		a.addEventListener('click', function (e) {
 			e.preventDefault();
-			form.querySelectorAll('.drop-card[data-tier="' + a.getAttribute('data-tier') + '"] input').forEach(function (b) {
-				if (b.parentNode.style.display !== 'none') { b.checked = a.getAttribute('data-set') === '1'; mark(b); }
+			form.querySelectorAll('.drop-card[data-tier="' + a.getAttribute('data-tier') + '"] input[name="' + a.getAttribute('data-box') + '[]"]').forEach(function (b) {
+				if (b.closest('.drop-card').style.display !== 'none') { b.checked = a.getAttribute('data-set') === '1'; mark(b); }
 			});
 		});
 	});
