@@ -11,6 +11,10 @@ Options -Indexes
 	RewriteCond %1.php -f
 	RewriteRule ^(.+)\.html$ $1.php [R=301,L]
 
+	# FastDL: a file that isn't there must be a real 404, never a web page (the game would save the page as the file)
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^fastdl/ - [R=404,L]
+
 	# Never serve internals directly
 	RewriteRule ^(includes|sql)/ - [F,L]
 	RewriteRule ^config(\.sample)?\.php$ - [F,L]

@@ -1,4 +1,15 @@
 <?php
+// Some hosts send every missing address here (with "200 OK"). For FastDL that's harmful: the game saves this page
+// as the texture or model it asked for, and the player keeps a broken file. Anything that isn't the home page itself
+// gets a real "404 Not Found" instead.
+$cmHome = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
+$cmPath = rawurldecode(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/');
+if (!in_array($cmPath, [$cmHome, $cmHome . '/', $cmHome . '/index.php'], true)) {
+	http_response_code(404);
+	header('Content-Type: text/plain; charset=utf-8');
+	echo 'Not found.';
+	exit;
+}
 require __DIR__ . '/includes/bootstrap.php';
 require __DIR__ . '/includes/updates.php';
 

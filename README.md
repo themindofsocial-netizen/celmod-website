@@ -104,6 +104,7 @@ location ~ ^/(includes|sql)/ { deny all; }
 location ~ ^/config(\.sample)?\.php$ { deny all; }
 location ~ \.html$ { try_files $uri @html2php; }
 location @html2php { rewrite ^(.+)\.html$ $1.php permanent; }
+location /fastdl/ { try_files $uri =404; }   # a missing FastDL file must be a real 404
 location / { index index.php; try_files $uri $uri/ =404; }
 location ~ \.php$ { include fastcgi_params; fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; fastcgi_pass unix:/run/php/php-fpm.sock; }
 ```
