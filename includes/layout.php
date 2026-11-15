@@ -52,8 +52,26 @@ function cm_head(string $title, string $extraHead = '', array $opts = []): void
 <title><?= h($title) ?></title>
 <link rel=stylesheet href="<?= $b ?>style2014.css?v=<?= (int)@filemtime(CM_ROOT . '/style2014.css') ?>"/>
 <link rel="shortcut icon" type="image/png" href="<?= $b ?>favicon.ico"/>
+<?php
+	// Link previews (Discord, Steam, Twitter...): they need full addresses, so the site URL from config.php is used.
+	$site = rtrim((string)cm_config('site_url', ''), '/');
+	$ogImage = ($site !== '' ? $site . '/' : $b) . 'images/og.jpg';
+	$ogUrl = $site !== '' ? $site . '/' . cm_current_path() : '';
+	$ogDescription = '|CelMod| - A Living Project. A Half-Life 2: Deathmatch build server: build, collect emblems and explore. Join the ride!';
+?>
+<meta name="description" content="<?= h($ogDescription) ?>">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="|CelMod|">
 <meta property="og:title" content="<?= h($title) ?>">
-<meta property="og:image" content="<?= $b ?>images/logo-og.png">
+<meta property="og:description" content="<?= h($ogDescription) ?>">
+<?php if ($ogUrl !== ''): ?><meta property="og:url" content="<?= h($ogUrl) ?>">
+<?php endif; ?>
+<meta property="og:image" content="<?= h($ogImage) ?>">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="|CelMod| - A Living Project. Join the ride: celmod.net">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="<?= h($ogImage) ?>">
 <?= $extraHead ?>
 </head><body class="<?= h(implode(' ', $classes)) ?>"<?= $season ? ' data-season="' . h($season[0]) . '"' : '' ?> alink="#FFB200" bgcolor="#222222" vlink="#FFB200" link="#FFB200" text="#FFB200" background="<?= $b ?>images/grassfloor002a.png">
 <?php
