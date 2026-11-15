@@ -11,7 +11,7 @@ if (!cm_is_admin()) {
 	exit;
 }
 
-$tab = in_array($_GET['tab'] ?? '', ['orders', 'suggestions', 'announcements', 'updates', 'season', 'drops', 'bugs'], true) ? $_GET['tab'] : 'orders';
+$tab = in_array($_GET['tab'] ?? '', ['orders', 'suggestions', 'announcements', 'updates', 'season', 'drops', 'bugs', 'disputes'], true) ? $_GET['tab'] : 'orders';
 $db = cm_db();
 
 // Announcements: written here, shown in chat by the game server (celmod-database polls cm_announcements).
@@ -220,6 +220,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db && isset($_POST['bug'])) {
 	exit;
 }
 
+// Disputes: a player reporting another with !dispute in game (cm_disputes, created by celmod-database).
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db && isset($_POST['dispute'])) {
+	$show = in_array($_POST['show'] ?? '', ['open', 'resolved', 'closed', 'all'], true) ? $_POST['show'] : 'open';
+	if (!cm_csrf_check()) {
+		cm_flash('Your session expired, please try again.', 'bloody');
+	} else {
+		$action = (string)$_POST['dispute'];
+		$id = (int)($_POST['id'] ?? 0);
+		try {
+			if (in_array($action, ['open', 'resolved', 'closed'], true)) {
+				$db->prepare('UPDATE cm_disputes SET status = ?, admin_note = ? WHERE id = ?')->execute([$action, mb_substr(trim((string)($_POST['admin_note'] ?? '')), 0, 255), $id]);
+				cm_flash('Dispute #' . $id . ' marked ' . $action . '.', 'h');
+			} elseif ($action === 'delete') {
+				$db->prepare('DELETE FROM cm_disputes WHERE id = ?')->execute([$id]);
+				cm_flash('Dispute #' . $id . ' deleted.', 'h');
+			}
+		} catch (Throwable $e) {
+			cm_flash('The database refused that: the website needs UPDATE and DELETE on cm_disputes, and the game server must have created the table (see the README).', 'bloody');
+		}
+	}
+	header('Location: admin.php?tab=disputes&show=' . $show);
+	exit;
+}
+
 // Seasonal theme: for everyone (stored in cm_site_settings), or a preview only the admin sees.
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['season'])) {
 	$choice = (string)$_POST['season'];
@@ -264,6 +288,11 @@ try {
 } catch (Throwable $e) {
 	$openBugs = 0; // the game server hasn't created the table yet
 }
+try {
+	$openDisputes = $db ? (int)$db->query("SELECT COUNT(*) FROM cm_disputes WHERE status = 'open'")->fetchColumn() : 0;
+} catch (Throwable $e) {
+	$openDisputes = 0;
+}
 
 cm_page_start('|CelMod| - Admin', '', ['wide' => true]);
 ?>
@@ -277,6 +306,7 @@ cm_page_start('|CelMod| - Admin', '', ['wide' => true]);
 	<a href="?tab=season" class="<?= $tab === 'season' ? 'active' : '' ?>">Seasonal Theme</a>
 	<a href="?tab=drops" class="<?= $tab === 'drops' ? 'active' : '' ?>">Emblem Drops</a>
 	<a href="?tab=bugs" class="<?= $tab === 'bugs' ? 'active' : '' ?>">Bug Reports<?= $openBugs ? ' (' . $openBugs . ')' : '' ?></a>
+	<a href="?tab=disputes" class="<?= $tab === 'disputes' ? 'active' : '' ?>">Disputes<?= $openDisputes ? ' (' . $openDisputes . ')' : '' ?></a>
 	<a href="check.php">Setup Check</a>
 </div>
 
@@ -649,6 +679,74 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>).</p>
 			<?php if ($b['status'] !== 'closed'): ?><button class="cmbutton" name="bug" value="closed" title="Not a bug, or won't fix">Close</button><?php endif; ?>
 			<?php if ($b['status'] !== 'open'): ?><button class="cmbutton" name="bug" value="open">Reopen</button><?php endif; ?>
 			<button class="cmbutton" name="bug" value="delete" onclick="return confirm('Delete this bug report?')">Delete</button>
+			</div>
+		</form>
+	</td>
+</tr>
+<?php endforeach; ?>
+</table>
+</div>
+
+<?php elseif ($tab === 'disputes'):
+	$dShow = in_array($_GET['show'] ?? '', ['open', 'resolved', 'closed', 'all'], true) ? $_GET['show'] : 'open';
+	try {
+		$disputes = $db ? cm_rows('SELECT * FROM cm_disputes' . ($dShow === 'all' ? '' : ' WHERE status = ' . $db->quote($dShow)) . ' ORDER BY id DESC LIMIT 200') : [];
+		$disputesOk = true;
+	} catch (Throwable $e) {
+		$disputes = [];
+		$disputesOk = false;
+	}
+	// How many disputes each reported player has had, to spot repeat trouble.
+	$against = [];
+	try {
+		foreach ($db ? cm_rows('SELECT target_steamid64, COUNT(*) AS n FROM cm_disputes GROUP BY target_steamid64') : [] as $r) {
+			$against[$r['target_steamid64']] = (int)$r['n'];
+		}
+	} catch (Throwable $e) {
+	}
+?>
+<p class="notice">Players report someone causing them problems in game with <span class="h">!dispute</span>: they pick the
+player, then what they're doing (or <span class="h">Other</span> and type it). Admins on the server see new disputes in chat,
+and each one is also written to <span class="h">data/celmod/disputes.txt</span> on the game server.</p>
+
+<?php if (!$disputesOk): ?>
+<p class="flash bloody">The disputes table isn't there yet: it's created by the game server's <span class="h">celmod-database</span>
+the next time it connects (or run <span class="h">sql/schema.sql</span>).</p>
+<?php endif; ?>
+
+<div class="btngrid">
+<?php foreach (['open', 'resolved', 'closed', 'all'] as $f): ?>
+	<a href="?tab=disputes&amp;show=<?= $f ?>"<?= $dShow === $f ? ' style="color:#71E100"' : '' ?>><?= ucfirst($f) ?></a>
+<?php endforeach; ?>
+</div>
+
+<div class="table-scroll">
+<table class="cmtable">
+<tr><th>#</th><th>Problem</th><th>Reported player</th><th>From</th><th></th></tr>
+<?php if (!$disputes): ?>
+<tr><td colspan="5" class="muted">No <?= $dShow === 'all' ? '' : h($dShow) . ' ' ?>disputes.</td></tr>
+<?php endif; ?>
+<?php foreach ($disputes as $d): $n = $against[$d['target_steamid64']] ?? 0; ?>
+<tr<?= $d['status'] === 'open' ? '' : ' class="muted"' ?>>
+	<td><?= (int)$d['id'] ?></td>
+	<td style="text-align:left"><b><?= h($d['reason']) ?></b><?= $d['message'] !== '' ? '<br>' . h($d['message']) : '' ?>
+		<?php if ($d['status'] !== 'open'): ?><br><span class="pill <?= $d['status'] === 'resolved' ? 'green' : '' ?>"><?= h($d['status']) ?></span><?php endif; ?>
+		<?php if ($d['admin_note'] !== ''): ?><br><span class="muted">Note: <?= h($d['admin_note']) ?></span><?php endif; ?>
+		<br><span class="muted"><?= h($d['map']) ?> &middot; <?= h(cm_ago($d['created_at'])) ?></span></td>
+	<td><?= $d['target_steamid64'] !== '' ? '<a href="player.php?id=' . h($d['target_steamid64']) . '">' . h($d['target_name']) . '</a>' : h($d['target_name']) ?>
+		<?php if ($n > 1): ?><br><span class="pill red" title="Disputes against this player"><?= $n ?> disputes</span><?php endif; ?></td>
+	<td><a href="player.php?id=<?= h($d['steamid64']) ?>"><?= h($d['name']) ?></a></td>
+	<td>
+		<form method="post" style="margin:0">
+			<input type="hidden" name="csrf" value="<?= h(cm_csrf_token()) ?>">
+			<input type="hidden" name="id" value="<?= (int)$d['id'] ?>">
+			<input type="hidden" name="show" value="<?= h($dShow) ?>">
+			<input name="admin_note" maxlength="255" value="<?= h($d['admin_note']) ?>" placeholder="Note (optional)" class="kvnote" style="width:140px">
+			<div style="margin-top:4px">
+			<?php if ($d['status'] !== 'resolved'): ?><button class="cmbutton go" name="dispute" value="resolved">Resolved</button><?php endif; ?>
+			<?php if ($d['status'] !== 'closed'): ?><button class="cmbutton" name="dispute" value="closed" title="Nothing to act on">Close</button><?php endif; ?>
+			<?php if ($d['status'] !== 'open'): ?><button class="cmbutton" name="dispute" value="open">Reopen</button><?php endif; ?>
+			<button class="cmbutton" name="dispute" value="delete" onclick="return confirm('Delete this dispute?')">Delete</button>
 			</div>
 		</form>
 	</td>

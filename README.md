@@ -67,6 +67,7 @@ DNS at the new host when you switch over.
    GRANT INSERT, UPDATE, DELETE ON celmod.cm_drop_schedule TO 'celmod_web'@'WEBHOST';
    -- admin panel: Bug Reports tab (reports come from !reportbug in game)
    GRANT UPDATE, DELETE ON celmod.cm_bug_reports TO 'celmod_web'@'WEBHOST';
+   GRANT UPDATE, DELETE ON celmod.cm_disputes TO 'celmod_web'@'WEBHOST';
    ```
 
    MySQL treats `'user'@'localhost'` and `'user'@'127.0.0.1'` as two different

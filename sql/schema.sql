@@ -267,3 +267,21 @@ CREATE TABLE IF NOT EXISTS cm_bug_reports (
 	PRIMARY KEY (id),
 	KEY idx_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Disputes sent in game with !dispute (a player causing problems); the admin panel's Disputes tab handles them.
+CREATE TABLE IF NOT EXISTS cm_disputes (
+	id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	server_id         INT          NULL,
+	steamid64         VARCHAR(20)  NOT NULL,
+	name              VARCHAR(64)  NOT NULL DEFAULT '',
+	target_steamid64  VARCHAR(20)  NOT NULL DEFAULT '',
+	target_name       VARCHAR(64)  NOT NULL DEFAULT '',
+	map               VARCHAR(64)  NOT NULL DEFAULT '',
+	reason            VARCHAR(64)  NOT NULL DEFAULT '',
+	message           VARCHAR(255) NOT NULL DEFAULT '',
+	status            ENUM('open','resolved','closed') NOT NULL DEFAULT 'open',
+	admin_note        VARCHAR(255) NOT NULL DEFAULT '',
+	created_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (id),
+	KEY idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
