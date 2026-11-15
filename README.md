@@ -65,6 +65,8 @@ DNS at the new host when you switch over.
    -- admin panel: Emblem Drops tab (also created by celmod-database)
    GRANT INSERT, UPDATE, DELETE ON celmod.cm_drop_pool TO 'celmod_web'@'WEBHOST';
    GRANT INSERT, UPDATE, DELETE ON celmod.cm_drop_schedule TO 'celmod_web'@'WEBHOST';
+   -- admin panel: Bug Reports tab (reports come from !reportbug in game)
+   GRANT UPDATE, DELETE ON celmod.cm_bug_reports TO 'celmod_web'@'WEBHOST';
    ```
 
    MySQL treats `'user'@'localhost'` and `'user'@'127.0.0.1'` as two different

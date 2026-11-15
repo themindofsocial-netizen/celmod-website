@@ -148,7 +148,7 @@ if (!$db) {
 	$add('ok', 'Database connection', 'connected as ' . $info['who'] . ' to ' . $info['version'] . ' on ' . $info['host'] . ', database "' . $info['db'] . '"');
 
 	$tables = array_map(static fn ($r) => array_values($r)[0], cm_rows('SHOW TABLES'));
-	$needed = ['cm_players', 'cm_purchases', 'cm_shop_items', 'cm_web_orders', 'cm_servers', 'cm_online_players', 'cm_sessions', 'cm_events', 'cm_stats_daily', 'cm_player_samples', 'cm_maps', 'cm_emblem_suggestions', 'cm_announcements', 'cm_updates', 'cm_site_settings', 'cm_drop_pool', 'cm_drop_schedule', 'cm_collectibles'];
+	$needed = ['cm_players', 'cm_purchases', 'cm_shop_items', 'cm_web_orders', 'cm_servers', 'cm_online_players', 'cm_sessions', 'cm_events', 'cm_stats_daily', 'cm_player_samples', 'cm_maps', 'cm_emblem_suggestions', 'cm_announcements', 'cm_updates', 'cm_site_settings', 'cm_drop_pool', 'cm_drop_schedule', 'cm_collectibles', 'cm_bug_reports'];
 	$missing = array_diff($needed, $tables);
 	if ($missing) {
 		$add('fail', 'Tables', 'missing: ' . implode(', ', $missing) . '. The game server creates these when celmod-database connects, so if it is connected it is probably using a different database name or server. Compare with its databases.cfg, or import sql/schema.sql.');
@@ -198,6 +198,8 @@ if (!$db) {
 	$iud = '/GRANT (ALL|.*INSERT.*UPDATE.*DELETE|.*DELETE.*INSERT.*UPDATE|.*UPDATE.*INSERT.*DELETE|.*INSERT.*DELETE.*UPDATE)[^\n]*ON (\*|`?' . preg_quote($c['name'], '/') . '`?)\.(\*|`?%s`?)/i';
 	$canDrops = preg_match(sprintf($iud, 'cm_drop_pool'), $grants) && preg_match(sprintf($iud, 'cm_drop_schedule'), $grants);
 	$add($canDrops ? 'ok' : 'warn', 'Emblem drops', $canDrops ? 'can manage emblem drops' : 'cannot INSERT/UPDATE/DELETE cm_drop_pool and cm_drop_schedule, so the admin panel cannot change or schedule emblem drops (see README grants)');
+	$canBugs = preg_match('/GRANT (ALL|.*UPDATE.*DELETE|.*DELETE.*UPDATE)[^\n]*ON (\*|`?' . preg_quote($c['name'], '/') . '`?)\.(\*|`?cm_bug_reports`?)/i', $grants);
+	$add($canBugs ? 'ok' : 'warn', 'Bug reports', $canBugs ? 'can manage bug reports' : 'cannot UPDATE/DELETE cm_bug_reports, so the admin panel can only read bug reports (see README grants)');
 }
 
 $fails = count(array_filter($checks, static fn ($x) => $x[0] === 'fail'));

@@ -11,7 +11,7 @@ if (!cm_is_admin()) {
 	exit;
 }
 
-$tab = in_array($_GET['tab'] ?? '', ['orders', 'suggestions', 'announcements', 'updates', 'season', 'drops'], true) ? $_GET['tab'] : 'orders';
+$tab = in_array($_GET['tab'] ?? '', ['orders', 'suggestions', 'announcements', 'updates', 'season', 'drops', 'bugs'], true) ? $_GET['tab'] : 'orders';
 $db = cm_db();
 
 // Announcements: written here, shown in chat by the game server (celmod-database polls cm_announcements).
@@ -179,6 +179,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db && isset($_POST['drops'])) {
 	exit;
 }
 
+// Announcement rotation: every N minutes the server shows one announcement, shuffled through the whole list.
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db && isset($_POST['rotation'])) {
+	if (!cm_csrf_check()) {
+		cm_flash('Your session expired, please try again.', 'bloody');
+	} else {
+		$minutes = max(0, min(1440, (int)$_POST['rotation']));
+		try {
+			$db->prepare("INSERT INTO cm_site_settings (name, value) VALUES ('announce_rotation', ?) ON DUPLICATE KEY UPDATE value = VALUES(value), updated_at = NOW()")->execute([(string)$minutes]);
+			cm_flash($minutes ? 'Rotation on: one announcement every ' . $minutes . ' minute' . ($minutes === 1 ? '' : 's') . ', in random order.' : 'Rotation off.', 'h');
+		} catch (Throwable $e) {
+			cm_flash('The database refused that: the website needs INSERT and UPDATE on cm_site_settings (see the README).', 'bloody');
+		}
+	}
+	header('Location: admin.php?tab=announcements');
+	exit;
+}
+
+// Bug reports: sent in game with !reportbug (cm_bug_reports, created by celmod-database).
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db && isset($_POST['bug'])) {
+	$show = in_array($_POST['show'] ?? '', ['open', 'fixed', 'closed', 'all'], true) ? $_POST['show'] : 'open';
+	if (!cm_csrf_check()) {
+		cm_flash('Your session expired, please try again.', 'bloody');
+	} else {
+		$action = (string)$_POST['bug'];
+		$id = (int)($_POST['id'] ?? 0);
+		try {
+			if (in_array($action, ['open', 'fixed', 'closed'], true)) {
+				$db->prepare('UPDATE cm_bug_reports SET status = ?, admin_note = ? WHERE id = ?')->execute([$action, mb_substr(trim((string)($_POST['admin_note'] ?? '')), 0, 255), $id]);
+				cm_flash('Bug report #' . $id . ' marked ' . $action . '.', 'h');
+			} elseif ($action === 'delete') {
+				$db->prepare('DELETE FROM cm_bug_reports WHERE id = ?')->execute([$id]);
+				cm_flash('Bug report #' . $id . ' deleted.', 'h');
+			}
+		} catch (Throwable $e) {
+			cm_flash('The database refused that: the website needs UPDATE and DELETE on cm_bug_reports, and the game server must have created the table (see the README).', 'bloody');
+		}
+	}
+	header('Location: admin.php?tab=bugs&show=' . $show);
+	exit;
+}
+
 // Seasonal theme: for everyone (stored in cm_site_settings), or a preview only the admin sees.
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['season'])) {
 	$choice = (string)$_POST['season'];
@@ -218,6 +259,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db) {
 
 $show = in_array($_GET['show'] ?? '', ['pending', 'accepted', 'rejected', 'all'], true) ? $_GET['show'] : 'pending';
 $pendingCount = (int)cm_value("SELECT COUNT(*) FROM cm_emblem_suggestions WHERE status = 'pending'");
+try {
+	$openBugs = $db ? (int)$db->query("SELECT COUNT(*) FROM cm_bug_reports WHERE status = 'open'")->fetchColumn() : 0;
+} catch (Throwable $e) {
+	$openBugs = 0; // the game server hasn't created the table yet
+}
 
 cm_page_start('|CelMod| - Admin', '', ['wide' => true]);
 ?>
@@ -230,6 +276,7 @@ cm_page_start('|CelMod| - Admin', '', ['wide' => true]);
 	<a href="?tab=updates" class="<?= $tab === 'updates' ? 'active' : '' ?>">Updates</a>
 	<a href="?tab=season" class="<?= $tab === 'season' ? 'active' : '' ?>">Seasonal Theme</a>
 	<a href="?tab=drops" class="<?= $tab === 'drops' ? 'active' : '' ?>">Emblem Drops</a>
+	<a href="?tab=bugs" class="<?= $tab === 'bugs' ? 'active' : '' ?>">Bug Reports<?= $openBugs ? ' (' . $openBugs . ')' : '' ?></a>
 	<a href="check.php">Setup Check</a>
 </div>
 
@@ -550,6 +597,66 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>), and th
 </script>
 <?php endif; ?>
 
+<?php elseif ($tab === 'bugs'):
+	$bugShow = in_array($_GET['show'] ?? '', ['open', 'fixed', 'closed', 'all'], true) ? $_GET['show'] : 'open';
+	try {
+		$bugs = $db ? cm_rows('SELECT * FROM cm_bug_reports' . ($bugShow === 'all' ? '' : ' WHERE status = ' . $db->quote($bugShow)) . ' ORDER BY id DESC LIMIT 200') : [];
+		$bugsOk = true;
+	} catch (Throwable $e) {
+		$bugs = [];
+		$bugsOk = false;
+	}
+?>
+<p class="notice">Players report bugs in game with <span class="h">!reportbug &lt;what happened&gt;</span>. Each report keeps
+the map and where they were standing. Admins on the server see new reports in chat, and every report is also written to
+<span class="h">data/celmod/bugreports.txt</span> on the game server.</p>
+
+<?php if (!$bugsOk): ?>
+<p class="flash bloody">The bug report table isn't there yet: it's created by the game server's <span class="h">celmod-database</span>
+the next time it connects (or run <span class="h">sql/schema.sql</span>).</p>
+<?php endif; ?>
+
+<div class="btngrid">
+<?php foreach (['open', 'fixed', 'closed', 'all'] as $f): ?>
+	<a href="?tab=bugs&amp;show=<?= $f ?>"<?= $bugShow === $f ? ' style="color:#71E100"' : '' ?>><?= ucfirst($f) ?></a>
+<?php endforeach; ?>
+</div>
+
+<div class="table-scroll">
+<table class="cmtable">
+<tr><th>#</th><th>Report</th><th>Player</th><th>Where</th><th></th></tr>
+<?php if (!$bugs): ?>
+<tr><td colspan="5" class="muted">No <?= $bugShow === 'all' ? '' : h($bugShow) . ' ' ?>bug reports.</td></tr>
+<?php endif; ?>
+<?php foreach ($bugs as $b): ?>
+<tr<?= $b['status'] === 'open' ? '' : ' class="muted"' ?>>
+	<td><?= (int)$b['id'] ?></td>
+	<td style="text-align:left"><?= h($b['message']) ?>
+		<?php if ($b['status'] !== 'open'): ?><br><span class="pill <?= $b['status'] === 'fixed' ? 'green' : '' ?>"><?= h($b['status']) ?></span><?php endif; ?>
+		<?php if ($b['admin_note'] !== ''): ?><br><span class="muted">Note: <?= h($b['admin_note']) ?></span><?php endif; ?>
+		<br><span class="muted"><?= h(cm_ago($b['created_at'])) ?></span></td>
+	<td><a href="player.php?id=<?= h($b['steamid64']) ?>"><?= h($b['name']) ?></a></td>
+	<td><?= h($b['map']) ?><br><span class="muted" title="setpos <?= h(sprintf('%.0f %.0f %.0f', $b['pos_x'], $b['pos_y'], $b['pos_z'])) ?>"><?= h(sprintf('%.0f %.0f %.0f', $b['pos_x'], $b['pos_y'], $b['pos_z'])) ?></span>
+		<?= $b['server_id'] !== null ? '<br><span class="muted">server #' . (int)$b['server_id'] . '</span>' : '' ?></td>
+	<td>
+		<form method="post" style="margin:0">
+			<input type="hidden" name="csrf" value="<?= h(cm_csrf_token()) ?>">
+			<input type="hidden" name="id" value="<?= (int)$b['id'] ?>">
+			<input type="hidden" name="show" value="<?= h($bugShow) ?>">
+			<input name="admin_note" maxlength="255" value="<?= h($b['admin_note']) ?>" placeholder="Note (optional)" class="kvnote" style="width:140px">
+			<div style="margin-top:4px">
+			<?php if ($b['status'] !== 'fixed'): ?><button class="cmbutton go" name="bug" value="fixed">Fixed</button><?php endif; ?>
+			<?php if ($b['status'] !== 'closed'): ?><button class="cmbutton" name="bug" value="closed" title="Not a bug, or won't fix">Close</button><?php endif; ?>
+			<?php if ($b['status'] !== 'open'): ?><button class="cmbutton" name="bug" value="open">Reopen</button><?php endif; ?>
+			<button class="cmbutton" name="bug" value="delete" onclick="return confirm('Delete this bug report?')">Delete</button>
+			</div>
+		</form>
+	</td>
+</tr>
+<?php endforeach; ?>
+</table>
+</div>
+
 <?php elseif ($tab === 'announcements'):
 	$announcements = $db ? cm_rows('SELECT a.*, p.name FROM cm_announcements a LEFT JOIN cm_players p ON p.steamid64 = a.created_by ORDER BY a.active DESC, a.id DESC LIMIT 100') : [];
 	$servers = $db ? cm_rows('SELECT server_id, hostname FROM cm_servers ORDER BY server_id') : [];
@@ -558,6 +665,18 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>), and th
 within about 30 seconds. A new one is shown to everyone once; set <span class="h">Repeat</span> to show it again every few
 minutes, and <span class="h">Show on join</span> to show it to players as they join. Color tags such as
 <span class="h">{green}</span> and <span class="h">{default}</span> work. Times use the database server's clock.</p>
+
+<?php $rotation = (int)cm_setting('announce_rotation', '0'); ?>
+<form method="post" class="panel" style="text-align:left">
+	<input type="hidden" name="csrf" value="<?= h(cm_csrf_token()) ?>">
+	<p style="margin:0 0 6px"><b class="celColor">Rotation</b>
+	<?= $rotation ? '<span class="pill green">On: every ' . $rotation . ' min</span>' : '<span class="pill">Off</span>' ?></p>
+	<p class="muted" style="margin:0 0 6px">Shows one announcement every few minutes, going through the whole list of active
+	announcements in random order before any is shown again. Their own Repeat settings still work as well.</p>
+	<label>One announcement every <input type="number" name="rotation" min="0" max="1440" value="<?= $rotation ?: 10 ?>" style="width:65px"> min</label>
+	<button class="cmbutton go">Save</button>
+	<?php if ($rotation): ?><button class="cmbutton" name="rotation" value="0">Turn off</button><?php endif; ?>
+</form>
 
 <form method="post" class="panel" style="text-align:left">
 	<input type="hidden" name="csrf" value="<?= h(cm_csrf_token()) ?>">

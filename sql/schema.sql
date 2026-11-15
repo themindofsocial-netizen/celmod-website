@@ -249,3 +249,21 @@ CREATE TABLE IF NOT EXISTS cm_collectibles (
 	updated_at  DATETIME   NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (server_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Bug reports sent in game with !reportbug; the admin panel's Bug Reports tab marks them fixed or closed.
+CREATE TABLE IF NOT EXISTS cm_bug_reports (
+	id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	server_id   INT          NULL,
+	steamid64   VARCHAR(20)  NOT NULL,
+	name        VARCHAR(64)  NOT NULL DEFAULT '',
+	map         VARCHAR(64)  NOT NULL DEFAULT '',
+	pos_x       FLOAT        NOT NULL DEFAULT 0,
+	pos_y       FLOAT        NOT NULL DEFAULT 0,
+	pos_z       FLOAT        NOT NULL DEFAULT 0,
+	message     VARCHAR(255) NOT NULL,
+	status      ENUM('open','fixed','closed') NOT NULL DEFAULT 'open',
+	admin_note  VARCHAR(255) NOT NULL DEFAULT '',
+	created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (id),
+	KEY idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
