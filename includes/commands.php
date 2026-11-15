@@ -148,6 +148,9 @@ return [
 		[['rules'], '', 'Shows the server\'s welcome page and rules.'],
 		[['updates', 'updatelist'], '', 'Displays the update list.'],
 	],
+	'Other' => [
+		[['text'], '', 'Writes words in the world out of text screens where you aim: !text <words> (^ in front for small text).'],
+	],
 	'Admin' => [
 		[['auction'], '<kind> <item> <starting bid> <minutes>', 'Auctions an emblem, hat or weapon above the Guess Booth, or cancels the auction.'],
 		[['autobuild'], '<x> <y> <z>', 'Stacks props on the x, y and z axis.'],
