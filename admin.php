@@ -707,7 +707,9 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>).</p>
 ?>
 <p class="notice">Players report someone causing them problems in game with <span class="h">!dispute</span>: they pick the
 player, then what they're doing (or <span class="h">Other</span> and type it). Admins on the server see new disputes in chat,
-and each one is also written to <span class="h">data/celmod/disputes.txt</span> on the game server.</p>
+and each one is also written to <span class="h">data/celmod/disputes.txt</span> on the game server.
+When SourceTV is on (<span class="h">tv_enable 1</span>), each dispute also records a demo on the game server (in its
+<span class="h">hl2mp</span> folder) with the reported player's name, SteamID, IP, country, the time and the map in it.</p>
 
 <?php if (!$disputesOk): ?>
 <p class="flash bloody">The disputes table isn't there yet: it's created by the game server's <span class="h">celmod-database</span>
@@ -732,7 +734,8 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>).</p>
 	<td style="text-align:left"><b><?= h($d['reason']) ?></b><?= $d['message'] !== '' ? '<br>' . h($d['message']) : '' ?>
 		<?php if ($d['status'] !== 'open'): ?><br><span class="pill <?= $d['status'] === 'resolved' ? 'green' : '' ?>"><?= h($d['status']) ?></span><?php endif; ?>
 		<?php if ($d['admin_note'] !== ''): ?><br><span class="muted">Note: <?= h($d['admin_note']) ?></span><?php endif; ?>
-		<br><span class="muted"><?= h($d['map']) ?> &middot; <?= h(cm_ago($d['created_at'])) ?></span></td>
+		<br><span class="muted"><?= h($d['map']) ?> &middot; <?= h(cm_ago($d['created_at'])) ?></span>
+		<?php if (($d['demo'] ?? '') !== ''): ?><br><span class="muted" title="SourceTV demo in the game server's hl2mp folder">Demo: <span class="h"><?= h($d['demo']) ?></span></span><?php endif; ?></td>
 	<td><?= $d['target_steamid64'] !== '' ? '<a href="player.php?id=' . h($d['target_steamid64']) . '">' . h($d['target_name']) . '</a>' : h($d['target_name']) ?>
 		<?php if ($n > 1): ?><br><span class="pill red" title="Disputes against this player"><?= $n ?> disputes</span><?php endif; ?></td>
 	<td><a href="player.php?id=<?= h($d['steamid64']) ?>"><?= h($d['name']) ?></a></td>

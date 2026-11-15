@@ -279,6 +279,7 @@ CREATE TABLE IF NOT EXISTS cm_disputes (
 	map               VARCHAR(64)  NOT NULL DEFAULT '',
 	reason            VARCHAR(64)  NOT NULL DEFAULT '',
 	message           VARCHAR(255) NOT NULL DEFAULT '',
+	demo              VARCHAR(128) NOT NULL DEFAULT '',
 	status            ENUM('open','resolved','closed') NOT NULL DEFAULT 'open',
 	admin_note        VARCHAR(255) NOT NULL DEFAULT '',
 	created_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
