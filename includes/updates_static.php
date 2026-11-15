@@ -5,7 +5,7 @@
  */
 return [
 	['2026-11-14', <<<'HTML'
-Enemy spawn pads: every 500 kills of an enemy in a map's dungeon earns you one of its spawn pads. See your kills with <span class="highlight">!spawnpads</span>/<b><i>v_spawnpads</i></b> and place one with <span class="highlight">!spawnpad</span>/<b><i>v_spawnpad</i></b>.
+Enemy spawn pads: every 1,000 kills of an enemy in a map's dungeon earns you one of its spawn pads. See your kills with <span class="highlight">!spawnpads</span>/<b><i>v_spawnpads</i></b> and place one with <span class="highlight">!spawnpad</span>/<b><i>v_spawnpad</i></b>.
 <span class="indent"></span><span class="highlight">!spawnpoint</span>/<b><i>v_spawnpoint</i></b> puts a spawn point in your land: anyone who dies in your land respawns on it.
 <span class="indent"></span>New emblems to collect: <span class="highlight">Core</span> (it fires core balls), <span class="highlight">Vector</span>, <span class="highlight">Spectral</span>, <span class="highlight">Metal</span>, <span class="highlight">Rust</span>, <span class="highlight">Force</span>, <span class="highlight">Curse</span>, <span class="highlight">Dragon</span> and the <span class="highlight">Invisible</span> emblem, which you can only find by its shadow.
 <span class="indent"></span>Land skins are painted on your floor now, Hoopies bounce you, and new player models: <span class="highlight">Gordon Freeman</span> and, at Halloween, the <span class="highlight">Skeleton</span>.
