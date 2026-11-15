@@ -19,7 +19,7 @@ return [
 	],
 
 	// Full public URL of the site, no trailing slash. Used for Steam login.
-	'site_url' => 'https://delaware.rockzehh.net',
+	'site_url' => 'https://celmod.net',
 
 	// Optional: a Steam Web API key (https://steamcommunity.com/dev/apikey).
 	// Only used to fetch avatars. Leave empty to skip.

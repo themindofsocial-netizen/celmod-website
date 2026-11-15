@@ -36,7 +36,7 @@ website never edits balances itself, so the two can't fight over them.
 ## Setup
 
 **Hosting:** this needs a PHP host now (PHP 8.0+ with `pdo_mysql` and `curl`).
-GitHub Pages only serves static files, so point the `delaware.rockzehh.net`
+GitHub Pages only serves static files, so point the `celmod.net`
 DNS at the new host when you switch over.
 
 1. **Database.** Create a MySQL/MariaDB database (the tables are created by
