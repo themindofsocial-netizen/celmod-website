@@ -59,9 +59,12 @@ DNS at the new host when you switch over.
    GRANT INSERT, UPDATE ON celmod.cm_emblem_suggestions TO 'celmod_web'@'WEBHOST';
    GRANT INSERT, UPDATE, DELETE ON celmod.cm_announcements TO 'celmod_web'@'WEBHOST';
    -- admin panel: posting updates and choosing the seasonal theme
-   -- (these two tables are created by the game server's celmod-database the first time it connects)
+   -- (these tables are created by the game server's celmod-database the first time it connects)
    GRANT INSERT, UPDATE, DELETE ON celmod.cm_updates TO 'celmod_web'@'WEBHOST';
    GRANT INSERT, UPDATE ON celmod.cm_site_settings TO 'celmod_web'@'WEBHOST';
+   -- admin panel: Emblem Drops tab (also created by celmod-database)
+   GRANT INSERT, UPDATE, DELETE ON celmod.cm_drop_pool TO 'celmod_web'@'WEBHOST';
+   GRANT INSERT, UPDATE, DELETE ON celmod.cm_drop_schedule TO 'celmod_web'@'WEBHOST';
    ```
 
    MySQL treats `'user'@'localhost'` and `'user'@'127.0.0.1'` as two different

@@ -17,7 +17,7 @@
 //   handangles  "pitch yaw roll" of the copy relative to the hand.
 //   power       Used with primary fire, which can be held down (cooldown and range apply to all):
 //               flash     Blinds players facing you. duration = seconds blinded, range.
-//               smog      Smoke cloud where you aim; players in it cough and take "value" damage a second.
+//               smog      Smoke cloud where you aim (one at a time); players in it cough and take "value" damage a second.
 //               nuke      A headcrab canister falls where you aim. value = impact damage. See cm_nuke_wrecks_builds.
 //               shot      Hurts a player. value = damage, dmgtype = burn/drown/poison/shock/dissolve/
 //                         energy/generic, ignite = seconds the player is set on fire (optional).
@@ -39,6 +39,7 @@
 //               heal      Regenerate health. value = health per second.
 //               armor     Regenerate suit power. value = suit power per second.
 //               resist    Take less damage. value = damage multiplier (0.5 = half).
+//               phase     Hold right click to pass through walls (playercolor makes the holder see-through green).
 //               cloak     Turn translucent. value = how visible you stay (0 to 255).
 //               drain     Hurts its own holder. value = damage per second.
 //               gold      Earn money. value = CL per minute while enabled.
@@ -55,6 +56,28 @@
 //               spray                                  A burst of sprites thrown forward ("sprite").
 //               laser, plasma, rainbow, beam           Beams. beam is the default.
 //               none                                   Nothing.
+//               Layered styles (each emblem has its own; any emblem can use any of them):
+//               snowstorm frostline shards waterbolt wave acidglob venomspiral arc pulse laser static
+//               gemtwin gemprism gemstar gemorbit plasmaflow ion prism lava embers comet glitch nova
+//               supernova thunder chainspark healbeam lovebeam rainbowspray aurora mist sandstorm
+//               tractor geyser gravwell tornado eruption permafrost maelstrom tempest
+//               Water, fire, ice, acid and earth styles use the game's own effects (splashes, liquid, flames, shards,
+//               rubble) and leave marks (wet, scorch, acid, crater) on the wall or floor they hit.
+//   freeze      "shot": seconds the target is frozen solid.   chain: "shock": how many more players it jumps to.
+//   aura        Only for a few special emblems: what the holder looks like while it is held out (cm_emblem_aura 0
+//               turns them off):
+//               flames frost drip sparks thunder glint prism smoke glitch speed bolt dust float bounce
+//               wisp halo shield gold drain demon radiation vortex blink sun eclipse embers confetti
+//               stars rising pulse dusk code crackle haze void radiant phase heart, or none.
+//   exclusive   Where the item only comes from (event, dig, christmas, upgrade, shop...). Exclusive items never come
+//               from emblem drops or random rewards, whatever their dropweight: give them out with !eventitem,
+//               !giveitem, the shovel, the Power Booth and so on.
+//   rarity      Emblem drops: common, uncommon, rare, epic or legendary. Without it, it comes from the dropweight
+//               (10+ common, 6-9 uncommon, 3-5 rare, 2 epic, 1 legendary). A box first rolls a tier
+//               (cm_drop_tier_chances), then an emblem in it; epic and legendary have a daily cap
+//               (cm_drop_tier_daily_caps).
+//   nearalpha   For see-through emblems (a low alpha in "color"): how solid a faint copy of it looks to players within
+//               "neardistance" units (default 96), so it only shows when you are right up close.
 //   sprite      Sprite material used by fx, e.g. "sprites/flamelet1.vmt".
 //   slow        "shot" only: seconds the target is slowed and tinted blue.
 //   knockback   "shot" only: how hard the target is shoved back.
@@ -68,7 +91,7 @@
 //   skin        Skin number of the model.
 //   offset      "forward left up" from the player's eyes.
 //   angles      "pitch yaw roll" relative to the player's head.
-//   scale       Model scale.
+//   scale       Model scale. Leave it at 1.0: scaled models do not show in HL2DM.
 //
 // Big emblems: every emblem automatically has a big version ("<id>_big", e.g. fire_big) made at the Power Booth
 // from several copies. It uses models/celmod/bhys8.mdl and is about half again as strong.
@@ -81,14 +104,21 @@
 //   customgun   With the Custom Guns plugin installed: the Custom Guns weapon this celwep is, e.g. weapon_cm_axe
 //               (scripts/weapon_cm_axe.txt). It is then a separate weapon with its own view model, several can be
 //               carried at once, and base/damage/hand keys are not used. Without Custom Guns, base is used instead.
+//   attack      melee (default): a swing. ranged: a shot at whatever is aimed at, looking like its "fx" (range,
+//               fx, sprite, beamcolor). Projectiles that really fly (projectile = model, projectilespeed):
+//               melon: rolls for "fuse" seconds, then explodes (hitdamage = explosion strength).
+//               saw: spinning saw blades that cut every player they pass. blade: flying swords that stick where
+//               they land.
 //   hitdamage   Damage of one hit (Custom Guns celweps). hitrange = reach, refire = seconds between swings.
-//   ignite, slow  Seconds a hit sets a player on fire, or slows them.
-//   digs        Emblem ids a hit on the ground can dig up (chance: cm_dig_chance).
+//   ignite, slow, freeze  Seconds a hit sets a player on fire, slows them, or freezes them solid.
+//   digs        Emblem ids a hit on the ground can dig up. Most digs find junk; see cm_dig_chance,
+//               cm_dig_emblem_chance, cm_dig_money_chance, cm_dig_money_min and cm_dig_money_max.
 //
 // PlayerModels: name, model and price. A price of 0 is free for everyone.
 //   admin       Admin flags (e.g. "b"). Admins with them own the model; with price 0 nobody else can buy it.
 //   materials   A folder whose files are all sent to players, for custom models, e.g. "materials/models/player/mymodel".
 //   A model's own files (.mdl, .vvd, .phy, .vtx) are sent automatically when the server has them.
+//   season      A key from "Seasons" in shop.txt: the model is only sold while that season is on.
 //   Admins can also give or take any model with !givemodel and !takemodel.
 "Collectibles"
 {
@@ -113,6 +143,8 @@
 			"secondaryvalue"	"70"
 			"secondarycooldown"	"3.0"
 			"beamcolor"		"255 140 40 255"
+			"upgradesto"	"inferno"
+			"upgradecost"	"3"
 			"dropweight"	"15"
 		}
 		"blizzard"
@@ -130,12 +162,14 @@
 			"range"			"900"
 			"dmgtype"		"drown"
 			"beamcolor"		"180 220 255 255"
-			"fx"			"ice"
+			"fx"			"snowstorm"
 			"sprite"		"sprites/glow04_noz.vmt"
 			"slow"			"1.5"
 			"secondary"		"icestorm"
 			"secondaryvalue"	"15"
 			"secondarycooldown"	"5.0"
+			"upgradesto"	"glacier"
+			"upgradecost"	"3"
 			"dropweight"	"12"
 		}
 		"water"
@@ -152,10 +186,12 @@
 			"cooldown"		"0.15"
 			"range"			"700"
 			"dmgtype"		"drown"
-			"fx"			"water"
+			"fx"			"waterbolt"
 			"sprite"		"sprites/glow04_noz.vmt"
 			"knockback"		"250"
 			"beamcolor"		"40 110 255 255"
+			"upgradesto"	"tsunami"
+			"upgradecost"	"3"
 			"dropweight"	"12"
 		}
 		"energy"
@@ -172,7 +208,7 @@
 			"cooldown"		"0.15"
 			"range"			"1200"
 			"dmgtype"		"dissolve"
-			"fx"			"energy"
+			"fx"			"arc"
 			"sprite"		"sprites/plasmaember.vmt"
 			"secondary"		"bigshot"
 			"secondaryvalue"	"40"
@@ -211,7 +247,7 @@
 			"cooldown"		"0.1"
 			"range"			"2000"
 			"dmgtype"		"energy"
-			"fx"			"plasma"
+			"fx"			"plasmaflow"
 			"dropweight"	"6"
 		}
 		"prism"
@@ -229,7 +265,7 @@
 			"range"			"2000"
 			"dmgtype"		"energy"
 			"beamcolor"		"255 0 255 255"
-			"fx"			"rainbow"
+			"fx"			"prism"
 			"dropweight"	"5"
 		}
 		"rainbow"
@@ -245,7 +281,7 @@
 			"cooldown"		"0.1"
 			"range"			"2000"
 			"beamcolor"		"255 255 0 255"
-			"fx"			"rainbow"
+			"fx"			"rainbowspray"
 			"dropweight"	"6"
 		}
 		"smog"
@@ -260,7 +296,7 @@
 			"power"			"smog"
 			"value"			"1"
 			"duration"		"7.0"
-			"cooldown"		"1.5"
+			"cooldown"		"8.0"
 			"range"			"500"
 			"dropweight"	"10"
 		}
@@ -277,7 +313,7 @@
 			"cooldown"		"0.15"
 			"range"			"700"
 			"beamcolor"		"70 70 70 255"
-			"fx"			"spray"
+			"fx"			"mist"
 			"sprite"		"sprites/glow04_noz.vmt"
 			"dropweight"	"10"
 		}
@@ -294,7 +330,7 @@
 			"value"			"25"
 			"cooldown"		"1.5"
 			"range"			"3000"
-			"fx"			"model"
+			"fx"			"glitch"
 			"sprite"		"models/error.mdl"
 			"beamcolor"		"255 255 255 255"
 			"upgradesto"	"error_blue"
@@ -314,7 +350,7 @@
 			"value"			"50"
 			"cooldown"		"1.5"
 			"range"			"3000"
-			"fx"			"model"
+			"fx"			"glitch"
 			"sprite"		"models/error.mdl"
 			"beamcolor"		"60 60 255 255"
 			"upgradesto"	"error_green"
@@ -334,7 +370,7 @@
 			"value"			"75"
 			"cooldown"		"1.5"
 			"range"			"3000"
-			"fx"			"model"
+			"fx"			"glitch"
 			"sprite"		"models/error.mdl"
 			"beamcolor"		"60 255 60 255"
 			"dropweight"	"2"
@@ -405,7 +441,7 @@
 			"cooldown"		"0.3"
 			"range"			"2000"
 			"speed"			"1.5"
-			"fx"			"beam"
+			"fx"			"tractor"
 			"dropweight"	"6"
 		}
 		"demon"
@@ -428,6 +464,7 @@
 			"beamcolor"		"120 0 160 255"
 			"sprite"		"sprites/purpleglow1.vmt"
 			"dropweight"	"6"
+			"aura"			"demon"
 		}
 		"spooky"
 		{
@@ -456,7 +493,7 @@
 			"value"			"5"
 			"cooldown"		"0.25"
 			"range"			"1500"
-			"fx"			"laser"
+			"fx"			"lovebeam"
 			"dropweight"	"10"
 		}
 		"abyss"
@@ -507,12 +544,13 @@
 			"sprite"		"sprites/light_glow03.vmt"
 			"glow"			"1"
 			"dropweight"	"3"
+			"aura"			"sun"
 		}
 		"nuke"
 		{
 			"name"			"Nuke"
 			"model"			"models/celmod/phys8.mdl"
-			"skin"			"0"
+			"skin"			"6"
 			"color"			"0 0 80 255"
 			"handscale"		"1.0"
 			"handoffset"	"8 5 -2"
@@ -522,6 +560,8 @@
 			"cooldown"		"30.0"
 			"range"			"4000"
 			"dropweight"	"0"
+			"aura"			"radiation"
+			"exclusive"		"event"
 		}
 		"gold"
 		{
@@ -535,6 +575,7 @@
 			"power"			"gold"
 			"value"			"250"
 			"dropweight"	"0"
+			"exclusive"		"event"
 		}
 		"corruption"
 		{
@@ -560,6 +601,7 @@
 			"handangles"	"0 -90 0"
 			"power"			"none"
 			"dropweight"	"0"
+			"exclusive"		"event"
 		}
 		"420"
 		{
@@ -583,6 +625,7 @@
 			"handoffset"	"8 5 -2"
 			"handangles"	"0 -90 0"
 			"dropweight"	"0"
+			"exclusive"		"dig"
 		}
 		"white"
 		{
@@ -594,47 +637,7 @@
 			"handoffset"	"8 5 -2"
 			"handangles"	"0 -90 0"
 			"dropweight"	"0"
-		}
-		"magma"
-		{
-			"name"			"Magma"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"3"
-			"color"			"255 80 0 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"shot"
-			"value"			"6"
-			"cooldown"		"0.3"
-			"range"			"900"
-			"dmgtype"		"burn"
-			"ignite"		"2.0"
-			"fx"			"flame"
-			"sprite"		"sprites/flamelet1.vmt"
-			"secondary"		"fireball"
-			"secondaryvalue"	"90"
-			"secondarycooldown"	"6.0"
-			"dropweight"	"4"
-		}
-		"ember"
-		{
-			"name"			"Ember"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"6"
-			"color"			"255 140 40 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"shot"
-			"value"			"2"
-			"cooldown"		"0.12"
-			"range"			"600"
-			"dmgtype"		"burn"
-			"ignite"		"1.0"
-			"fx"			"flame"
-			"sprite"		"sprites/flamelet1.vmt"
-			"dropweight"	"14"
+			"exclusive"		"dig"
 		}
 		"inferno"
 		{
@@ -655,27 +658,8 @@
 			"secondaryvalue"	"110"
 			"secondarycooldown"	"5.0"
 			"beamcolor"		"255 90 0 255"
-			"dropweight"	"2"
-		}
-		"frost"
-		{
-			"name"			"Frost"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"2"
-			"color"			"200 230 255 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"shot"
-			"value"			"2"
-			"cooldown"		"0.2"
-			"range"			"800"
-			"dmgtype"		"drown"
-			"slow"			"1.0"
-			"fx"			"ice"
-			"sprite"		"sprites/glow04_noz.vmt"
-			"beamcolor"		"170 220 255 255"
-			"dropweight"	"14"
+			"dropweight"	"0"
+			"exclusive"		"upgrade"
 		}
 		"glacier"
 		{
@@ -692,12 +676,13 @@
 			"range"			"900"
 			"dmgtype"		"drown"
 			"slow"			"3.0"
-			"fx"			"ice"
+			"fx"			"shards"
 			"sprite"		"sprites/blueglow2.vmt"
 			"secondary"		"icestorm"
 			"secondaryvalue"	"25"
 			"secondarycooldown"	"6.0"
-			"dropweight"	"4"
+			"dropweight"	"0"
+			"exclusive"		"upgrade"
 		}
 		"tsunami"
 		{
@@ -714,172 +699,11 @@
 			"range"			"800"
 			"dmgtype"		"drown"
 			"knockback"		"500"
-			"fx"			"water"
+			"fx"			"wave"
 			"sprite"		"sprites/glow04_noz.vmt"
 			"beamcolor"		"30 100 255 255"
-			"dropweight"	"5"
-		}
-		"geyser"
-		{
-			"name"			"Geyser"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"10"
-			"color"			"80 160 255 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"magnitude"
-			"value"			"700"
-			"cooldown"		"0.8"
-			"range"			"900"
-			"fx"			"water"
-			"sprite"		"sprites/glow04_noz.vmt"
-			"beamcolor"		"80 160 255 255"
-			"dropweight"	"8"
-		}
-		"thunder"
-		{
-			"name"			"Thunder"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"10"
-			"color"			"200 200 255 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"shock"
-			"value"			"20"
-			"cooldown"		"2.0"
-			"range"			"1500"
-			"fx"			"plasma"
-			"beamcolor"		"170 190 255 255"
-			"secondary"		"bigshot"
-			"secondaryvalue"	"45"
-			"secondarycooldown"	"6.0"
-			"dropweight"	"5"
-		}
-		"spark"
-		{
-			"name"			"Spark"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"4"
-			"color"			"255 255 120 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"shock"
-			"value"			"8"
-			"cooldown"		"0.6"
-			"range"			"900"
-			"fx"			"energy"
-			"sprite"		"sprites/plasmaember.vmt"
-			"beamcolor"		"255 255 120 255"
-			"dropweight"	"14"
-		}
-		"static"
-		{
-			"name"			"Static"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"9"
-			"color"			"220 220 255 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"shot"
-			"value"			"3"
-			"cooldown"		"0.1"
-			"range"			"700"
-			"dmgtype"		"shock"
-			"fx"			"laser"
-			"beamcolor"		"220 220 255 255"
-			"dropweight"	"10"
-		}
-		"toxic"
-		{
-			"name"			"Toxic"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"5"
-			"color"			"80 255 0 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"smog"
-			"value"			"2"
-			"duration"		"6.0"
-			"cooldown"		"2.0"
-			"range"			"600"
-			"dropweight"	"6"
-		}
-		"acid"
-		{
-			"name"			"Acid"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"5"
-			"color"			"170 255 0 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"shot"
-			"value"			"4"
-			"cooldown"		"0.25"
-			"range"			"700"
-			"dmgtype"		"poison"
-			"fx"			"water"
-			"sprite"		"sprites/glow04_noz.vmt"
-			"beamcolor"		"170 255 0 255"
-			"dropweight"	"10"
-		}
-		"venom"
-		{
-			"name"			"Venom"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"13"
-			"color"			"60 200 60 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"shot"
-			"value"			"15"
-			"cooldown"		"1.2"
-			"range"			"1200"
-			"dmgtype"		"poison"
-			"slow"			"1.0"
-			"fx"			"orb"
-			"sprite"		"sprites/glow04_noz.vmt"
-			"beamcolor"		"60 255 60 255"
-			"dropweight"	"5"
-		}
-		"sandstorm"
-		{
-			"name"			"Sandstorm"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"11"
-			"color"			"220 190 120 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"spray"
-			"cooldown"		"0.1"
-			"range"			"700"
-			"fx"			"smoke"
-			"sprite"		"sprites/steam1.vmt"
-			"speed"			"1.2"
-			"dropweight"	"8"
-		}
-		"ash"
-		{
-			"name"			"Ash"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"12"
-			"color"			"90 90 90 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"smog"
-			"value"			"1"
-			"duration"		"10.0"
-			"cooldown"		"2.5"
-			"range"			"600"
-			"dropweight"	"8"
+			"dropweight"	"0"
+			"exclusive"		"upgrade"
 		}
 		"ruby"
 		{
@@ -890,14 +714,9 @@
 			"handscale"		"1.0"
 			"handoffset"	"8 5 -2"
 			"handangles"	"0 -90 0"
-			"power"			"shot"
-			"value"			"6"
-			"cooldown"		"0.15"
-			"range"			"2000"
-			"dmgtype"		"energy"
-			"fx"			"laser"
-			"beamcolor"		"255 0 60 255"
-			"dropweight"	"8"
+			"power"			"none"
+			"glow"			"1"
+			"dropweight"	"3"
 		}
 		"emerald"
 		{
@@ -908,14 +727,9 @@
 			"handscale"		"1.0"
 			"handoffset"	"8 5 -2"
 			"handangles"	"0 -90 0"
-			"power"			"shot"
-			"value"			"6"
-			"cooldown"		"0.15"
-			"range"			"2000"
-			"dmgtype"		"energy"
-			"fx"			"laser"
-			"beamcolor"		"0 255 100 255"
-			"dropweight"	"8"
+			"power"			"none"
+			"glow"			"1"
+			"dropweight"	"3"
 		}
 		"sapphire"
 		{
@@ -926,14 +740,9 @@
 			"handscale"		"1.0"
 			"handoffset"	"8 5 -2"
 			"handangles"	"0 -90 0"
-			"power"			"shot"
-			"value"			"6"
-			"cooldown"		"0.15"
-			"range"			"2000"
-			"dmgtype"		"energy"
-			"fx"			"laser"
-			"beamcolor"		"0 90 255 255"
-			"dropweight"	"8"
+			"power"			"none"
+			"glow"			"1"
+			"dropweight"	"3"
 		}
 		"amethyst"
 		{
@@ -944,149 +753,9 @@
 			"handscale"		"1.0"
 			"handoffset"	"8 5 -2"
 			"handangles"	"0 -90 0"
-			"power"			"shot"
-			"value"			"6"
-			"cooldown"		"0.15"
-			"range"			"2000"
-			"dmgtype"		"energy"
-			"fx"			"laser"
-			"beamcolor"		"170 0 255 255"
-			"dropweight"	"8"
-		}
-		"pulse"
-		{
-			"name"			"Pulse"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"7"
-			"color"			"0 200 255 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"shot"
-			"value"			"8"
-			"cooldown"		"0.3"
-			"range"			"1500"
-			"dmgtype"		"dissolve"
-			"fx"			"energy"
-			"sprite"		"sprites/plasmaember.vmt"
-			"beamcolor"		"0 200 255 255"
-			"dropweight"	"6"
-		}
-		"ion"
-		{
-			"name"			"Ion"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"10"
-			"color"			"120 255 255 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"shot"
-			"value"			"35"
-			"cooldown"		"2.5"
-			"range"			"3000"
-			"dmgtype"		"dissolve"
-			"fx"			"plasma"
-			"beamcolor"		"120 255 255 255"
-			"dropweight"	"3"
-		}
-		"nova"
-		{
-			"name"			"Nova"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"0"
-			"color"			"255 255 220 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"blast"
-			"value"			"60"
-			"cooldown"		"5.0"
-			"range"			"1500"
-			"fx"			"orb"
-			"sprite"		"sprites/light_glow03.vmt"
+			"power"			"none"
 			"glow"			"1"
 			"dropweight"	"3"
-		}
-		"supernova"
-		{
-			"name"			"Supernova"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"0"
-			"color"			"255 240 160 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"blast"
-			"value"			"140"
-			"cooldown"		"12.0"
-			"range"			"2500"
-			"fx"			"orb"
-			"sprite"		"sprites/light_glow03.vmt"
-			"glow"			"1"
-			"dropweight"	"1"
-		}
-		"eclipse"
-		{
-			"name"			"Eclipse"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"12"
-			"color"			"20 20 40 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"flash"
-			"cooldown"		"8.0"
-			"duration"		"4.0"
-			"range"			"800"
-			"sprite"		"sprites/purpleglow1.vmt"
-			"dropweight"	"2"
-		}
-		"aurora"
-		{
-			"name"			"Aurora"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"13"
-			"color"			"255 255 255 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"spray"
-			"cooldown"		"0.1"
-			"range"			"2000"
-			"fx"			"rainbow"
-			"dropweight"	"5"
-		}
-		"comet"
-		{
-			"name"			"Comet"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"3"
-			"color"			"255 160 60 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"blast"
-			"value"			"45"
-			"cooldown"		"3.0"
-			"range"			"2000"
-			"fx"			"flame"
-			"sprite"		"sprites/flamelet1.vmt"
-			"dropweight"	"5"
-		}
-		"rocket"
-		{
-			"name"			"Rocket"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"3"
-			"color"			"255 60 0 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"jump"
-			"value"			"650"
-			"falldamage"	"0.5"
-			"dropweight"	"6"
 		}
 		"bunny"
 		{
@@ -1102,20 +771,6 @@
 			"speed"			"1.2"
 			"dropweight"	"12"
 		}
-		"kangaroo"
-		{
-			"name"			"Kangaroo"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"11"
-			"color"			"200 140 80 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"jump"
-			"value"			"520"
-			"falldamage"	"0.6"
-			"dropweight"	"8"
-		}
 		"feather"
 		{
 			"name"			"Feather"
@@ -1129,115 +784,6 @@
 			"value"			"90"
 			"jumpboost"		"260"
 			"dropweight"	"12"
-		}
-		"parachute"
-		{
-			"name"			"Parachute"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"11"
-			"color"			"120 160 60 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"feather"
-			"value"			"150"
-			"dropweight"	"12"
-		}
-		"moon"
-		{
-			"name"			"Moon"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"8"
-			"color"			"200 200 210 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"gravity"
-			"value"			"0.4"
-			"dropweight"	"8"
-		}
-		"jupiter"
-		{
-			"name"			"Jupiter"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"14"
-			"color"			"200 150 100 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"gravity"
-			"value"			"1.6"
-			"speed"			"0.9"
-			"falldamage"	"0.5"
-			"dropweight"	"4"
-		}
-		"lightning"
-		{
-			"name"			"Lightning"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"4"
-			"color"			"255 255 0 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"speed"
-			"value"			"1.8"
-			"jumpboost"		"260"
-			"dropweight"	"6"
-		}
-		"cheetah"
-		{
-			"name"			"Cheetah"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"11"
-			"color"			"230 180 60 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"speed"
-			"value"			"1.6"
-			"dropweight"	"10"
-		}
-		"marathon"
-		{
-			"name"			"Marathon"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"14"
-			"color"			"100 200 255 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"sprint"
-			"speed"			"1.15"
-			"dropweight"	"12"
-		}
-		"ghost"
-		{
-			"name"			"Ghost"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"0"
-			"color"			"200 255 255 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"cloak"
-			"value"			"40"
-			"speed"			"1.2"
-			"dropweight"	"4"
-		}
-		"shadow"
-		{
-			"name"			"Shadow"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"12"
-			"color"			"20 20 20 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"cloak"
-			"value"			"70"
-			"falldamage"	"0.5"
-			"dropweight"	"5"
 		}
 		"warp"
 		{
@@ -1254,65 +800,6 @@
 			"beamcolor"		"0 255 200 255"
 			"dropweight"	"4"
 		}
-		"rift"
-		{
-			"name"			"Rift"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"9"
-			"color"			"150 0 255 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"portal"
-			"cooldown"		"1.0"
-			"range"			"8000"
-			"beamcolor"		"150 0 255 255"
-			"dropweight"	"3"
-		}
-		"titan"
-		{
-			"name"			"Titan"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"11"
-			"color"			"130 130 140 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"resist"
-			"value"			"0.4"
-			"speed"			"0.85"
-			"dropweight"	"3"
-		}
-		"guardian"
-		{
-			"name"			"Guardian"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"7"
-			"color"			"80 180 255 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"armor"
-			"value"			"4"
-			"dropweight"	"6"
-		}
-		"medic"
-		{
-			"name"			"Medic"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"0"
-			"color"			"255 255 255 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"medic"
-			"value"			"10"
-			"cooldown"		"0.3"
-			"range"			"1500"
-			"fx"			"laser"
-			"beamcolor"		"255 80 80 255"
-			"dropweight"	"6"
-		}
 		"lifeline"
 		{
 			"name"			"Lifeline"
@@ -1326,71 +813,6 @@
 			"value"			"4"
 			"dropweight"	"5"
 		}
-		"vampire"
-		{
-			"name"			"Vampire"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"3"
-			"color"			"140 0 0 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"drain"
-			"value"			"1"
-			"speed"			"1.4"
-			"jumpboost"		"300"
-			"playercolor"	"160 120 120 255"
-			"dropweight"	"3"
-		}
-		"tank"
-		{
-			"name"			"Tank"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"12"
-			"color"			"90 110 60 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"resist"
-			"value"			"0.6"
-			"falldamage"	"0.2"
-			"dropweight"	"6"
-		}
-		"gravitron"
-		{
-			"name"			"Gravitron"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"9"
-			"color"			"255 200 0 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"magnitude"
-			"value"			"1600"
-			"cooldown"		"1.0"
-			"range"			"2500"
-			"fx"			"plasma"
-			"beamcolor"		"255 200 0 255"
-			"dropweight"	"3"
-		}
-		"tornado"
-		{
-			"name"			"Tornado"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"8"
-			"color"			"180 180 180 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"magnitude"
-			"value"			"1000"
-			"cooldown"		"0.4"
-			"range"			"1200"
-			"fx"			"smoke"
-			"sprite"		"sprites/steam1.vmt"
-			"speed"			"1.2"
-			"dropweight"	"5"
-		}
 		"diamond"
 		{
 			"name"			"Diamond"
@@ -1400,36 +822,9 @@
 			"handscale"		"1.0"
 			"handoffset"	"8 5 -2"
 			"handangles"	"0 -90 0"
-			"power"			"gold"
-			"value"			"500"
+			"power"			"none"
 			"glow"			"1"
-			"dropweight"	"0"
-		}
-		"platinum"
-		{
-			"name"			"Platinum"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"1"
-			"color"			"229 228 226 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"gold"
-			"value"			"350"
 			"dropweight"	"1"
-		}
-		"bronze"
-		{
-			"name"			"Bronze"
-			"model"			"models/celmod/phys8.mdl"
-			"skin"			"11"
-			"color"			"205 127 50 255"
-			"handscale"		"1.0"
-			"handoffset"	"8 5 -2"
-			"handangles"	"0 -90 0"
-			"power"			"gold"
-			"value"			"100"
-			"dropweight"	"6"
 		}
 		"party"
 		{
@@ -1485,7 +880,7 @@
 			"name"			"Cyan"
 			"model"			"models/celmod/phys8.mdl"
 			"skin"			"0"
-			"color"			"0 255 255 255"
+			"color"			"30 140 255 255"
 			"handscale"		"1.0"
 			"handoffset"	"8 5 -2"
 			"handangles"	"0 -90 0"
@@ -1504,18 +899,212 @@
 			"power"			"none"
 			"dropweight"	"8"
 		}
-		"matrix"
+		// Christmas gift items (only from the Christmas gift on December 25th: dropweight 0).
+		"xmasred"
 		{
-			"name"			"Matrix"
+			"name"			"Red"
 			"model"			"models/celmod/phys8.mdl"
-			"skin"			"9"
+			"skin"			"0"
+			"color"			"255 0 0 255"
+			"handscale"		"1.0"
+			"handoffset"	"8 5 -2"
+			"handangles"	"0 -90 0"
+			"power"			"none"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+			"exclusive"		"christmas"
+		}
+		"xmasgreen"
+		{
+			"name"			"Green"
+			"model"			"models/celmod/phys8.mdl"
+			"skin"			"0"
 			"color"			"0 255 0 255"
 			"handscale"		"1.0"
 			"handoffset"	"8 5 -2"
 			"handangles"	"0 -90 0"
 			"power"			"none"
-			"glow"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+			"exclusive"		"christmas"
+		}
+		// Candy canes: anyone pressing E on one gets 25 health ("usehealth"), as often as they like.
+		// Skins of candycane.mdl: 0 red and orange, 1 green, 2 red.
+		"caneorange"
+		{
+			"name"			"Orange Candy Cane"
+			"model"			"models/celmod/candycane.mdl"
+			"skin"			"0"
+			"color"			"255 255 255 255"
+			"power"			"none"
+			"usehealth"		"25"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+			"exclusive"		"christmas"
+		}
+		"canegreen"
+		{
+			"name"			"Green Candy Cane"
+			"model"			"models/celmod/candycane.mdl"
+			"skin"			"1"
+			"color"			"255 255 255 255"
+			"power"			"none"
+			"usehealth"		"25"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+			"exclusive"		"christmas"
+		}
+		"canered"
+		{
+			"name"			"Red Candy Cane"
+			"model"			"models/celmod/candycane.mdl"
+			"skin"			"2"
+			"color"			"255 255 255 255"
+			"power"			"none"
+			"usehealth"		"25"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+			"exclusive"		"christmas"
+		}
+		// The shimmering core skin. It shoots small coreballs.
+		"core"
+		{
+			"name"			"Core"
+			"model"			"models/celmod/phys8.mdl"
+			"skin"			"10"
+			"color"			"255 255 255 255"
+			"handscale"		"1.0"
+			"handoffset"	"8 5 -2"
+			"handangles"	"0 -90 0"
+			"power"			"shot"
+			"value"			"25"
+			"cooldown"		"1.5"
+			"range"			"3000"
+			"fx"			"model"
+			"sprite"		"models/celmod/coreball_small.mdl"
+			"beamcolor"		"200 200 255 255"
 			"dropweight"	"4"
+		}
+		// Decorative: a red wireframe, no power.
+		"vector"
+		{
+			"name"			"Vector"
+			"model"			"models/celmod/phys8.mdl"
+			"skin"			"9"
+			"color"			"255 0 0 255"
+			"handscale"		"1.0"
+			"handoffset"	"8 5 -2"
+			"handangles"	"0 -90 0"
+			"power"			"none"
+			"dropweight"	"4"
+		}
+		// Decorative: the shifting rainbow skin, no power.
+		"spectral"
+		{
+			"name"			"Spectral"
+			"model"			"models/celmod/phys8.mdl"
+			"skin"			"13"
+			"color"			"255 255 255 255"
+			"handscale"		"1.0"
+			"handoffset"	"8 5 -2"
+			"handangles"	"0 -90 0"
+			"power"			"none"
+			"dropweight"	"4"
+		}
+		// Decorative: rusted tram metal, no power.
+		"metal"
+		{
+			"name"			"Metal"
+			"model"			"models/celmod/phys8.mdl"
+			"skin"			"11"
+			"color"			"255 255 255 255"
+			"handscale"		"1.0"
+			"handoffset"	"8 5 -2"
+			"handangles"	"0 -90 0"
+			"power"			"none"
+			"dropweight"	"4"
+		}
+		// Decorative: the grey combine shield skin, no power.
+		// Decorative: rusted tram metal, no power.
+		"rust"
+		{
+			"name"			"Rust"
+			"model"			"models/celmod/phys8.mdl"
+			"skin"			"11"
+			"color"			"210 110 80 255"
+			"handscale"		"1.0"
+			"handoffset"	"8 5 -2"
+			"handangles"	"0 -90 0"
+			"power"			"none"
+			"dropweight"	"4"
+		}
+		"force"
+		{
+			"name"			"Force"
+			"model"			"models/celmod/phys8.mdl"
+			"skin"			"7"
+			"color"			"255 255 255 255"
+			"handscale"		"1.0"
+			"handoffset"	"8 5 -2"
+			"handangles"	"0 -90 0"
+			"power"			"none"
+			"dropweight"	"4"
+		}
+		// Decorative: a deep violet, no power.
+		"curse"
+		{
+			"name"			"Curse"
+			"model"			"models/celmod/phys8.mdl"
+			"skin"			"0"
+			"color"			"120 0 255 255"
+			"handscale"		"1.0"
+			"handoffset"	"8 5 -2"
+			"handangles"	"0 -90 0"
+			"power"			"none"
+			"dropweight"	"4"
+		}
+		// Decorative: the animated nuke skin in magenta, no power.
+		"dragon"
+		{
+			"name"			"Dragon"
+			"model"			"models/celmod/phys8.mdl"
+			"skin"			"6"
+			"color"			"255 0 255 255"
+			"handscale"		"1.0"
+			"handoffset"	"8 5 -2"
+			"handangles"	"0 -90 0"
+			"power"			"none"
+			"dropweight"	"4"
+		}
+		// Decorative: never drawn (phys8_inv.mdl, $no_draw materials) but still casts shadows; a faint copy shows up close, no power.
+		"invisible"
+		{
+			"name"			"Invisible"
+			"model"			"models/celmod/phys8_inv.mdl"
+			"skin"			"0"
+			"color"			"255 255 255 255"
+			"nearmodel"		"models/celmod/phys8.mdl"
+			"materials"		"materials/models/celmod/emblemi"
+			"nearalpha"		"45"
+			"neardistance"	"96"
+			"handscale"		"1.0"
+			"handoffset"	"8 5 -2"
+			"handangles"	"0 -90 0"
+			"power"			"none"
+			"dropweight"	"4"
+		}
+		"phantom"
+		{
+			"name"			"Phantom"
+			"model"			"models/celmod/phys8.mdl"
+			"skin"			"0"
+			"color"			"255 255 255 140"
+			"handscale"		"1.0"
+			"handoffset"	"8 5 -2"
+			"handangles"	"0 -90 0"
+			"power"			"phase"
+			"playercolor"	"60 255 120 120"
+			"dropweight"	"3"
 		}
 	}
 
@@ -1540,9 +1129,10 @@
 			"name"			"Fire Sword"
 			"model"			"models/celweps/a5.mdl"
 			"customgun"		"weapon_cm_firesword"
-			"hitdamage"		"30"
+			"hitdamage"		"35"
 			"refire"		"0.5"
-			"ignite"		"3.0"
+			"ignite"		"5.0"
+			"beamcolor"		"255 120 30 255"
 			"base"			"weapon_crowbar"
 			"color"			"255 255 255 255"
 			"handscale"		"1.0"
@@ -1555,9 +1145,10 @@
 			"name"			"Ice Blade"
 			"model"			"models/celweps/a1.mdl"
 			"customgun"		"weapon_cm_iceblade"
-			"hitdamage"		"15"
+			"hitdamage"		"20"
 			"refire"		"0.4"
-			"slow"			"1.5"
+			"freeze"		"2.0"
+			"beamcolor"		"170 220 255 255"
 			"base"			"weapon_crowbar"
 			"color"			"255 255 255 255"
 			"handscale"		"1.0"
@@ -1570,8 +1161,10 @@
 			"name"			"Power Blade"
 			"model"			"models/celweps/a1.mdl"
 			"customgun"		"weapon_cm_powerblade"
-			"hitdamage"		"40"
-			"refire"		"0.7"
+			"hitdamage"		"85"
+			"refire"		"0.8"
+			"hitrange"		"90"
+			"beamcolor"		"255 230 150 255"
 			"base"			"weapon_crowbar"
 			"color"			"255 255 255 255"
 			"handscale"		"1.0"
@@ -1611,10 +1204,67 @@
 		"sunflower"
 		{
 			"name"			"Sunflower"
-			"model"			"models/props_lab/cactus.mdl"
+			"model"			"models/celweps/a11.mdl"
+			"customgun"		"weapon_cm_sunflower"
+			"hitdamage"		"15"
+			"refire"		"0.4"
 			"base"			"weapon_stunstick"
-			"damage"		"1.5"
-			"color"			"255 230 60 255"
+			"color"			"255 255 255 255"
+			"handscale"		"1.0"
+			"handoffset"	"0 0 0"
+			"handangles"	"0 0 0"
+			"dropweight"	"0"
+		}
+		"sawgun"
+		{
+			"name"			"Saw Gun"
+			"model"			"models/celweps/a10.mdl"
+			"customgun"		"weapon_cm_sawgun"
+			"attack"		"saw"
+			"hitdamage"		"30"
+			"refire"		"0.4"
+			"beamcolor"		"255 200 0 255"
+			"projectilespeed"	"1800"
+			"projectile"	"models/props_junk/sawblade001a.mdl"
+			"base"			"weapon_smg1"
+			"color"			"255 255 255 255"
+			"handscale"		"1.0"
+			"handoffset"	"0 0 0"
+			"handangles"	"0 0 0"
+			"dropweight"	"0"
+		}
+		"meloncannon"
+		{
+			"name"			"Melon Launcher"
+			"model"			"models/celweps/a9.mdl"
+			"customgun"		"weapon_cm_meloncannon"
+			"attack"		"melon"
+			"refire"		"0.9"
+			"hitdamage"		"120"
+			"projectilespeed"	"1000"
+			"fuse"			"2.0"
+			"projectile"	"models/props_junk/watermelon01.mdl"
+			"base"			"weapon_rpg"
+			"color"			"255 255 255 255"
+			"handscale"		"1.0"
+			"handoffset"	"0 0 0"
+			"handangles"	"0 0 0"
+			"dropweight"	"0"
+		}
+		"bladebow"
+		{
+			"name"			"Blade Bow"
+			"model"			"models/celweps/a6.mdl"
+			"customgun"		"weapon_cm_bladebow"
+			"attack"		"blade"
+			"hitdamage"		"45"
+			"refire"		"1.0"
+			"slow"			"1.0"
+			"beamcolor"		"140 200 255 255"
+			"projectilespeed"	"2600"
+			"projectile"	"models/celweps/a1.mdl"
+			"base"			"weapon_crossbow"
+			"color"			"255 255 255 255"
 			"handscale"		"1.0"
 			"handoffset"	"0 0 0"
 			"handangles"	"0 0 0"
@@ -1631,6 +1281,9 @@
 		"mossman"	{ "name" "Mossman"		"model" "models/mossman.mdl"		"price" "75000" }
 		"breen"		{ "name" "Dr. Breen"	"model" "models/breen.mdl"			"price" "150000" }
 		"gman"		{ "name" "G-Man"		"model" "models/gman_high.mdl"		"price" "500000" }
+		"freeman"	{ "name" "Gordon Freeman"	"model" "models/humans/freeman/freeman.mdl"	"price" "750000" }
+		// Halloween shop exclusive. Its textures must be on the server: add "materials" "<folder>" if they are not sent.
+		"skeleton"	{ "name" "Skeleton"		"model" "models/humans/skeleton/skeleton.mdl"	"price" "1000000"	"season" "halloween" }
 		"admin"		{ "name" "Combine Elite"	"model" "models/combine_super_soldier.mdl"	"price" "0"	"admin" "b" }
 	}
 
@@ -1677,7 +1330,7 @@
 			"color"			"255 255 255 255"
 			"offset"		"-1 0 6"
 			"angles"		"0 0 0"
-			"scale"			"0.6"
+			"scale"			"1.0"
 			"dropweight"	"1"
 		}
 		"partyhat"
@@ -1701,6 +1354,297 @@
 			"angles"		"0 0 0"
 			"scale"			"1"
 			"dropweight"	"2"
+			"xmasgift"		"1"
+		}
+		// Every colour of Santa hat (the 25 skins of santahat.mdl). The Christmas gift can hold any of them.
+		"santahat_1"
+		{
+			"name"			"Red & Orange Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"1"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_2"
+		{
+			"name"			"Red & Blue Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"2"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_3"
+		{
+			"name"			"Red & Yellow Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"3"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_4"
+		{
+			"name"			"Red Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"4"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_6"
+		{
+			"name"			"Green & Orange Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"6"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_7"
+		{
+			"name"			"Green & Blue Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"7"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_8"
+		{
+			"name"			"Green & Yellow Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"8"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_9"
+		{
+			"name"			"Green & Red Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"9"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_10"
+		{
+			"name"			"Blue & Green Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"10"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_11"
+		{
+			"name"			"Blue & Orange Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"11"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_12"
+		{
+			"name"			"Blue Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"12"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_13"
+		{
+			"name"			"Blue & Yellow Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"13"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_14"
+		{
+			"name"			"Blue & Red Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"14"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_15"
+		{
+			"name"			"Yellow & Green Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"15"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_16"
+		{
+			"name"			"Yellow & Orange Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"16"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_17"
+		{
+			"name"			"Yellow & Blue Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"17"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_18"
+		{
+			"name"			"Yellow Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"18"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_19"
+		{
+			"name"			"Yellow & Red Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"19"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_20"
+		{
+			"name"			"Orange & Green Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"20"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_21"
+		{
+			"name"			"Orange Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"21"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_22"
+		{
+			"name"			"Orange & Blue Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"22"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_23"
+		{
+			"name"			"Orange & Yellow Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"23"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		"santahat_24"
+		{
+			"name"			"Orange & Red Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"24"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
+		}
+		// The same hat in green (skin 5 of santahat.mdl). From the Christmas gift.
+		"santahat_green"
+		{
+			"name"			"Green Santa Hat"
+			"model"			"models/celmod/santahat.mdl"
+			"skin"			"5"
+			"color"			"255 255 255 255"
+			"offset"		"-1 2.5 7"
+			"angles"		"0 0 0"
+			"scale"			"1"
+			"dropweight"	"0"
+			"xmasgift"		"1"
 		}
 		"cone"
 		{
@@ -1710,7 +1654,7 @@
 			"color"			"255 255 255 255"
 			"offset"		"-3 0 14"
 			"angles"		"0 0 0"
-			"scale"			"0.7"
+			"scale"			"1.0"
 			"dropweight"	"4"
 		}
 		"pot"
@@ -1732,7 +1676,7 @@
 			"color"			"255 255 255 255"
 			"offset"		"-3 0 9"
 			"angles"		"0 0 0"
-			"scale"			"0.8"
+			"scale"			"1.0"
 			"dropweight"	"2"
 		}
 	}

@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
 require __DIR__ . '/includes/updates.php';
+require __DIR__ . '/includes/drops.php';
 
 if (!cm_is_admin()) {
 	http_response_code(403);
@@ -10,7 +11,7 @@ if (!cm_is_admin()) {
 	exit;
 }
 
-$tab = in_array($_GET['tab'] ?? '', ['orders', 'suggestions', 'announcements', 'updates', 'season'], true) ? $_GET['tab'] : 'orders';
+$tab = in_array($_GET['tab'] ?? '', ['orders', 'suggestions', 'announcements', 'updates', 'season', 'drops'], true) ? $_GET['tab'] : 'orders';
 $db = cm_db();
 
 // Announcements: written here, shown in chat by the game server (celmod-database polls cm_announcements).
@@ -101,6 +102,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db && isset($_POST['update'])) {
 	exit;
 }
 
+// Emblem drops: which emblems can drop (cm_drop_pool) and scheduled drops (cm_drop_schedule).
+// The game server's celmod-database reads both about every 30 seconds.
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db && isset($_POST['drops'])) {
+	$action = (string)$_POST['drops'];
+	if (!cm_csrf_check()) {
+		cm_flash('Your session expired, please try again.', 'bloody');
+	} else {
+		try {
+			if ($action === 'pool' || $action === 'reset') {
+				// Only emblems that differ from collectibles.txt get a row, so a later change to the file still counts.
+				$emblems = cm_drop_emblems();
+				$on = array_flip(array_map('strtolower', array_map('strval', (array)($_POST['drop'] ?? []))));
+				$set = $db->prepare('INSERT INTO cm_drop_pool (emblem_id, droppable, updated_by) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE droppable = VALUES(droppable), updated_by = VALUES(updated_by), updated_at = NOW()');
+				$clear = $db->prepare('DELETE FROM cm_drop_pool WHERE emblem_id = ?');
+				$changed = 0;
+				$db->beginTransaction();
+				if ($action === 'reset') {
+					$db->exec('DELETE FROM cm_drop_pool');
+				} else {
+					foreach ($emblems as $id => $e) {
+						$want = isset($on[$id]);
+						if ($want === $e['default']) {
+							$clear->execute([$id]);
+						} else {
+							$set->execute([$id, $want ? 1 : 0, cm_user()['steamid64']]);
+							$changed++;
+						}
+					}
+				}
+				$db->commit();
+				cm_flash($action === 'reset' ? 'Every emblem is back to its collectibles.txt setting.' : 'Drop list saved (' . $changed . ' emblem' . ($changed === 1 ? '' : 's') . ' changed from collectibles.txt). The server picks it up within about 30 seconds.', 'h');
+			} elseif ($action === 'schedule' || $action === 'now') {
+				$boxes = max(1, min(30, (int)($_POST['boxes'] ?? 5)));
+				$repeat = $action === 'now' ? 0 : max(0, min(10080, (int)($_POST['repeat_minutes'] ?? 0)));
+				$server = (string)($_POST['server_id'] ?? '');
+				$note = mb_substr(trim(preg_replace('/\s+/u', ' ', (string)($_POST['note'] ?? ''))), 0, 128);
+				$when = trim((string)($_POST['run_at'] ?? ''));
+				$t = $when === '' ? false : strtotime($when);
+				if ($action === 'schedule' && $when !== '' && !$t) {
+					cm_flash('That date and time could not be read.', 'bloody');
+				} else {
+					// No time (or Drop now) means as soon as the server next checks.
+					$runAt = ($action === 'now' || !$t) ? null : date('Y-m-d H:i:s', $t);
+					$st = $db->prepare('INSERT INTO cm_drop_schedule (run_at, boxes, repeat_minutes, server_id, note, created_by) VALUES (COALESCE(?, NOW()), ?, ?, ?, ?, ?)');
+					$st->execute([$runAt, $boxes, $repeat, $server === '' ? null : (int)$server, $note, cm_user()['steamid64']]);
+					cm_flash($runAt === null ? 'Drop of ' . $boxes . ' box' . ($boxes === 1 ? '' : 'es') . ' sent: it starts within about 30 seconds.' : 'Drop scheduled.', 'h');
+				}
+			} elseif ($action === 'toggle') {
+				$db->prepare('UPDATE cm_drop_schedule SET active = 1 - active WHERE id = ?')->execute([(int)($_POST['id'] ?? 0)]);
+				cm_flash('Scheduled drop updated.', 'h');
+			} elseif ($action === 'delete') {
+				$db->prepare('DELETE FROM cm_drop_schedule WHERE id = ?')->execute([(int)($_POST['id'] ?? 0)]);
+				cm_flash('Scheduled drop deleted.', 'h');
+			}
+		} catch (Throwable $e) {
+			if ($db->inTransaction()) {
+				$db->rollBack();
+			}
+			cm_flash('The database refused that: the website needs INSERT, UPDATE and DELETE on cm_drop_pool and cm_drop_schedule, and the game server must have created the tables (see the README).', 'bloody');
+		}
+	}
+	header('Location: admin.php?tab=drops');
+	exit;
+}
+
 // Seasonal theme: for everyone (stored in cm_site_settings), or a preview only the admin sees.
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['season'])) {
 	$choice = (string)$_POST['season'];
@@ -151,6 +217,7 @@ cm_page_start('|CelMod| - Admin', '', ['wide' => true]);
 	<a href="?tab=announcements" class="<?= $tab === 'announcements' ? 'active' : '' ?>">Announcements</a>
 	<a href="?tab=updates" class="<?= $tab === 'updates' ? 'active' : '' ?>">Updates</a>
 	<a href="?tab=season" class="<?= $tab === 'season' ? 'active' : '' ?>">Seasonal Theme</a>
+	<a href="?tab=drops" class="<?= $tab === 'drops' ? 'active' : '' ?>">Emblem Drops</a>
 	<a href="check.php">Setup Check</a>
 </div>
 
@@ -291,6 +358,163 @@ On <span class="h">automatic</span> the look follows the game server: when a sea
 <tr><td><b><?= h($s['name']) ?></b></td><td><?= h($s['start'] . ' - ' . $s['end']) ?></td><td><?= cm_season_in_dates($s) ? '<span class="grassy"><b>Open now</b></span>' : h(date('F j, Y', $t)) ?></td></tr>
 <?php endforeach; ?>
 </table>
+
+<?php elseif ($tab === 'drops'):
+	$emblems = cm_drop_emblems();
+	$overrides = [];
+	$poolOk = true;
+	try {
+		foreach ($db ? $db->query('SELECT emblem_id, droppable FROM cm_drop_pool')->fetchAll(PDO::FETCH_ASSOC) : [] as $r) {
+			$overrides[strtolower($r['emblem_id'])] = (int)$r['droppable'] === 1;
+		}
+		$schedule = $db ? $db->query('SELECT d.*, p.name FROM cm_drop_schedule d LEFT JOIN cm_players p ON p.steamid64 = d.created_by ORDER BY d.active DESC, d.run_at, d.id DESC LIMIT 100')->fetchAll(PDO::FETCH_ASSOC) : [];
+	} catch (Throwable $e) {
+		$poolOk = false;
+		$schedule = [];
+	}
+	$servers = $db ? cm_rows('SELECT server_id, hostname FROM cm_servers ORDER BY server_id') : [];
+	$tiers = array_fill(0, count(CM_RARITIES), []);
+	foreach ($emblems as $id => $e) {
+		$e['on'] = $overrides[$id] ?? $e['default'];
+		$e['changed'] = isset($overrides[$id]) && $overrides[$id] !== $e['default'];
+		$tiers[$e['rarity']][$id] = $e;
+	}
+	foreach ($tiers as &$list) {
+		uasort($list, static fn ($a, $b) => strcasecmp($a['name'], $b['name']));
+	}
+	unset($list);
+	$tierChances = ['60%', '25%', '10%', '4%', '1%'];
+?>
+<p class="notice">Emblem boxes fall from the sky during a drop. Each box first rolls a rarity
+(<?= implode(', ', array_map(static fn ($n, $c) => h($n) . ' ' . $c, CM_RARITIES, $tierChances)) ?> by default,
+<span class="h">cm_drop_tier_chances</span>), then picks one of the ticked emblems of that rarity. Untick an emblem to keep it
+out of drops (for event exclusives), or tick one that collectibles.txt leaves out. The server picks up changes within
+about 30 seconds. Times use the database server's clock.</p>
+
+<?php if (!$poolOk): ?>
+<p class="flash bloody">The drop tables aren't there yet. They are created by the game server's <span class="h">celmod-database</span>
+the next time it connects (or run <span class="h">sql/schema.sql</span>), and the website needs the grants in the README.</p>
+<?php endif; ?>
+
+<div class="admin-grid">
+<form method="post" class="panel" style="text-align:left">
+	<input type="hidden" name="csrf" value="<?= h(cm_csrf_token()) ?>">
+	<p style="margin:0 0 6px"><b class="celColor">Schedule a drop</b></p>
+	<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+		<label>Boxes <input type="number" name="boxes" min="1" max="30" value="5" style="width:55px"></label>
+		<label>At <input type="datetime-local" name="run_at"></label>
+		<label>Repeat every <input type="number" name="repeat_minutes" min="0" max="10080" value="0" style="width:65px"> min <span class="muted">(0 = once)</span></label>
+		<label>Server <select name="server_id">
+			<option value="">All servers</option>
+			<?php foreach ($servers as $sv): ?>
+			<option value="<?= (int)$sv['server_id'] ?>"><?= h('#' . $sv['server_id'] . ' ' . $sv['hostname']) ?></option>
+			<?php endforeach; ?>
+		</select></label>
+		<input name="note" maxlength="128" placeholder="Note (only admins see it)" class="kvnote" style="flex:1;min-width:160px">
+	</div>
+	<div style="margin-top:8px">
+		<button class="cmbutton go" name="drops" value="schedule">Schedule</button>
+		<button class="cmbutton" name="drops" value="now" title="Starts within about 30 seconds">Drop now</button>
+		<span class="muted">No time = as soon as the server checks. A drop needs a living player under open sky.</span>
+	</div>
+</form>
+<div class="panel" style="text-align:left">
+	<p style="margin:0 0 6px"><b class="celColor">In the drop pool</b></p>
+	<table class="cmtable" style="margin:0">
+	<tr><th>Rarity</th><th class="num">Can drop</th><th class="num">Chance</th></tr>
+	<?php foreach ($tiers as $r => $list): $n = count(array_filter($list, static fn ($e) => $e['on'])); ?>
+	<tr><td><span class="rarity r<?= $r ?>"><?= h(CM_RARITIES[$r]) ?></span></td><td class="num"><?= $n ?> / <?= count($list) ?></td><td class="num"><?= $n ? $tierChances[$r] : '<span class="muted" title="Nothing of this rarity can drop, so its rolls fall to the next rarity down">-</span>' ?></td></tr>
+	<?php endforeach; ?>
+	</table>
+</div>
+</div>
+
+<div class="table-scroll">
+<table class="cmtable">
+<tr><th>#</th><th>When</th><th class="num">Boxes</th><th>Repeats</th><th>Last run</th><th>By</th><th></th></tr>
+<?php if (!$schedule): ?>
+<tr><td colspan="7" class="muted">No drops scheduled.</td></tr>
+<?php endif; ?>
+<?php foreach ($schedule as $d): ?>
+<tr<?= $d['active'] ? '' : ' class="muted"' ?>>
+	<td><?= (int)$d['id'] ?></td>
+	<td style="text-align:left"><?= $d['active'] ? h($d['run_at']) : ($d['repeat_minutes'] ? 'paused' : 'done') ?><?= $d['note'] !== '' ? '<br><span class="muted">' . h($d['note']) . '</span>' : '' ?></td>
+	<td class="num"><?= (int)$d['boxes'] ?></td>
+	<td><?= $d['repeat_minutes'] ? 'every ' . h(cm_duration((int)$d['repeat_minutes'] * 60)) : 'once' ?><br><span class="muted"><?= $d['server_id'] === null ? 'all servers' : 'server #' . (int)$d['server_id'] ?></span></td>
+	<td><?= $d['last_run'] ? h(cm_ago($d['last_run'])) : '<span class="muted">never</span>' ?></td>
+	<td><?= h($d['name'] ?? ($d['created_by'] ?? '')) ?></td>
+	<td>
+		<form method="post" style="display:inline;margin:0">
+			<input type="hidden" name="csrf" value="<?= h(cm_csrf_token()) ?>">
+			<input type="hidden" name="id" value="<?= (int)$d['id'] ?>">
+			<?php if ($d['repeat_minutes'] || $d['active']): ?><button class="cmbutton" name="drops" value="toggle"><?= $d['active'] ? 'Pause' : 'Resume' ?></button><?php endif; ?>
+			<button class="cmbutton" name="drops" value="delete" onclick="return confirm('Delete this scheduled drop?')">Delete</button>
+		</form>
+	</td>
+</tr>
+<?php endforeach; ?>
+</table>
+</div>
+
+<?php if (!$emblems): ?>
+<p class="flash bloody">The emblem list couldn't be read from <span class="h">collectibles.txt</span> (see collectibles_file in config.php).</p>
+<?php else: ?>
+<form method="post" id="droppool">
+	<input type="hidden" name="csrf" value="<?= h(cm_csrf_token()) ?>">
+	<div class="drop-tools">
+		<input type="search" id="dropfind" placeholder="Find an emblem..." class="kvnote">
+		<label class="muted"><input type="checkbox" id="droponly"> Only changed</label>
+		<span class="spacer"></span>
+		<button class="cmbutton go" name="drops" value="pool">Save drop list</button>
+		<button class="cmbutton" name="drops" value="reset" onclick="return confirm('Put every emblem back to its collectibles.txt setting?')">Reset to collectibles.txt</button>
+	</div>
+	<?php foreach ($tiers as $r => $list): if (!$list) continue; ?>
+	<div class="drop-tier">
+		<p class="drop-head"><span class="rarity r<?= $r ?>"><?= h(CM_RARITIES[$r]) ?></span>
+			<span class="muted"><?= count($list) ?> emblem<?= count($list) === 1 ? '' : 's' ?></span>
+			<a href="#" class="muted" data-tier="<?= $r ?>" data-set="1">all</a> <a href="#" class="muted" data-tier="<?= $r ?>" data-set="0">none</a></p>
+		<div class="drop-grid">
+		<?php foreach ($list as $id => $e): $sw = cm_drop_swatch($e['color']); ?>
+			<label class="drop-card<?= $e['changed'] ? ' changed' : '' ?>" data-tier="<?= $r ?>" data-find="<?= h(strtolower($e['name'] . ' ' . $id . ' ' . $e['exclusive'])) ?>">
+				<input type="checkbox" name="drop[]" value="<?= h($id) ?>"<?= $e['on'] ? ' checked' : '' ?> data-default="<?= $e['default'] ? 1 : 0 ?>">
+				<span class="swatch"<?= $sw ? ' style="background:' . h($sw) . '"' : '' ?>></span>
+				<span class="drop-name"><b><?= h($e['name']) ?></b><br><span class="muted"><?= h($id) ?> &middot; weight <?= (int)$e['weight'] ?></span>
+				<?php if ($e['exclusive'] !== ''): ?><br><span class="pill gold" title="exclusive in collectibles.txt"><?= h($e['exclusive']) ?></span><?php endif; ?>
+				<?php if ($e['changed']): ?><span class="pill green">changed</span><?php endif; ?></span>
+			</label>
+		<?php endforeach; ?>
+		</div>
+	</div>
+	<?php endforeach; ?>
+</form>
+<script>
+(function () {
+	var form = document.getElementById('droppool'), find = document.getElementById('dropfind'), only = document.getElementById('droponly');
+	function mark(box) {
+		box.parentNode.classList.toggle('changed', (box.checked ? '1' : '0') !== box.getAttribute('data-default'));
+	}
+	function filter() {
+		var q = find.value.trim().toLowerCase();
+		form.querySelectorAll('.drop-card').forEach(function (c) {
+			c.style.display = (q === '' || c.getAttribute('data-find').indexOf(q) !== -1) && (!only.checked || c.classList.contains('changed')) ? '' : 'none';
+		});
+	}
+	form.addEventListener('change', function (e) {
+		if (e.target.name === 'drop[]') { mark(e.target); }
+	});
+	form.querySelectorAll('a[data-tier]').forEach(function (a) {
+		a.addEventListener('click', function (e) {
+			e.preventDefault();
+			form.querySelectorAll('.drop-card[data-tier="' + a.getAttribute('data-tier') + '"] input').forEach(function (b) {
+				if (b.parentNode.style.display !== 'none') { b.checked = a.getAttribute('data-set') === '1'; mark(b); }
+			});
+		});
+	});
+	find.addEventListener('input', filter);
+	only.addEventListener('change', filter);
+})();
+</script>
+<?php endif; ?>
 
 <?php elseif ($tab === 'announcements'):
 	$announcements = $db ? cm_rows('SELECT a.*, p.name FROM cm_announcements a LEFT JOIN cm_players p ON p.steamid64 = a.created_by ORDER BY a.active DESC, a.id DESC LIMIT 100') : [];

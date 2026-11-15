@@ -859,6 +859,84 @@ textarea {
 	grid-template-columns: 1fr 1fr;
 	gap: 8px;
 }
+
+/* Emblem Drops tab */
+.table-scroll {
+	overflow-x: auto;
+}
+.table-scroll .cmtable {
+	min-width: 480px;
+}
+.rarity {
+	font-weight: bold;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	text-shadow: 0 1px 2px #000;
+}
+.rarity.r0 { color: #c8c8c8; }
+.rarity.r1 { color: var(--green); }
+.rarity.r2 { color: var(--blue); }
+.rarity.r3 { color: #c77dff; }
+.rarity.r4 { color: var(--gold); }
+.drop-tools {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+	margin: 10px 0 4px;
+}
+.drop-tools .spacer {
+	flex: 1;
+}
+.drop-head {
+	margin: 12px 0 4px;
+	border-bottom: 1px solid #000;
+	padding-bottom: 2px;
+}
+.drop-head a {
+	margin-left: 6px;
+	font-size: 0.85em;
+}
+.drop-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+	gap: 6px;
+}
+.drop-card {
+	display: flex;
+	align-items: flex-start;
+	gap: 6px;
+	padding: 5px 7px;
+	border: 1px solid #000;
+	background: rgba(0, 0, 0, 0.28);
+	text-align: left;
+	cursor: pointer;
+	line-height: 1.25;
+}
+.drop-card:hover {
+	background: rgba(0, 0, 0, 0.4);
+}
+.drop-card.changed {
+	box-shadow: inset 3px 0 0 var(--green);
+}
+.drop-card:has(input:not(:checked)) .drop-name {
+	opacity: 0.55;
+}
+.drop-card input {
+	margin: 2px 0 0;
+}
+.drop-card .swatch {
+	flex: none;
+	width: 14px;
+	height: 14px;
+	margin-top: 2px;
+	border: 1px solid #000;
+	background: repeating-linear-gradient(45deg, #555 0 3px, #333 3px 6px);
+}
+.drop-name {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
 @media (max-width: 640px) {
 	.admin-grid {
 		grid-template-columns: 1fr;

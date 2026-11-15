@@ -213,3 +213,29 @@ CREATE TABLE IF NOT EXISTS cm_site_settings (
 	updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Emblem Drops tab in the admin panel. An admin's choice of whether an emblem can drop; only emblems that
+-- differ from collectibles.txt have a row. celmod-database applies it on the game server.
+CREATE TABLE IF NOT EXISTS cm_drop_pool (
+	emblem_id   VARCHAR(64) NOT NULL,
+	droppable   TINYINT(1)  NOT NULL DEFAULT 1,
+	updated_by  VARCHAR(20) NULL,
+	updated_at  DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (emblem_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Emblem drops scheduled in the admin panel: run once at run_at, or every repeat_minutes after it.
+CREATE TABLE IF NOT EXISTS cm_drop_schedule (
+	id              INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	run_at          DATETIME     NOT NULL,
+	boxes           INT          NOT NULL DEFAULT 5,
+	repeat_minutes  INT UNSIGNED NOT NULL DEFAULT 0,
+	server_id       INT          NULL,
+	active          TINYINT(1)   NOT NULL DEFAULT 1,
+	last_run        DATETIME     NULL,
+	note            VARCHAR(128) NOT NULL DEFAULT '',
+	created_by      VARCHAR(20)  NULL,
+	created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (id),
+	KEY idx_due (active, run_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
