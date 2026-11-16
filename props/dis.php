@@ -58,7 +58,7 @@
   <span class="blk">window3(old) - <b>D: 5/13/10 - (Removed)</b></span><br>
   <img src="images/pipeconnector.PNG" width=20 height=20/><a href="javascript:toggle('pipeconnector')">pipeconnector</a> - <b>D: 4/28/10 - (32 left)</b><br>
   <span class="blk">watertower(old) - <b>D: 3/27/10 - (0 left)</b></span><br>
-  <span class="blk">cellarray1/2/3 - <b>D: 3/21/10 - (0 left)</b></span><br>
+  <span class="blk">cellarray1/2/3 - <b>D: 3/21/10 - (0 left)</b></span> &middot; <span class="grassy">spawnable again: !spawn cellarray1, cellarray2, cellarray3</span><br>
   <img src="images/breenorb.PNG" width=20 height=20/><a href="javascript:toggle('breenorb')">breenorb</a> - <b>D: 3/21/10 - (4 left)</b><br>
   <span class="blk">fishingboat1</a> - <b>D: 3/20/10 - (Revived)</b></span><br>
   <img src="images/treeoak.PNG" width=20 height=20/><a href="javascript:toggle('treeoak')">treeoak</a> - <b>D: 3/11/10 - (11 left)</b> &middot; <span class="grassy">spawnable again: !spawn treeoak</span><br>
