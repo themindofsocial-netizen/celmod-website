@@ -78,6 +78,7 @@ return [
 		[['coop', 'landcoop'], '', 'Changes the mode to co-op within the land.'],
 		[['delteam'], '<player>', 'Removes a player from your build team, or lists your team.'],
 		[['dm', 'deathmatch', 'landdeathmatch'], '', 'Changes the mode to deathmatch within the land.'],
+		[['fee'], '<amount> | pay', 'Charges other players a fee to enter your land: !fee <amount> (0 = free). Visitors type !fee pay.'],
 		[['gravity', 'landgravity'], '<amount>', 'Changes the gravity within the land.'],
 		[['hide'], '<player>', 'Hides another player\'s entities from your view.'],
 		[['kick'], '<player>', 'Kicks a player out of your land for 10 seconds (same as !landkick).'],
