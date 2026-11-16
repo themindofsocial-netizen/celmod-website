@@ -1,8 +1,8 @@
 <?php require __DIR__ . '/../includes/bootstrap.php'; cm_page_start('|CelMod| - Prop List'); ?>
-
+<!-- Written by tools/export_props.py from the server's spawns.txt. -->
 <h2><span class="celColor">|CelMod| Props</span><br>
 </h2>
-<p>Spawnable Props for use with !spawn<br>
+<p>687 spawnable props for use with !spawn<br>
   Usage: !spawn &lt;name of prop&gt; &lt;options&gt;<br>
   Ex. <span class="highlight">!spawn woodcrate1 drop</span><br>
   <b>OR</b><br>
@@ -40,8 +40,9 @@
 <b title="No props yet">X</b>
 <b title="No props yet">Y</b>
 <a href="z.php">Z</a>
+<b title="No props yet">0-9</b>
 </div>
-<div class="btngrid"><a href="dis.php">Discontinued Props</a></div>
+<div class="btngrid"><a href="shop.php">Shop Props</a> <a href="dis.php">Discontinued Props</a></div>
 <p>
 </p>
 <?php cm_page_end(); ?>

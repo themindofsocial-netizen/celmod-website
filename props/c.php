@@ -1,4 +1,5 @@
 <?php require __DIR__ . '/../includes/bootstrap.php'; cm_page_start('|CelMod| - Prop List - C'); ?>
+<!-- Written by tools/export_props.py from the server's spawns.txt: edit that file, not this one. -->
 <h2><span class="celColor">|CelMod| Props - C</span><br>
 </h2>
 <div class="btngrid letters">
@@ -18,31 +19,29 @@
 <a href="n.php">N</a>
 <a href="o.php">O</a>
 <a href="p.php">P</a>
-<b>Q</b>
+<b title="No props yet">Q</b>
 <a href="r.php">R</a>
 <a href="s.php">S</a>
 <a href="t.php">T</a>
 <a href="u.php">U</a>
 <a href="v.php">V</a>
 <a href="w.php">W</a>
-<b>X</b>
-<b>Y</b>
+<b title="No props yet">X</b>
+<b title="No props yet">Y</b>
 <a href="z.php">Z</a>
+<b title="No props yet">0-9</b>
 </div>
 <p class="proplist">
-  cabinet1<br>
+  cabinet<br>
   cabinet2<br>
   cactus<br>
   cafeteriabench<br>
   cafeteriatable<br>
-  cagelight1<br>
-  cagelight2<br>
-  cagelight3<br>
-  cagelight4<br>
-  canalmap<br>
   canister1<br>
   canister2<br>
   carblue1<br>
+  carblue2<br>
+  carblue3<br>
   cardboardbox1<br>
   cardboardbox2<br>
   cardboardbox3<br>
@@ -52,19 +51,20 @@
   cardboardbox7<br>
   cargocontainer1<br>
   cargocontainer2<br>
-  cargocontainer3<br>
   cargreen<br>
   carousel<br>
   carred<br>
+  carred2<br>
   cartire<br>
   carwheel<br>
-  carwhite1<br>
+  carwhite<br>
   carwhite2<br>
   carwhite3<br>
   caryellow<br>
   cashregister<br>
-  cattails<br>
-  ceilingturret<br>
+  cellarray1<br>
+  cellarray2<br>
+  cellarray3<br>
   celldoor<br>
   cellwindow<br>
   chair1<br>
@@ -74,33 +74,27 @@
   chair5<br>
   chair6<br>
   chair7<br>
-  chefhat<br>
-  chess<br>
-  chimneypipe1<br>
-  chimneypipe2<br>
-  chimneypipe3<br>
-  chimneypipe4<br>
-  chimneypipe5<br>
-  chimneypipe6<br>
-  chimneypipe7<br>
-  citizenfemale1<br>
-  citizenfemale2<br>
-  citizenfemale3<br>
-  citizenfemale4<br>
-  citizenfemale5<br>
-  citizenfemale6<br>
-  citizenmale1<br>
-  citizenmale2<br>
-  citizenmale3<br>
-  citizenmale4<br>
-  citizenmale5<br>
-  citizenmale6<br>
-  citizenmale7<br>
-  citizenmale8<br>
-  citizenmale9<br>
-  citizenmale10<br>
+  charple1 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  charple2 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  charple3 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  charple4 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  citizenfemale1 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  citizenfemale2 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  citizenfemale3 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  citizenfemale4 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  citizenfemale5 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  citizenfemale6 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  citizenmale1 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  citizenmale10 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  citizenmale2 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  citizenmale3 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  citizenmale4 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  citizenmale5 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  citizenmale6 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  citizenmale7 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  citizenmale8 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  citizenmale9 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
   citizenradio<br>
-  cleaver<br>
   clipboard<br>
   clock1<br>
   clock2<br>
@@ -109,13 +103,9 @@
   coffintop2<br>
   column<br>
   columnlight<br>
-  ---<br>
-  <b>Combine Props (Unlockable - 100K CL)</b><br>
-  combine1<br>
-  combine2<br>
-  combine3<br>
-  combineapc<br>
-  combineball<br>
+  combine1 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  combine2 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  combine3 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
   combinebarricade1a<br>
   combinebarricade1b<br>
   combinebarricade2a<br>
@@ -138,8 +128,6 @@
   combinebridgeend<br>
   combinebridgemid<br>
   combinecamera<br>
-  combinecamera2<br>
-  combinecontainer<br>
   combinedoor<br>
   combinefence1a<br>
   combinefence1b<br>
@@ -153,16 +141,16 @@
   combinemonitor1<br>
   combinemonitor2<br>
   combinemonitorbay<br>
-  combineroller<br>
   combinetrain1<br>
   combinetrain2<br>
   combinetrain3<br>
   combinewall1<br>
   combinewall2<br>
+  combinewallcluster1<br>
+  combinewallcluster2<br>
+  combinewallcluster3<br>
   combinewindow<br>
-  ---<br>
   computer<br>
-  computer2<br>
   concretebarrier<br>
   concretepipe1<br>
   concretepipe2<br>
@@ -178,18 +166,15 @@
   coolingtank1<br>
   coolingtank2<br>
   coolingtank3<br>
-  corkboard1<br>
-  corkboard2<br>
-  cornerunit<br>
+  corpse <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
   couch1<br>
   couch2<br>
   couch3<br>
+  crane<br>
   craneframe<br>
-  crematorcase<br>
+  craneframe_interior<br>
+  crow <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
   cupboard<br>
-  cube1<br>
-  cube2<br>
-  cube3<br>
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>
   </p>

@@ -120,6 +120,7 @@ return [
 		[['guess'], '<1, 2 or 3>', 'Guesses the winning prop at the Guess Booth. One guess per map.'],
 		[['hat'], '<hat or off>', 'Spawns a hat you own, or takes off your hat.'],
 		[['hats', 'emblems', 'inventory'], '', 'Lists the emblems and hats you own.'],
+		[['npckills'], '[type] [player]', 'Your NPC kills by type: !npckills [type] [player], e.g. !npckills zombie.'],
 		[['presents'], '', 'Lists the presents waiting for you and brings back any that are not out.'],
 		[['spawnpad'], '[enemy]', 'Places an enemy spawn pad you have earned, or lists your kills and pads.'],
 		[['spawnpads'], '', 'Lists your enemy kills and the spawn pads you have earned.'],

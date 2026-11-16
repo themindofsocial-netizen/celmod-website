@@ -1,4 +1,5 @@
 <?php require __DIR__ . '/../includes/bootstrap.php'; cm_page_start('|CelMod| - Prop List - B'); ?>
+<!-- Written by tools/export_props.py from the server's spawns.txt: edit that file, not this one. -->
 <h2><span class="celColor">|CelMod| Props - B</span><br>
 </h2>
 <div class="btngrid letters">
@@ -18,19 +19,20 @@
 <a href="n.php">N</a>
 <a href="o.php">O</a>
 <a href="p.php">P</a>
-<b>Q</b>
+<b title="No props yet">Q</b>
 <a href="r.php">R</a>
 <a href="s.php">S</a>
 <a href="t.php">T</a>
 <a href="u.php">U</a>
 <a href="v.php">V</a>
 <a href="w.php">W</a>
-<b>X</b>
-<b>Y</b>
+<b title="No props yet">X</b>
+<b title="No props yet">Y</b>
 <a href="z.php">Z</a>
+<b title="No props yet">0-9</b>
 </div>
 <p class="proplist">
-  barney<br>
+  barney <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
   barricade1<br>
   barricade2<br>
   bars1<br>
@@ -39,11 +41,10 @@
   bars4<br>
   bars5<br>
   bars6<br>
+  bars7<br>
   bathtub<br>
   bathtub2<br>
-  beam1<br>
-  beam2<br>
-  bedframe1<br>
+  bedframe<br>
   bedframe2<br>
   bedframe3<br>
   bench<br>
@@ -58,14 +59,11 @@
   blastdoor1<br>
   blastdoor2<br>
   blastdoor3<br>
-  blastwindow<br>
   bluebarrel<br>
   boat1<br>
   boat2<br>
   boat3<br>
   boiler<br>
-  borealisdoor<br>
-  borealiscleat<br>
   bottle1<br>
   bottle2<br>
   bottle3<br>
@@ -75,8 +73,8 @@
   bottle7<br>
   box1<br>
   box2<br>
-  breen<br>
-  breen2<br>
+  box3<br>
+  breen <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
   breenbust<br>
   breenchair<br>
   breenclock<br>
@@ -88,10 +86,15 @@
   breenpod3<br>
   breentube<br>
   breenwindow<br>
+  bridge1<br>
+  bridge2<br>
+  bridge3<br>
+  bridge4<br>
   briefcase<br>
   bucket1<br>
   bucket2<br>
   bucket3<br>
+  buggy<br>
   buoy<br>
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>

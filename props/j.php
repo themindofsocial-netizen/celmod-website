@@ -1,4 +1,5 @@
 <?php require __DIR__ . '/../includes/bootstrap.php'; cm_page_start('|CelMod| - Prop List - J'); ?>
+<!-- Written by tools/export_props.py from the server's spawns.txt: edit that file, not this one. -->
 <h2><span class="celColor">|CelMod| Props - J</span><br>
 </h2>
 <div class="btngrid letters">
@@ -18,16 +19,17 @@
 <a href="n.php">N</a>
 <a href="o.php">O</a>
 <a href="p.php">P</a>
-<b>Q</b>
+<b title="No props yet">Q</b>
 <a href="r.php">R</a>
 <a href="s.php">S</a>
 <a href="t.php">T</a>
 <a href="u.php">U</a>
 <a href="v.php">V</a>
 <a href="w.php">W</a>
-<b>X</b>
-<b>Y</b>
+<b title="No props yet">X</b>
+<b title="No props yet">Y</b>
 <a href="z.php">Z</a>
+<b title="No props yet">0-9</b>
 </div>
 <p class="proplist">
   jar1<br>

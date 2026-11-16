@@ -1,5 +1,5 @@
 <?php require __DIR__ . '/../includes/bootstrap.php'; cm_page_start('|CelMod| - Prop List - D'); ?>
-
+<!-- Written by tools/export_props.py from the server's spawns.txt: edit that file, not this one. -->
 <h2><span class="celColor">|CelMod| Props - D</span><br>
 </h2>
 <div class="btngrid letters">
@@ -19,38 +19,38 @@
 <a href="n.php">N</a>
 <a href="o.php">O</a>
 <a href="p.php">P</a>
-<b>Q</b>
+<b title="No props yet">Q</b>
 <a href="r.php">R</a>
 <a href="s.php">S</a>
 <a href="t.php">T</a>
 <a href="u.php">U</a>
 <a href="v.php">V</a>
 <a href="w.php">W</a>
-<b>X</b>
-<b>Y</b>
+<b title="No props yet">X</b>
+<b title="No props yet">Y</b>
 <a href="z.php">Z</a>
+<b title="No props yet">0-9</b>
 </div>
 <p class="proplist">
-  decklight1<br>
-  decklight2<br>
   desk1<br>
   desk2<br>
   desk3<br>
   desklamp<br>
   displaycooler<br>
-  dock<br>
+  dock1<br>
+  dock2<br>
+  dock3<br>
   dockbumper<br>
   dockpole1<br>
   dockpole2<br>
+  dockpolecluster<br>
   dogsign<br>
   doll<br>
   dome1<br>
   dome2<br>
   dome3<br>
-  domelight1<br>
-  domelight2<br>
-  domelight3<br>
-  domelight4<br>
+  doorlab<br>
+  doorslotted<br>
   doubledoor<br>
   drawer1<br>
   drawer2<br>
@@ -63,6 +63,7 @@
   driftwoodclump2<br>
   driftwoodclump3<br>
   dryer<br>
+  dumpster<br>
   dumpster1<br>
   dumpster2<br>
   dumpster3<br>

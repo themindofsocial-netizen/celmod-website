@@ -16,6 +16,7 @@ function cm_nav_items(): array
 		['Leaderboards', 'leaderboard.php'],
 		['Commands', 'cmds.php'],
 		['Props', 'props/'],
+		['Guides', 'guides.php'],
 		['Emblems', 'emblem-editor/'],
 		['Updates', 'updates.php'],
 	];

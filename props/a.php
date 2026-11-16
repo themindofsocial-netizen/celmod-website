@@ -1,4 +1,5 @@
 <?php require __DIR__ . '/../includes/bootstrap.php'; cm_page_start('|CelMod| - Prop List - A'); ?>
+<!-- Written by tools/export_props.py from the server's spawns.txt: edit that file, not this one. -->
 <h2><span class="celColor">|CelMod| Props - A</span><br>
 </h2>
 <div class="btngrid letters">
@@ -18,30 +19,29 @@
 <a href="n.php">N</a>
 <a href="o.php">O</a>
 <a href="p.php">P</a>
-<b>Q</b>
+<b title="No props yet">Q</b>
 <a href="r.php">R</a>
 <a href="s.php">S</a>
 <a href="t.php">T</a>
 <a href="u.php">U</a>
 <a href="v.php">V</a>
 <a href="w.php">W</a>
-<b>X</b>
-<b>Y</b>
+<b title="No props yet">X</b>
+<b title="No props yet">Y</b>
 <a href="z.php">Z</a>
+<b title="No props yet">0-9</b>
 </div>
 <p class="proplist">
-  alyx<br>
-  antlion<br>
-  antlionguard<br>
+  airboat<br>
+  alyx <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  antlion <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
   antlionhill<br>
   archgate1<br>
   archgate2<br>
   archgate3<br>
   archgate4<br>
   archwindow<br>
-  armchair1<br>
-  armchair2<br>
-  atticwindow<br>
+  armchair<br>
   awning1<br>
   awning2<br>
   <br>

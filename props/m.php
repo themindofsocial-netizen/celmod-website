@@ -1,4 +1,5 @@
 <?php require __DIR__ . '/../includes/bootstrap.php'; cm_page_start('|CelMod| - Prop List - M'); ?>
+<!-- Written by tools/export_props.py from the server's spawns.txt: edit that file, not this one. -->
 <h2><span class="celColor">|CelMod| Props - M</span><br>
 </h2>
 <div class="btngrid letters">
@@ -18,58 +19,60 @@
 <a href="n.php">N</a>
 <a href="o.php">O</a>
 <a href="p.php">P</a>
-<b>Q</b>
+<b title="No props yet">Q</b>
 <a href="r.php">R</a>
 <a href="s.php">S</a>
 <a href="t.php">T</a>
 <a href="u.php">U</a>
 <a href="v.php">V</a>
 <a href="w.php">W</a>
-<b>X</b>
-<b>Y</b>
+<b title="No props yet">X</b>
+<b title="No props yet">Y</b>
 <a href="z.php">Z</a>
+<b title="No props yet">0-9</b>
 </div>
 <p class="proplist">
   magnet<br>
   magnifyinglamp<br>
-  manhack<br>
   masterinterface<br>
   mattress<br>
-  medicfemale1<br>
-  medicfemale2<br>
-  medicfemale3<br>
-  medicfemale4<br>
-  medicfemale5<br>
-  medicfemale6<br>
-  medicmale1<br>
-  medicmale2<br>
-  medicmale3<br>
-  medicmale4<br>
-  medicmale5<br>
-  medicmale6<br>
-  medicmale7<br>
-  medicmale8<br>
-  medicmale9<br>
+  medicfemale1 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  medicfemale2 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  medicfemale3 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  medicfemale4 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  medicfemale5 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  medicfemale6 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  medicmale1 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  medicmale2 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  medicmale3 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  medicmale4 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  medicmale5 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  medicmale6 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  medicmale7 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  medicmale8 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  medicmale9 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
   melon<br>
-  melonchunk1<br>
-  melonchunk2<br>
-  melonchunk3<br>
-  melonchunk4<br>
-  melonchunk5<br>
-  melonchunk6<br>
-  metal1<br>
-  metal2<br>
   metalbed<br>
-  metalpanel1<br>
-  metalpanel2<br>
+  metalplate1<br>
+  metalplate2<br>
+  metalplate3<br>
+  metalplate4<br>
+  metaltriplate1<br>
+  metaltriplate2<br>
+  metaltriplate3<br>
+  metaltriplate4<br>
+  metalwindow1<br>
+  metalwindow2<br>
+  metalwindow3<br>
+  metalwindow4<br>
   milk1<br>
   milk2<br>
   miniteleport<br>
   monitor1<br>
   monitor2<br>
   monitor3<br>
-  monk<br>
-  mossman<br>
+  monk <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  mossman <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
   mountedlight1<br>
   mountedlight2<br>
   mug<br>

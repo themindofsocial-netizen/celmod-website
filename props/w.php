@@ -1,5 +1,5 @@
 <?php require __DIR__ . '/../includes/bootstrap.php'; cm_page_start('|CelMod| - Prop List - W'); ?>
-
+<!-- Written by tools/export_props.py from the server's spawns.txt: edit that file, not this one. -->
 <h2><span class="celColor">|CelMod| Props - W</span><br>
 </h2>
 <div class="btngrid letters">
@@ -19,16 +19,17 @@
 <a href="n.php">N</a>
 <a href="o.php">O</a>
 <a href="p.php">P</a>
-<b>Q</b>
+<b title="No props yet">Q</b>
 <a href="r.php">R</a>
 <a href="s.php">S</a>
 <a href="t.php">T</a>
 <a href="u.php">U</a>
 <a href="v.php">V</a>
 <a href="w.php" class="active" style="color:#71E100">W</a>
-<b>X</b>
-<b>Y</b>
+<b title="No props yet">X</b>
+<b title="No props yet">Y</b>
 <a href="z.php">Z</a>
+<b title="No props yet">0-9</b>
 </div>
 <p class="proplist">
   wagon<br>
@@ -37,12 +38,9 @@
   wall3<br>
   wall4<br>
   wall5<br>
-  walllamp<br>
-  walllight<br>
   washer1<br>
   washer2<br>
   washingmachine<br>
-  watertower<br>
   weaponstripper<br>
   wheel1<br>
   wheel2<br>
@@ -51,20 +49,11 @@
   wheel5<br>
   wheel6<br>
   wheelbarrow<br>
-  whitecontainer<br>
-  whitecontainer2<br>
+  whitecontainer1<br>
+  whitecontainer1b<br>
   windmillblade<br>
   window1<br>
   window2<br>
-  window3<br>
-  window4<br>
-  woodboard1<br>
-  woodboard2<br>
-  woodboard3<br>
-  woodboard4<br>
-  woodboard5<br>
-  woodboard6<br>
-  woodboard7<br>
   woodcrate1<br>
   woodcrate2<br>
   woodfence1<br>
