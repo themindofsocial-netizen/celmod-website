@@ -33,6 +33,7 @@ return [
 		[['roll'], '<degrees>', 'Rolls the prop you are looking at.'],
 		[['rotate'], '<flip> <r> <roll>', 'Flips, rotates and rolls the prop you are looking at.'],
 		[['save'], '<build name>', 'Saves all server entities that are in your land.'],
+		[['saves', 'builds'], '', 'Lists your saved builds.'],
 		[['skin'], '<number>', 'Changes the skin on the prop you are looking at.'],
 		[['smove', 'pmove'], '<x> <y> <z>', 'Moves the prop you are looking at along its own axes.'],
 		[['solid'], '', 'Makes the prop you are looking at solid or not solid.'],
@@ -148,6 +149,9 @@ return [
 		[['reportbug'], '<what happened>', 'Reports a bug or glitch to the admins: !reportbug <what happened>.'],
 		[['rules'], '', 'Shows the server\'s welcome page and rules.'],
 		[['updates', 'updatelist'], '', 'Displays the update list.'],
+	],
+	'Other' => [
+		[['bank'], '', 'Opens your bank (in the ESC menu): your celweps, emblems and CelItems.'],
 	],
 	'Admin' => [
 		[['auction'], '<kind> <item> <starting bid> <minutes>', 'Auctions an emblem, hat or weapon above the Guess Booth, or cancels the auction.'],
