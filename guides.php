@@ -41,7 +41,7 @@ in the console type <b>v_</b> instead of <b>!</b>. The full list is on the <a hr
  Saved builds keep each pose.<br>
  <b>Your land:</b> <span class="h">!coop</span>, <span class="h">!deathmatch</span>, <span class="h">!gravity</span>, <span class="h">!weps</span> (weapons off for visitors), <span class="h">!landban</span>, <span class="h">!landkick</span>,
  <span class="h">!fee &lt;amount&gt;</span> (visitors pay to come in) and <span class="h">!buildmessage</span>.<br>
- <b>Limits:</b> 200 props and 20 cels each by default. <span class="h">!delall</span> removes everything you own; <span class="h">!undo</span> removes the last thing you spawned.
+ <b>Limits:</b> 200 props and 20 cels each by default, plus 50 bank items (emblems, hats, celweps, shop props and hobos you have out), which don't count toward the other two. <span class="h">!delall</span> removes everything you own; <span class="h">!undo</span> removes the last thing you spawned.
 </p>
 
 <h3 id="saves"><span class="celColor">Saving Builds</span></h3>
