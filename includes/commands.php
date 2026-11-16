@@ -98,6 +98,7 @@ return [
 	'Money and Shop' => [
 		[['arsenal'], '', 'Gives you every weapon (bought in the shop: !buy arsenal).'],
 		[['balance'], '', 'Shows your balance.'],
+		[['bank'], '', 'Opens your bank (in the ESC menu): your celweps, emblems and CelItems.'],
 		[['buy'], '[item]', 'Purchases the current entity you are looking at or command you specified.'],
 		[['buymodel'], '<model>', 'Buys a player model.'],
 		[['catalog', 'shopitems'], '', 'Lists everything in the shop: commands, rare props, player models, emblems and hats.'],
@@ -149,9 +150,6 @@ return [
 		[['reportbug'], '<what happened>', 'Reports a bug or glitch to the admins: !reportbug <what happened>.'],
 		[['rules'], '', 'Shows the server\'s welcome page and rules.'],
 		[['updates', 'updatelist'], '', 'Displays the update list.'],
-	],
-	'Other' => [
-		[['bank'], '', 'Opens your bank (in the ESC menu): your celweps, emblems and CelItems.'],
 	],
 	'Admin' => [
 		[['auction'], '<kind> <item> <starting bid> <minutes>', 'Auctions an emblem, hat or weapon above the Guess Booth, or cancels the auction.'],
