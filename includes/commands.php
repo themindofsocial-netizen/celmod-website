@@ -98,7 +98,7 @@ return [
 	'Money and Shop' => [
 		[['arsenal'], '', 'Gives you every weapon (bought in the shop: !buy arsenal).'],
 		[['balance'], '', 'Shows your balance.'],
-		[['bank'], '', 'Opens your bank (in the ESC menu): your celweps, emblems and CelItems.'],
+		[['bank'], '[number or add]', 'Your bank: !bank lists it (and opens it in the ESC menu), !bank <number> loads an item, !bank add banks what you look at.'],
 		[['buy'], '[item]', 'Purchases the current entity you are looking at or command you specified.'],
 		[['buymodel'], '<model>', 'Buys a player model.'],
 		[['catalog', 'shopitems'], '', 'Lists everything in the shop: commands, rare props, player models, emblems and hats.'],
