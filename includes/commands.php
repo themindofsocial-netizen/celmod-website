@@ -26,6 +26,7 @@ return [
 		[['owner'], '', 'Gets the owner of the entity you are looking at.'],
 		[['palette'], '<red> <green> <blue>', 'Colors the prop you are looking at with your own red, green and blue values.'],
 		[['paste'], '', 'Pastes the prop in your copy buffer where you are looking at.'],
+		[['perm'], '', 'Makes the prop you are looking at perm (it can\'t be moved, turned or deleted), or not perm again.'],
 		[['r'], '<degrees>', 'Rotates the prop you are looking at.'],
 		[['release'], '', 'Releases the entity you are looking at from a weld.'],
 		[['renderfx'], '<effect>', 'Changes the RenderFX on the prop you are looking at.'],
@@ -45,6 +46,7 @@ return [
 		[['undo'], '', 'Removes the last entity you spawned.'],
 		[['unfreeze', 'unfreezeit'], '', 'Unfreezes the prop you are looking at.'],
 		[['unlock'], '', 'Unlocks the cel you are looking at.'],
+		[['unperm'], '', 'Lets the perm prop you are looking at be moved, turned and deleted again.'],
 		[['weld'], '', 'Welds one of your entities to another so they move together.'],
 	],
 	'Cels and Bits' => [
