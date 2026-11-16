@@ -37,7 +37,14 @@ cm_page_start('|CelMod| - A Living Project');
 <?php $latest = cm_all_updates()[0] ?? null; if ($latest): ?>
 <div class="panel" style="text-align:left">
 	<b class="celColor">Latest update</b> <span class="muted"><?= h(date('F j, Y', strtotime($latest['date']))) ?></span><br>
+	<?php
+	// The items of an update are separated by an empty indent marker: shown as a list.
+	$items = array_filter(array_map('trim', explode('<span class="indent"></span>', $latest['html'])), 'strlen');
+	if (count($items) > 1): ?>
+	<ul class="update-list"><?php foreach ($items as $item): ?><li><?= $item ?></li><?php endforeach; ?></ul>
+	<?php else: ?>
 	<?= $latest['html'] ?><br>
+	<?php endif; ?>
 	<a href="updates.php"><b>All updates</b></a>
 </div>
 <?php endif; ?>

@@ -48,10 +48,10 @@
 	--row-b: #444444;
 	--well: rgba(0, 0, 0, 0.28);
 	--well-hover: rgba(255, 255, 200, 0.12);
-	--frame: 677px;
+	--frame: 860px;
 }
 body.wide {
-	--frame: 940px;
+	--frame: 1000px;
 }
 
 a {
@@ -114,6 +114,8 @@ body {
 }
 #logo {
 	text-align: center;
+	/* The logo is pixel art: kept at its own size, centred over the wider frame. */
+	width: min(677px, calc(100% - 16px));
 }
 #logo img {
 	display: block;
@@ -1085,5 +1087,41 @@ body.season-clockday {
 	}
 	.shop-top .stat b {
 		font-size: 1.2em;
+	}
+}
+
+/* ---- Reading pages: left-aligned text in panels (guides, the latest update) ---- */
+.prose, .guide {
+	text-align: left;
+}
+.guide {
+	background: var(--well);
+	border: 1px solid #000;
+	padding: 10px 16px 6px;
+	margin: 14px 0;
+	scroll-margin-top: 8px;
+}
+.guide h3 {
+	margin: 0 0 8px;
+	text-align: left;
+}
+.guide p {
+	margin: 0 0 8px;
+}
+.guide ul, .update-list {
+	margin: 4px 0 8px;
+	padding-left: 20px;
+}
+.guide li, .update-list li {
+	margin: 3px 0;
+}
+.guide-intro {
+	max-width: 640px;
+	margin-left: auto;
+	margin-right: auto;
+}
+@media (max-width: 640px) {
+	.guide {
+		padding: 8px 10px 4px;
 	}
 }

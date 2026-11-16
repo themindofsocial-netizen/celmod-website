@@ -6,7 +6,7 @@
 as you own, and !give, !trade or selling one makes it the other player's for good. Buy them in the
 <a href="../shop.php">shop</a> or in game with <span class="highlight">!buy prop_&lt;name&gt;</span>.
 Seasonal props are only sold in their season.</p>
-<table class="cmtable">
+<div class="table-scroll"><table class="cmtable">
 <tr><th>Prop</th><th>Spawn with</th><th>Category</th><th>Price</th><th>Sold</th></tr>
 <tr><td><b>Album</b></td><td>!spawn album</td><td>CelMod Props</td><td><?= h(cm_cl(25000)) ?></td><td>All year</td></tr>
 <tr><td><b>Album (Volume 3)</b></td><td>!spawn album3</td><td>CelMod Props</td><td><?= h(cm_cl(25000)) ?></td><td>All year</td></tr>
@@ -44,6 +44,6 @@ Seasonal props are only sold in their season.</p>
 <tr><td><b>Small TV</b></td><td>!spawn tvscreen</td><td>CelMod Props</td><td><?= h(cm_cl(35000)) ?></td><td>All year</td></tr>
 <tr><td><b>Christmas Tree</b></td><td>!spawn xmastree</td><td>Christmas Shop</td><td><?= h(cm_cl(100000)) ?></td><td>Christmas</td></tr>
 <tr><td><b>Year Hat</b></td><td>!spawn yearhat</td><td>New Year Shop</td><td><?= h(cm_cl(40000)) ?></td><td>Newyears</td></tr>
-</table>
+</table></div>
 <div class="btngrid"><a href="./">Back to Props List</a></div>
 <?php cm_page_end(); ?>
