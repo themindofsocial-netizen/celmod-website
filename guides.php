@@ -48,7 +48,7 @@ in the console type <b>v_</b> instead of <b>!</b>. The full list is on the <a hr
 
 <div class="guide" id="money">
 <h3><span class="celColor">Making Money</span></h3>
-<p><b>Dig:</b> swing a shovel or pickaxe celwep at the ground. Most finds are junk worth 1-3 CL in a trash can, but you can also dig up money boxes (100-1,500 CL), ores worth up to 45 CL (diamond), hobos, Vials and rare emblems. See <a href="#digging">Digging</a>.</p>
+<p><b>Dig:</b> swing a shovel or pickaxe celwep at the ground. Most finds are junk worth 1-3 CL in a trash can, but you can also dig up money boxes (100-1,500 CL), ores worth up to 5,000 CL (diamond), hobos, Vials and rare emblems. See <a href="#digging">Digging</a>.</p>
 <p><b>Guess Booth:</b> <span class="h">!guess &lt;1/2/3 or the prop's name&gt;</span> once per map. A right guess pays 5,000 CL. Items auctioned above it go to the top <span class="h">!bid</span>.</p>
 <p><b>Sell and trade:</b> <span class="h">!sell &lt;price&gt;</span> on something you own puts it up for sale; another player buys it with <span class="h">!buy</span>. <span class="h">!trade &lt;player&gt;</span> swaps items, and <span class="h">!give &lt;player&gt;</span> hands one over.</p>
 <p><b>Your land:</b> <span class="h">!fee &lt;amount&gt;</span> charges visitors to come in, and the money goes straight to you.</p>
@@ -64,7 +64,7 @@ in the console type <b>v_</b> instead of <b>!</b>. The full list is on the <a hr
 
 <div class="guide" id="xp">
 <h3><span class="celColor">Tactics XP</span></h3>
-<p>Your Tactics level goes up with experience; each level needs a little more than the last (50 for the first, then 10 more each level). <span class="h">!tacticlvl</span> shows your level and progress. Experience comes from:</p>
+<p>Your Tactics level goes up with experience; each level needs a little more than the last (50 for the first, then 10 more each level). Each level also adds 2 to your full health, and at level 75 and 100 other players see a title above your name. <span class="h">!tacticlvl</span> shows your level and progress. Experience comes from:</p>
 <ul>
 <li><b>Playing:</b> 3 XP every minute.</li>
 <li><b>Building:</b> 1 XP for spawning a prop or cel (once every 3 seconds at most).</li>
@@ -78,7 +78,7 @@ in the console type <b>v_</b> instead of <b>!</b>. The full list is on the <a hr
 
 <div class="guide" id="emblems">
 <h3><span class="celColor">Emblems</span></h3>
-<p><b>Emblem drops:</b> now and then emblem boxes fall from the sky. Grab one with the gravity gun and hold on to it until the map changes: whoever is holding a box when the map ends keeps its emblem. Boxes get rarer near the end of a map.</p>
+<p><b>Emblem drops:</b> at set times (or when an admin starts one) emblem boxes fall from the sky. Grab one with the gravity gun and hold on to it until the map changes: whoever is holding a box when the map ends keeps its emblem. Boxes get rarer near the end of a map.</p>
 <p><b>Using them:</b> <span class="h">!emblems</span> lists yours, <span class="h">!emblem &lt;name&gt;</span> spawns or enables one, and the enabled emblem shows on your gravity gun. Most emblems have a power on left or right click. Powers don't work in event areas, though the emblem still shows.</p>
 <p><b>Power Booth:</b> it appears somewhere on the map. Bring copies of the same emblem to it (5 by default) and press <span class="h">E</span> to upgrade them into a bigger one.</p>
 <p><b>Digging:</b> the Black and White emblems can only be dug up. A Vial (see below) tells you when one is buried close by.</p>
@@ -90,7 +90,7 @@ in the console type <b>v_</b> instead of <b>!</b>. The full list is on the <a hr
 <p>Swing a digging celwep (the shovel or pickaxe) at open ground. What comes up:</p>
 <ul>
 <li><b>Junk</b> (most finds): carry it to a trash can for 1-3 CL.</li>
-<li><b>Money boxes</b> (5%): press E for 100-1,500 CL.</li>
+<li><b>Money boxes</b> (2%): press E for 100-1,500 CL.</li>
 <li><b>Black or White emblem</b> (0.01%: 1 in 10,000 finds).</li>
 <li><b>Vial</b> (2.5%): press E on it and it glows green when a rare emblem is buried right around it. Dig inside the ring. It needs 20 seconds to recharge.</li>
 <li><b>Hobos</b>, and very rarely <b>turds and ores</b>: coal, iron, copper, silver, gold, emerald, ruby and diamond, each rarer and worth more in a trash can.</li>
