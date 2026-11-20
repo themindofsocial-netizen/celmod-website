@@ -14,7 +14,7 @@ require __DIR__ . '/includes/bootstrap.php';
 require __DIR__ . '/includes/updates.php';
 
 $server = cm_db() ? cm_server_status() : null;
-$address = cm_config('server')['address'];
+$address = cm_server_address();
 
 function cm_tile(string $href, string $icon, string $label, string $sub = ''): void
 {

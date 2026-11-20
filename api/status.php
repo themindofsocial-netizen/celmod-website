@@ -36,7 +36,7 @@ cm_json([
 		'id'          => (int)$server['server_id'],
 		'online'      => $server['online'],
 		'hostname'    => $server['hostname'],
-		'address'     => $server['address'],
+		'address'     => ((int)$server['server_id'] === (int)cm_config('server')['id']) ? cm_server_address() : $server['address'],
 		'map'         => $server['map'],
 		'players'     => $server['online'] ? (int)$server['players'] : 0,
 		'max_players' => (int)$server['max_players'],

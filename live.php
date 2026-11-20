@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
 
-$address = cm_config('server')['address'];
+$address = cm_server_address();
 
 cm_page_start('|CelMod| - Live Server');
 ?>

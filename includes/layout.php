@@ -140,7 +140,7 @@ function cm_navbar(): void
 function cm_footer_bar(): void
 {
 	$b = cm_base();
-	$address = cm_config('server')['address'];
+	$address = cm_server_address();
 	echo '<div id="footer"></div>' . "\n";
 	echo '<div id="sitefoot"><b>|CelMod|</b> - A Living Project'
 		. ' <span class="splitter">|</span> <a href="https://github.com/rockzehh/celmod">GitHub</a>'

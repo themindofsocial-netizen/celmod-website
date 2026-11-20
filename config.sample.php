@@ -28,7 +28,8 @@ return [
 	// The server the "Connect" links and live page show by default.
 	'server' => [
 		'id'      => 1,              // must match cm_db_server_id on the game server
-		'address' => '158.69.118.241:27015',
+		'address' => '158.69.118.241:27015', // the port is used; the IP is replaced by this network's public IP
+		'public_ip' => true,          // false = always show the address above as it is
 		'name'    => '|CelMod| Beta Testing Server',
 	],
 
