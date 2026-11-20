@@ -31,12 +31,13 @@
 <a href="z.php">Z</a>
 <b title="No props yet">0-9</b>
 </div>
+<p class="muted">Click a prop to copy it, ready to paste into the game's chat.</p>
 <p class="proplist">
-  jar1<br>
-  jar2<br>
-  jug<br>
-  junglegym1<br>
-  junglegym2<br>
+  <span data-copy="!jar1" title="Click to copy !jar1">jar1</span><br>
+  <span data-copy="!jar2" title="Click to copy !jar2">jar2</span><br>
+  <span data-copy="!jug" title="Click to copy !jug">jug</span><br>
+  <span data-copy="!junglegym1" title="Click to copy !junglegym1">junglegym1</span><br>
+  <span data-copy="!junglegym2" title="Click to copy !junglegym2">junglegym2</span><br>
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>
   </p>

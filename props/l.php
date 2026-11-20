@@ -31,22 +31,23 @@
 <a href="z.php">Z</a>
 <b title="No props yet">0-9</b>
 </div>
+<p class="muted">Click a prop to copy it, ready to paste into the game's chat.</p>
 <p class="proplist">
-  labconsole<br>
-  labgenerator<br>
-  lablight<br>
-  lablocker<br>
-  ladder1<br>
-  ladder2<br>
-  lamarr <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  lamp<br>
-  lamppost<br>
-  laundrybasket1<br>
-  laundrybasket2<br>
-  laundrycart1<br>
-  laundrycart2<br>
-  lightcluster<br>
-  lockers<br>
+  <span data-copy="!labconsole" title="Click to copy !labconsole">labconsole</span><br>
+  <span data-copy="!labgenerator" title="Click to copy !labgenerator">labgenerator</span><br>
+  <span data-copy="!lablight" title="Click to copy !lablight">lablight</span><br>
+  <span data-copy="!lablocker" title="Click to copy !lablocker">lablocker</span><br>
+  <span data-copy="!ladder1" title="Click to copy !ladder1">ladder1</span><br>
+  <span data-copy="!ladder2" title="Click to copy !ladder2">ladder2</span><br>
+  <span data-copy="!lamarr" title="Click to copy !lamarr">lamarr</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!lamp" title="Click to copy !lamp">lamp</span><br>
+  <span data-copy="!lamppost" title="Click to copy !lamppost">lamppost</span><br>
+  <span data-copy="!laundrybasket1" title="Click to copy !laundrybasket1">laundrybasket1</span><br>
+  <span data-copy="!laundrybasket2" title="Click to copy !laundrybasket2">laundrybasket2</span><br>
+  <span data-copy="!laundrycart1" title="Click to copy !laundrycart1">laundrycart1</span><br>
+  <span data-copy="!laundrycart2" title="Click to copy !laundrycart2">laundrycart2</span><br>
+  <span data-copy="!lightcluster" title="Click to copy !lightcluster">lightcluster</span><br>
+  <span data-copy="!lockers" title="Click to copy !lockers">lockers</span><br>
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>
   </p>

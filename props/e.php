@@ -31,10 +31,11 @@
 <a href="z.php">Z</a>
 <b title="No props yet">0-9</b>
 </div>
+<p class="muted">Click a prop to copy it, ready to paste into the game's chat.</p>
 <p class="proplist">
-  elevatordoor<br>
-  eli <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  explosivedrum<br>
+  <span data-copy="!elevatordoor" title="Click to copy !elevatordoor">elevatordoor</span><br>
+  <span data-copy="!eli" title="Click to copy !eli">eli</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!explosivedrum" title="Click to copy !explosivedrum">explosivedrum</span><br>
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>
   </p>

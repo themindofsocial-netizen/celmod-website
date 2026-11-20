@@ -31,10 +31,11 @@
 <a href="z.php" class="active" style="color:#71E100">Z</a>
 <b title="No props yet">0-9</b>
 </div>
+<p class="muted">Click a prop to copy it, ready to paste into the game's chat.</p>
 <p class="proplist">
-  zombie <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  zombielegs <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  zombietorso <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!zombie" title="Click to copy !zombie">zombie</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!zombielegs" title="Click to copy !zombielegs">zombielegs</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!zombietorso" title="Click to copy !zombietorso">zombietorso</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>
   </p>

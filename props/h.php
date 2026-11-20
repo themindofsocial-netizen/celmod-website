@@ -31,26 +31,27 @@
 <a href="z.php">Z</a>
 <b title="No props yet">0-9</b>
 </div>
+<p class="muted">Click a prop to copy it, ready to paste into the game's chat.</p>
 <p class="proplist">
-  handrail<br>
-  handrail2<br>
-  handrailcorner<br>
-  handraillong<br>
-  handrailmedium<br>
-  handrailrise1<br>
-  handrailrise2<br>
-  harpoon<br>
-  headcrab <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  headcrabblack <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  headcrabfast <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  heater1<br>
-  heater2<br>
-  heavydoor<br>
-  helicopterbomb<br>
-  hevcase<br>
-  hevmachine<br>
-  hollowcontainer<br>
-  horse<br>
+  <span data-copy="!handrail" title="Click to copy !handrail">handrail</span><br>
+  <span data-copy="!handrail2" title="Click to copy !handrail2">handrail2</span><br>
+  <span data-copy="!handrailcorner" title="Click to copy !handrailcorner">handrailcorner</span><br>
+  <span data-copy="!handraillong" title="Click to copy !handraillong">handraillong</span><br>
+  <span data-copy="!handrailmedium" title="Click to copy !handrailmedium">handrailmedium</span><br>
+  <span data-copy="!handrailrise1" title="Click to copy !handrailrise1">handrailrise1</span><br>
+  <span data-copy="!handrailrise2" title="Click to copy !handrailrise2">handrailrise2</span><br>
+  <span data-copy="!harpoon" title="Click to copy !harpoon">harpoon</span><br>
+  <span data-copy="!headcrab" title="Click to copy !headcrab">headcrab</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!headcrabblack" title="Click to copy !headcrabblack">headcrabblack</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!headcrabfast" title="Click to copy !headcrabfast">headcrabfast</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!heater1" title="Click to copy !heater1">heater1</span><br>
+  <span data-copy="!heater2" title="Click to copy !heater2">heater2</span><br>
+  <span data-copy="!heavydoor" title="Click to copy !heavydoor">heavydoor</span><br>
+  <span data-copy="!helicopterbomb" title="Click to copy !helicopterbomb">helicopterbomb</span><br>
+  <span data-copy="!hevcase" title="Click to copy !hevcase">hevcase</span><br>
+  <span data-copy="!hevmachine" title="Click to copy !hevmachine">hevmachine</span><br>
+  <span data-copy="!hollowcontainer" title="Click to copy !hollowcontainer">hollowcontainer</span><br>
+  <span data-copy="!horse" title="Click to copy !horse">horse</span><br>
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>
   </p>

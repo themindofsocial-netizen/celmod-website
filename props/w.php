@@ -31,39 +31,40 @@
 <a href="z.php">Z</a>
 <b title="No props yet">0-9</b>
 </div>
+<p class="muted">Click a prop to copy it, ready to paste into the game's chat.</p>
 <p class="proplist">
-  wagon<br>
-  wall1<br>
-  wall2<br>
-  wall3<br>
-  wall4<br>
-  wall5<br>
-  washer1<br>
-  washer2<br>
-  washingmachine<br>
-  weaponstripper<br>
-  wheel1<br>
-  wheel2<br>
-  wheel3<br>
-  wheel4<br>
-  wheel5<br>
-  wheel6<br>
-  wheelbarrow<br>
-  whitecontainer1<br>
-  whitecontainer1b<br>
-  windmillblade<br>
-  window1<br>
-  window2<br>
-  woodcrate1<br>
-  woodcrate2<br>
-  woodfence1<br>
-  woodfence2<br>
-  woodpallet<br>
-  workspace1<br>
-  workspace2<br>
-  workspace3<br>
-  workspace4<br>
-  wrench<br>
+  <span data-copy="!wagon" title="Click to copy !wagon">wagon</span><br>
+  <span data-copy="!wall1" title="Click to copy !wall1">wall1</span><br>
+  <span data-copy="!wall2" title="Click to copy !wall2">wall2</span><br>
+  <span data-copy="!wall3" title="Click to copy !wall3">wall3</span><br>
+  <span data-copy="!wall4" title="Click to copy !wall4">wall4</span><br>
+  <span data-copy="!wall5" title="Click to copy !wall5">wall5</span><br>
+  <span data-copy="!washer1" title="Click to copy !washer1">washer1</span><br>
+  <span data-copy="!washer2" title="Click to copy !washer2">washer2</span><br>
+  <span data-copy="!washingmachine" title="Click to copy !washingmachine">washingmachine</span><br>
+  <span data-copy="!weaponstripper" title="Click to copy !weaponstripper">weaponstripper</span><br>
+  <span data-copy="!wheel1" title="Click to copy !wheel1">wheel1</span><br>
+  <span data-copy="!wheel2" title="Click to copy !wheel2">wheel2</span><br>
+  <span data-copy="!wheel3" title="Click to copy !wheel3">wheel3</span><br>
+  <span data-copy="!wheel4" title="Click to copy !wheel4">wheel4</span><br>
+  <span data-copy="!wheel5" title="Click to copy !wheel5">wheel5</span><br>
+  <span data-copy="!wheel6" title="Click to copy !wheel6">wheel6</span><br>
+  <span data-copy="!wheelbarrow" title="Click to copy !wheelbarrow">wheelbarrow</span><br>
+  <span data-copy="!whitecontainer1" title="Click to copy !whitecontainer1">whitecontainer1</span><br>
+  <span data-copy="!whitecontainer1b" title="Click to copy !whitecontainer1b">whitecontainer1b</span><br>
+  <span data-copy="!windmillblade" title="Click to copy !windmillblade">windmillblade</span><br>
+  <span data-copy="!window1" title="Click to copy !window1">window1</span><br>
+  <span data-copy="!window2" title="Click to copy !window2">window2</span><br>
+  <span data-copy="!woodcrate1" title="Click to copy !woodcrate1">woodcrate1</span><br>
+  <span data-copy="!woodcrate2" title="Click to copy !woodcrate2">woodcrate2</span><br>
+  <span data-copy="!woodfence1" title="Click to copy !woodfence1">woodfence1</span><br>
+  <span data-copy="!woodfence2" title="Click to copy !woodfence2">woodfence2</span><br>
+  <span data-copy="!woodpallet" title="Click to copy !woodpallet">woodpallet</span><br>
+  <span data-copy="!workspace1" title="Click to copy !workspace1">workspace1</span><br>
+  <span data-copy="!workspace2" title="Click to copy !workspace2">workspace2</span><br>
+  <span data-copy="!workspace3" title="Click to copy !workspace3">workspace3</span><br>
+  <span data-copy="!workspace4" title="Click to copy !workspace4">workspace4</span><br>
+  <span data-copy="!wrench" title="Click to copy !wrench">wrench</span><br>
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>
   </p>

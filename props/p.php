@@ -31,40 +31,41 @@
 <a href="z.php">Z</a>
 <b title="No props yet">0-9</b>
 </div>
+<p class="muted">Click a prop to copy it, ready to paste into the game's chat.</p>
 <p class="proplist">
-  padlock<br>
-  paintcan<br>
-  paper<br>
-  partsbin<br>
-  payphone<br>
-  payphonereciever<br>
-  pictureframe<br>
-  pigeon <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  pillar<br>
-  plantpot<br>
-  plasticcrate<br>
-  pliers<br>
-  poisonzombie <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  pole<br>
-  police <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  popcan<br>
-  pot1<br>
-  pot2<br>
-  pot3<br>
-  pot4<br>
-  powertower<br>
-  prisongate1<br>
-  prisongate2<br>
-  prisongate3<br>
-  prisonslidingdoor<br>
-  propane1<br>
-  propane2<br>
-  propanecanister<br>
-  propanetank<br>
-  pulleyhook<br>
-  pulleylarge<br>
-  pulleysmall<br>
-  pushcart<br>
+  <span data-copy="!padlock" title="Click to copy !padlock">padlock</span><br>
+  <span data-copy="!paintcan" title="Click to copy !paintcan">paintcan</span><br>
+  <span data-copy="!paper" title="Click to copy !paper">paper</span><br>
+  <span data-copy="!partsbin" title="Click to copy !partsbin">partsbin</span><br>
+  <span data-copy="!payphone" title="Click to copy !payphone">payphone</span><br>
+  <span data-copy="!payphonereciever" title="Click to copy !payphonereciever">payphonereciever</span><br>
+  <span data-copy="!pictureframe" title="Click to copy !pictureframe">pictureframe</span><br>
+  <span data-copy="!pigeon" title="Click to copy !pigeon">pigeon</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!pillar" title="Click to copy !pillar">pillar</span><br>
+  <span data-copy="!plantpot" title="Click to copy !plantpot">plantpot</span><br>
+  <span data-copy="!plasticcrate" title="Click to copy !plasticcrate">plasticcrate</span><br>
+  <span data-copy="!pliers" title="Click to copy !pliers">pliers</span><br>
+  <span data-copy="!poisonzombie" title="Click to copy !poisonzombie">poisonzombie</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!pole" title="Click to copy !pole">pole</span><br>
+  <span data-copy="!police" title="Click to copy !police">police</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!popcan" title="Click to copy !popcan">popcan</span><br>
+  <span data-copy="!pot1" title="Click to copy !pot1">pot1</span><br>
+  <span data-copy="!pot2" title="Click to copy !pot2">pot2</span><br>
+  <span data-copy="!pot3" title="Click to copy !pot3">pot3</span><br>
+  <span data-copy="!pot4" title="Click to copy !pot4">pot4</span><br>
+  <span data-copy="!powertower" title="Click to copy !powertower">powertower</span><br>
+  <span data-copy="!prisongate1" title="Click to copy !prisongate1">prisongate1</span><br>
+  <span data-copy="!prisongate2" title="Click to copy !prisongate2">prisongate2</span><br>
+  <span data-copy="!prisongate3" title="Click to copy !prisongate3">prisongate3</span><br>
+  <span data-copy="!prisonslidingdoor" title="Click to copy !prisonslidingdoor">prisonslidingdoor</span><br>
+  <span data-copy="!propane1" title="Click to copy !propane1">propane1</span><br>
+  <span data-copy="!propane2" title="Click to copy !propane2">propane2</span><br>
+  <span data-copy="!propanecanister" title="Click to copy !propanecanister">propanecanister</span><br>
+  <span data-copy="!propanetank" title="Click to copy !propanetank">propanetank</span><br>
+  <span data-copy="!pulleyhook" title="Click to copy !pulleyhook">pulleyhook</span><br>
+  <span data-copy="!pulleylarge" title="Click to copy !pulleylarge">pulleylarge</span><br>
+  <span data-copy="!pulleysmall" title="Click to copy !pulleysmall">pulleysmall</span><br>
+  <span data-copy="!pushcart" title="Click to copy !pushcart">pushcart</span><br>
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>
   </p>

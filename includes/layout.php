@@ -150,6 +150,7 @@ function cm_footer_bar(): void
 function cm_bg_script(): void
 {
 	echo '<script type="text/javascript" src="' . cm_base() . 'scripts/dynamicbg.js"></script>' . "\n";
+	echo '<script src="' . cm_base() . 'scripts/ui.js?v=' . (int)@filemtime(CM_ROOT . '/scripts/ui.js') . '" defer></script>' . "\n";
 	// Falling snow, bats, confetti or clocks while a seasonal theme is on.
 	if (cm_current_season()) {
 		echo '<script type="text/javascript" src="' . cm_base() . 'scripts/season.js?v=' . (int)@filemtime(CM_ROOT . '/scripts/season.js') . '"></script>' . "\n";
@@ -163,8 +164,9 @@ function cm_bg_script(): void
 function cm_page_start(string $title, string $extraHead = '', array $opts = []): void
 {
 	cm_head($title, $extraHead, $opts);
+	echo '<a class="skip-link" href="#content">Skip to the page</a>' . "\n";
 	cm_logo(true);
-	echo "<div id=\"main\">\n<div id=\"content\">\n";
+	echo "<div id=\"main\">\n<div id=\"content\" tabindex=\"-1\">\n";
 	$flash = cm_flash();
 	if ($flash) {
 		echo '<p class="flash ' . h($flash['class']) . '"><b>' . h($flash['message']) . '</b></p>' . "\n";

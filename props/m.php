@@ -31,51 +31,52 @@
 <a href="z.php">Z</a>
 <b title="No props yet">0-9</b>
 </div>
+<p class="muted">Click a prop to copy it, ready to paste into the game's chat.</p>
 <p class="proplist">
-  magnet<br>
-  magnifyinglamp<br>
-  masterinterface<br>
-  mattress<br>
-  medicfemale1 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  medicfemale2 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  medicfemale3 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  medicfemale4 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  medicfemale5 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  medicfemale6 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  medicmale1 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  medicmale2 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  medicmale3 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  medicmale4 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  medicmale5 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  medicmale6 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  medicmale7 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  medicmale8 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  medicmale9 <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  melon<br>
-  metalbed<br>
-  metalplate1<br>
-  metalplate2<br>
-  metalplate3<br>
-  metalplate4<br>
-  metaltriplate1<br>
-  metaltriplate2<br>
-  metaltriplate3<br>
-  metaltriplate4<br>
-  metalwindow1<br>
-  metalwindow2<br>
-  metalwindow3<br>
-  metalwindow4<br>
-  milk1<br>
-  milk2<br>
-  miniteleport<br>
-  monitor1<br>
-  monitor2<br>
-  monitor3<br>
-  monk <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  mossman <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  mountedlight1<br>
-  mountedlight2<br>
-  mug<br>
+  <span data-copy="!magnet" title="Click to copy !magnet">magnet</span><br>
+  <span data-copy="!magnifyinglamp" title="Click to copy !magnifyinglamp">magnifyinglamp</span><br>
+  <span data-copy="!masterinterface" title="Click to copy !masterinterface">masterinterface</span><br>
+  <span data-copy="!mattress" title="Click to copy !mattress">mattress</span><br>
+  <span data-copy="!medicfemale1" title="Click to copy !medicfemale1">medicfemale1</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!medicfemale2" title="Click to copy !medicfemale2">medicfemale2</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!medicfemale3" title="Click to copy !medicfemale3">medicfemale3</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!medicfemale4" title="Click to copy !medicfemale4">medicfemale4</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!medicfemale5" title="Click to copy !medicfemale5">medicfemale5</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!medicfemale6" title="Click to copy !medicfemale6">medicfemale6</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!medicmale1" title="Click to copy !medicmale1">medicmale1</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!medicmale2" title="Click to copy !medicmale2">medicmale2</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!medicmale3" title="Click to copy !medicmale3">medicmale3</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!medicmale4" title="Click to copy !medicmale4">medicmale4</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!medicmale5" title="Click to copy !medicmale5">medicmale5</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!medicmale6" title="Click to copy !medicmale6">medicmale6</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!medicmale7" title="Click to copy !medicmale7">medicmale7</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!medicmale8" title="Click to copy !medicmale8">medicmale8</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!medicmale9" title="Click to copy !medicmale9">medicmale9</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!melon" title="Click to copy !melon">melon</span><br>
+  <span data-copy="!metalbed" title="Click to copy !metalbed">metalbed</span><br>
+  <span data-copy="!metalplate1" title="Click to copy !metalplate1">metalplate1</span><br>
+  <span data-copy="!metalplate2" title="Click to copy !metalplate2">metalplate2</span><br>
+  <span data-copy="!metalplate3" title="Click to copy !metalplate3">metalplate3</span><br>
+  <span data-copy="!metalplate4" title="Click to copy !metalplate4">metalplate4</span><br>
+  <span data-copy="!metaltriplate1" title="Click to copy !metaltriplate1">metaltriplate1</span><br>
+  <span data-copy="!metaltriplate2" title="Click to copy !metaltriplate2">metaltriplate2</span><br>
+  <span data-copy="!metaltriplate3" title="Click to copy !metaltriplate3">metaltriplate3</span><br>
+  <span data-copy="!metaltriplate4" title="Click to copy !metaltriplate4">metaltriplate4</span><br>
+  <span data-copy="!metalwindow1" title="Click to copy !metalwindow1">metalwindow1</span><br>
+  <span data-copy="!metalwindow2" title="Click to copy !metalwindow2">metalwindow2</span><br>
+  <span data-copy="!metalwindow3" title="Click to copy !metalwindow3">metalwindow3</span><br>
+  <span data-copy="!metalwindow4" title="Click to copy !metalwindow4">metalwindow4</span><br>
+  <span data-copy="!milk1" title="Click to copy !milk1">milk1</span><br>
+  <span data-copy="!milk2" title="Click to copy !milk2">milk2</span><br>
+  <span data-copy="!miniteleport" title="Click to copy !miniteleport">miniteleport</span><br>
+  <span data-copy="!monitor1" title="Click to copy !monitor1">monitor1</span><br>
+  <span data-copy="!monitor2" title="Click to copy !monitor2">monitor2</span><br>
+  <span data-copy="!monitor3" title="Click to copy !monitor3">monitor3</span><br>
+  <span data-copy="!monk" title="Click to copy !monk">monk</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!mossman" title="Click to copy !mossman">mossman</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!mountedlight1" title="Click to copy !mountedlight1">mountedlight1</span><br>
+  <span data-copy="!mountedlight2" title="Click to copy !mountedlight2">mountedlight2</span><br>
+  <span data-copy="!mug" title="Click to copy !mug">mug</span><br>
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>
   </p>

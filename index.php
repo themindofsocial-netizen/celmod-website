@@ -27,12 +27,26 @@ cm_page_start('|CelMod| - A Living Project');
 
 <h2><span class="celColor">|CelMod| Website</span><br>
 </h2>
-<?php if ($server && $server['online']): ?>
-<p><span class="grassy">&#9679;</span> <b><?= (int)$server['players'] ?>/<?= (int)$server['max_players'] ?></b> players building on <span class="h"><?= h($server['map']) ?></span> right now.<br>
-<a href="steam://connect/<?= h($address) ?>"><b>Join them!</b></a></p>
-<?php else: ?>
-<p>Choose a page to go to:</p>
-<?php endif; ?>
+<?php $online = $server && $server['online']; ?>
+<div class="join-card<?= $online ? '' : ' offline' ?>">
+	<div class="status">
+		<?php if ($online): ?>
+		<span class="pulse"></span><?= (int)$server['players'] ?>/<?= (int)$server['max_players'] ?> building on <span class="h"><?= h($server['map']) ?></span>
+		<small>Claim a land, spawn props and build anything. Join the ride!</small>
+		<?php elseif ($server): ?>
+		<span class="pulse"></span>The server is offline right now
+		<small>It'll be back soon. Meanwhile, read the guides or plan a build.</small>
+		<?php else: ?>
+		<span class="pulse" style="background:var(--gold);animation:none"></span>A Half-Life 2: Deathmatch build server
+		<small>Claim a land, spawn props and build anything. Join the ride!</small>
+		<?php endif; ?>
+	</div>
+	<div class="actions">
+		<span class="addr" data-copy="connect <?= h($address) ?>" data-copy-label="Copied! Paste it into the game's console." title="Click to copy the console command"><?= h($address) ?></span>
+		<button type="button" class="cmbutton copy-btn" data-copy="connect <?= h($address) ?>" data-copy-label="Copied! Paste it into the game's console.">Copy</button>
+		<a class="cmbutton go" href="steam://connect/<?= h($address) ?>">Join the server</a>
+	</div>
+</div>
 
 <?php $latest = cm_all_updates()[0] ?? null; if ($latest): ?>
 <div class="panel" style="text-align:left">
@@ -41,7 +55,7 @@ cm_page_start('|CelMod| - A Living Project');
 	// The items of an update are separated by an empty indent marker: shown as a list.
 	$items = array_filter(array_map('trim', explode('<span class="indent"></span>', $latest['html'])), 'strlen');
 	if (count($items) > 1): ?>
-	<ul class="update-list"><?php foreach ($items as $item): ?><li><?= $item ?></li><?php endforeach; ?></ul>
+	<ul class="update-list foldable"><?php foreach ($items as $item): ?><li><?= $item ?></li><?php endforeach; ?></ul>
 	<?php else: ?>
 	<?= $latest['html'] ?><br>
 	<?php endif; ?>

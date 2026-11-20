@@ -31,42 +31,43 @@
 <a href="z.php">Z</a>
 <b title="No props yet">0-9</b>
 </div>
+<p class="muted">Click a prop to copy it, ready to paste into the game's chat.</p>
 <p class="proplist">
-  desk1<br>
-  desk2<br>
-  desk3<br>
-  desklamp<br>
-  displaycooler<br>
-  dock1<br>
-  dock2<br>
-  dock3<br>
-  dockbumper<br>
-  dockpole1<br>
-  dockpole2<br>
-  dockpolecluster<br>
-  dogsign<br>
-  doll<br>
-  dome1<br>
-  dome2<br>
-  dome3<br>
-  doorlab<br>
-  doorslotted<br>
-  doubledoor<br>
-  drawer1<br>
-  drawer2<br>
-  drawer3<br>
-  dresser<br>
-  driftwood1<br>
-  driftwood2<br>
-  driftwood3<br>
-  driftwoodclump1<br>
-  driftwoodclump2<br>
-  driftwoodclump3<br>
-  dryer<br>
-  dumpster<br>
-  dumpster1<br>
-  dumpster2<br>
-  dumpster3<br>
+  <span data-copy="!desk1" title="Click to copy !desk1">desk1</span><br>
+  <span data-copy="!desk2" title="Click to copy !desk2">desk2</span><br>
+  <span data-copy="!desk3" title="Click to copy !desk3">desk3</span><br>
+  <span data-copy="!desklamp" title="Click to copy !desklamp">desklamp</span><br>
+  <span data-copy="!displaycooler" title="Click to copy !displaycooler">displaycooler</span><br>
+  <span data-copy="!dock1" title="Click to copy !dock1">dock1</span><br>
+  <span data-copy="!dock2" title="Click to copy !dock2">dock2</span><br>
+  <span data-copy="!dock3" title="Click to copy !dock3">dock3</span><br>
+  <span data-copy="!dockbumper" title="Click to copy !dockbumper">dockbumper</span><br>
+  <span data-copy="!dockpole1" title="Click to copy !dockpole1">dockpole1</span><br>
+  <span data-copy="!dockpole2" title="Click to copy !dockpole2">dockpole2</span><br>
+  <span data-copy="!dockpolecluster" title="Click to copy !dockpolecluster">dockpolecluster</span><br>
+  <span data-copy="!dogsign" title="Click to copy !dogsign">dogsign</span><br>
+  <span data-copy="!doll" title="Click to copy !doll">doll</span><br>
+  <span data-copy="!dome1" title="Click to copy !dome1">dome1</span><br>
+  <span data-copy="!dome2" title="Click to copy !dome2">dome2</span><br>
+  <span data-copy="!dome3" title="Click to copy !dome3">dome3</span><br>
+  <span data-copy="!doorlab" title="Click to copy !doorlab">doorlab</span><br>
+  <span data-copy="!doorslotted" title="Click to copy !doorslotted">doorslotted</span><br>
+  <span data-copy="!doubledoor" title="Click to copy !doubledoor">doubledoor</span><br>
+  <span data-copy="!drawer1" title="Click to copy !drawer1">drawer1</span><br>
+  <span data-copy="!drawer2" title="Click to copy !drawer2">drawer2</span><br>
+  <span data-copy="!drawer3" title="Click to copy !drawer3">drawer3</span><br>
+  <span data-copy="!dresser" title="Click to copy !dresser">dresser</span><br>
+  <span data-copy="!driftwood1" title="Click to copy !driftwood1">driftwood1</span><br>
+  <span data-copy="!driftwood2" title="Click to copy !driftwood2">driftwood2</span><br>
+  <span data-copy="!driftwood3" title="Click to copy !driftwood3">driftwood3</span><br>
+  <span data-copy="!driftwoodclump1" title="Click to copy !driftwoodclump1">driftwoodclump1</span><br>
+  <span data-copy="!driftwoodclump2" title="Click to copy !driftwoodclump2">driftwoodclump2</span><br>
+  <span data-copy="!driftwoodclump3" title="Click to copy !driftwoodclump3">driftwoodclump3</span><br>
+  <span data-copy="!dryer" title="Click to copy !dryer">dryer</span><br>
+  <span data-copy="!dumpster" title="Click to copy !dumpster">dumpster</span><br>
+  <span data-copy="!dumpster1" title="Click to copy !dumpster1">dumpster1</span><br>
+  <span data-copy="!dumpster2" title="Click to copy !dumpster2">dumpster2</span><br>
+  <span data-copy="!dumpster3" title="Click to copy !dumpster3">dumpster3</span><br>
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>
   </p>

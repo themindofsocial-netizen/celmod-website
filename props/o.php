@@ -31,9 +31,10 @@
 <a href="z.php">Z</a>
 <b title="No props yet">0-9</b>
 </div>
+<p class="muted">Click a prop to copy it, ready to paste into the game's chat.</p>
 <p class="proplist">
-  odessa <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  oildrum<br>
+  <span data-copy="!odessa" title="Click to copy !odessa">odessa</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!oildrum" title="Click to copy !oildrum">oildrum</span><br>
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>
   </p>

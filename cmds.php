@@ -13,8 +13,9 @@ In the console, type <b>v_</b> instead of <b>!</b> (<span class="h">v_land</span
 <p>Spawn any prop by typing its name: <span class="h">!blastdoor3</span> &middot; <a href="props/"><b>Props List</b></a> &middot;
 <a href="colors.php"><b>Colors List</b></a> &middot; <a href="effects.php"><b>Effects List</b></a></p>
 
-<p><input type="search" id="cmdfind" placeholder="Find a command..." class="kvnote" style="width:260px;max-width:100%">
-<a href="#" id="cmdall" class="muted">show all</a></p>
+<div class="searchbar"><input type="search" id="cmdfind" placeholder="Find a command... (press /)" aria-label="Find a command">
+<span class="count" id="cmdcount" aria-live="polite"></span> <a href="#" id="cmdall" class="muted">show all</a></div>
+<p class="muted">Click a command to copy it, ready to paste into the game's chat.</p>
 
 <?php $n = 0; foreach ($categories as $title => $commands): $n++; ?>
 <p class="cat"><a id="cat<?= $n ?>" href="#" data-cat="<?= $n ?>"><?= h($title) ?> <span class="muted">(<?= count($commands) ?>)</span></a></p>
@@ -22,7 +23,7 @@ In the console, type <b>v_</b> instead of <b>!</b> (<span class="h">v_land</span
 <?php if ($title === 'Admin'): ?><p class="muted">Only server admins can use these.</p><?php endif; ?>
 <p>
 <?php foreach ($commands as [$names, $usage, $desc]): ?>
-	<span class="cmd" data-find="<?= h(strtolower(implode(' ', $names) . ' ' . $desc)) ?>"><a><?php
+	<span class="cmd" id="cmd-<?= h(preg_replace('/[^a-z0-9_]/', '', strtolower($names[0]))) ?>" data-name="<?= h($names[0][0] === '+' ? $names[0] : '!' . $names[0]) ?>" data-find="<?= h(strtolower(implode(' ', $names) . ' ' . $desc)) ?>"><a><?php
 		$shown = [];
 		foreach ($names as $i => $name) {
 			$tag = $name[0] === '+' ? $name : '!' . $name;
@@ -65,7 +66,7 @@ In the console, type <b>v_</b> instead of <b>!</b> (<span class="h">v_land</span
 
 	// Typing filters every category at once and opens the ones with a match.
 	function filter() {
-		var q = find.value.trim().toLowerCase().replace(/^[!\/]|^v_/, '');
+		var q = find.value.trim().toLowerCase().replace(/^[!\/]|^v_/, ''), total = 0;
 		lists.forEach(function (l, i) {
 			var hits = 0;
 			l.querySelectorAll('.cmd').forEach(function (c) {
@@ -74,11 +75,34 @@ In the console, type <b>v_</b> instead of <b>!</b> (<span class="h">v_land</span
 				if (ok) { hits++; }
 			});
 			if (q !== '') { show(i + 1, hits > 0); }
+			total += hits;
 		});
+		document.getElementById('cmdcount').textContent = q === '' ? '' : (total === 0 ? 'No matches' : total + ' match' + (total === 1 ? '' : 'es'));
 		if (q === '') { lists.forEach(function (l, i) { show(i + 1, false); }); }
 	}
 
 	find.addEventListener('input', filter);
+
+	// Clicking a command copies it ("!land"). The link to it (cmds.php#cmd-land) opens its category.
+	document.querySelectorAll('.cmd > a').forEach(function (a) {
+		a.addEventListener('click', function () {
+			var c = a.parentNode, name = c.getAttribute('data-name');
+			if (window.cmCopy) { window.cmCopy(name, 'Copied ' + name); }
+			if (history.replaceState) { history.replaceState(null, '', '#' + c.id); }
+		});
+	});
+
+	function openHash() {
+		var c = location.hash.length > 1 && document.getElementById(location.hash.slice(1));
+		if (!c || !c.classList.contains('cmd')) { return; }
+		var list = c.closest('.cmdlist');
+		show(list.id.replace('say', ''), true);
+		c.classList.add('flash-row');
+		setTimeout(function () { c.classList.remove('flash-row'); }, 2500);
+		setTimeout(function () { c.scrollIntoView({ block: 'center' }); }, 60);
+	}
+	window.addEventListener('hashchange', openHash);
+	openHash();
 })();
 </script>
 JS

@@ -31,24 +31,25 @@
 <a href="z.php">Z</a>
 <b title="No props yet">0-9</b>
 </div>
+<p class="muted">Click a prop to copy it, ready to paste into the game's chat.</p>
 <p class="proplist">
-  gascan<br>
-  gascan2<br>
-  gaspump<br>
-  gatedoor1<br>
-  gatedoor2<br>
-  gear1<br>
-  generator1<br>
-  generator2<br>
-  generatortrailer<br>
-  gman <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  grainelevator<br>
-  grave1<br>
-  grave2<br>
-  grave3<br>
-  grave4<br>
-  gravecross<br>
-  gravestatue<br>
+  <span data-copy="!gascan" title="Click to copy !gascan">gascan</span><br>
+  <span data-copy="!gascan2" title="Click to copy !gascan2">gascan2</span><br>
+  <span data-copy="!gaspump" title="Click to copy !gaspump">gaspump</span><br>
+  <span data-copy="!gatedoor1" title="Click to copy !gatedoor1">gatedoor1</span><br>
+  <span data-copy="!gatedoor2" title="Click to copy !gatedoor2">gatedoor2</span><br>
+  <span data-copy="!gear1" title="Click to copy !gear1">gear1</span><br>
+  <span data-copy="!generator1" title="Click to copy !generator1">generator1</span><br>
+  <span data-copy="!generator2" title="Click to copy !generator2">generator2</span><br>
+  <span data-copy="!generatortrailer" title="Click to copy !generatortrailer">generatortrailer</span><br>
+  <span data-copy="!gman" title="Click to copy !gman">gman</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!grainelevator" title="Click to copy !grainelevator">grainelevator</span><br>
+  <span data-copy="!grave1" title="Click to copy !grave1">grave1</span><br>
+  <span data-copy="!grave2" title="Click to copy !grave2">grave2</span><br>
+  <span data-copy="!grave3" title="Click to copy !grave3">grave3</span><br>
+  <span data-copy="!grave4" title="Click to copy !grave4">grave4</span><br>
+  <span data-copy="!gravecross" title="Click to copy !gravecross">gravecross</span><br>
+  <span data-copy="!gravestatue" title="Click to copy !gravestatue">gravestatue</span><br>
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>
   </p>

@@ -31,13 +31,14 @@
 <a href="z.php">Z</a>
 <b title="No props yet">0-9</b>
 </div>
+<p class="muted">Click a prop to copy it, ready to paste into the game's chat.</p>
 <p class="proplist">
-  valvewheel<br>
-  van<br>
-  vanity<br>
-  vendingmachine<br>
-  vortigaunt <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
-  vortigauntslave <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!valvewheel" title="Click to copy !valvewheel">valvewheel</span><br>
+  <span data-copy="!van" title="Click to copy !van">van</span><br>
+  <span data-copy="!vanity" title="Click to copy !vanity">vanity</span><br>
+  <span data-copy="!vendingmachine" title="Click to copy !vendingmachine">vendingmachine</span><br>
+  <span data-copy="!vortigaunt" title="Click to copy !vortigaunt">vortigaunt</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
+  <span data-copy="!vortigauntslave" title="Click to copy !vortigauntslave">vortigauntslave</span> <span class="muted">(NPC: shoot it to change its pose, E to pause)</span><br>
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>
   </p>

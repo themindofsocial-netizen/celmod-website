@@ -31,13 +31,14 @@
 <a href="z.php">Z</a>
 <b title="No props yet">0-9</b>
 </div>
+<p class="muted">Click a prop to copy it, ready to paste into the game's chat.</p>
 <p class="proplist">
-  utilitypole1<br>
-  utilitypole2<br>
-  utilitypole3<br>
-  utilitypole4<br>
-  utilitypole5<br>
-  utilitypolemount<br>
+  <span data-copy="!utilitypole1" title="Click to copy !utilitypole1">utilitypole1</span><br>
+  <span data-copy="!utilitypole2" title="Click to copy !utilitypole2">utilitypole2</span><br>
+  <span data-copy="!utilitypole3" title="Click to copy !utilitypole3">utilitypole3</span><br>
+  <span data-copy="!utilitypole4" title="Click to copy !utilitypole4">utilitypole4</span><br>
+  <span data-copy="!utilitypole5" title="Click to copy !utilitypole5">utilitypole5</span><br>
+  <span data-copy="!utilitypolemount" title="Click to copy !utilitypolemount">utilitypolemount</span><br>
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>
   </p>

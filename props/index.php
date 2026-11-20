@@ -13,6 +13,8 @@
   <b>nogod</b> - Spawns the prop and makes it breakable<br>
   <b>drop</b> - Spawns the prop at the floor<br>
 </p>
+<div class="searchbar"><input type="search" id="propfind" placeholder="Search all 687 props... (press /)" aria-label="Search props" autocomplete="off"> <span class="count" id="propcount" aria-live="polite"></span></div>
+<div class="search-results" id="propresults" hidden></div>
 <div class="btngrid letters">
 <a href="a.php">A</a>
 <a href="b.php">B</a>
@@ -45,4 +47,4 @@
 <div class="btngrid"><a href="shop.php">Shop Props</a> <a href="dis.php">Discontinued Props</a></div>
 <p>
 </p>
-<?php cm_page_end(); ?>
+<?php cm_page_end('<script src="search.js?v=' . (int)@filemtime(__DIR__ . '/search.js') . '" defer></script>'); ?>

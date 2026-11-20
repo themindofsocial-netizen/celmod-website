@@ -31,26 +31,27 @@
 <a href="z.php">Z</a>
 <b title="No props yet">0-9</b>
 </div>
+<p class="muted">Click a prop to copy it, ready to paste into the game's chat.</p>
 <p class="proplist">
-  interiorfence1<br>
-  interiorfence10<br>
-  interiorfence11<br>
-  interiorfence12<br>
-  interiorfence13<br>
-  interiorfence14<br>
-  interiorfence15<br>
-  interiorfence16<br>
-  interiorfence17<br>
-  interiorfence18<br>
-  interiorfence19<br>
-  interiorfence2<br>
-  interiorfence3<br>
-  interiorfence4<br>
-  interiorfence5<br>
-  interiorfence6<br>
-  interiorfence7<br>
-  interiorfence8<br>
-  interiorfence9<br>
+  <span data-copy="!interiorfence1" title="Click to copy !interiorfence1">interiorfence1</span><br>
+  <span data-copy="!interiorfence10" title="Click to copy !interiorfence10">interiorfence10</span><br>
+  <span data-copy="!interiorfence11" title="Click to copy !interiorfence11">interiorfence11</span><br>
+  <span data-copy="!interiorfence12" title="Click to copy !interiorfence12">interiorfence12</span><br>
+  <span data-copy="!interiorfence13" title="Click to copy !interiorfence13">interiorfence13</span><br>
+  <span data-copy="!interiorfence14" title="Click to copy !interiorfence14">interiorfence14</span><br>
+  <span data-copy="!interiorfence15" title="Click to copy !interiorfence15">interiorfence15</span><br>
+  <span data-copy="!interiorfence16" title="Click to copy !interiorfence16">interiorfence16</span><br>
+  <span data-copy="!interiorfence17" title="Click to copy !interiorfence17">interiorfence17</span><br>
+  <span data-copy="!interiorfence18" title="Click to copy !interiorfence18">interiorfence18</span><br>
+  <span data-copy="!interiorfence19" title="Click to copy !interiorfence19">interiorfence19</span><br>
+  <span data-copy="!interiorfence2" title="Click to copy !interiorfence2">interiorfence2</span><br>
+  <span data-copy="!interiorfence3" title="Click to copy !interiorfence3">interiorfence3</span><br>
+  <span data-copy="!interiorfence4" title="Click to copy !interiorfence4">interiorfence4</span><br>
+  <span data-copy="!interiorfence5" title="Click to copy !interiorfence5">interiorfence5</span><br>
+  <span data-copy="!interiorfence6" title="Click to copy !interiorfence6">interiorfence6</span><br>
+  <span data-copy="!interiorfence7" title="Click to copy !interiorfence7">interiorfence7</span><br>
+  <span data-copy="!interiorfence8" title="Click to copy !interiorfence8">interiorfence8</span><br>
+  <span data-copy="!interiorfence9" title="Click to copy !interiorfence9">interiorfence9</span><br>
   <br>
   </p><div class="btngrid"><a href="./">Back to Props List</a></div><p>
   </p>
