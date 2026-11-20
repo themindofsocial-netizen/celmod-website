@@ -4,6 +4,27 @@
  * Each entry: [date (Y-m-d), HTML]. New updates are posted on admin.php (Updates tab) and stored in cm_updates.
  */
 return [
+	['2026-11-20', <<<'HTML'
+Building: you can only build in someone else's land if they add you with <span class="highlight">!addteam</span>. <span class="highlight">!rotate</span> and <span class="highlight">!roll</span> now turn props around their own axes, so turning back always undoes a turn, and <span class="highlight">!straight</span> shows the same effect as rotate. <span class="highlight">!skin</span> on its own tells you how many skins a prop has.<br>
+<span class="indent"></span>Big builds load smoothly: they spawn a little at a time instead of freezing the server.<br>
+<span class="indent"></span>Fighting: players only hurt each other when both are in a <span class="highlight">!deathmatch</span> land. Everyone spawns with the gravity gun and a crowbar, and Combine players can pick crowbars up. Health and suit chargers never run out, and dungeon kills give back a little ammo.<br>
+<span class="indent"></span>Tactics levels: you get a message when you level up, each level adds 2 to your full health, and at level 75 and 100 other players see a title above your name.<br>
+<span class="indent"></span>Digging is rarer and worth more: finds are less common, money boxes are 2% of finds, ores sell for up to 5,000 CL (diamond), and every swing shows how it's going. No digging or speed changes in event areas.<br>
+<span class="indent"></span>New emblem: <span class="highlight">Time</span>. Left click fast-forwards you, right click rewinds you 3 seconds, and your shadow trails behind you. The <span class="highlight">Error</span> emblems now go red, green, blue and tint you to match.<br>
+<span class="indent"></span>Emblem drops only happen at set times or when an admin starts one, and the free emblem in your build is rarer and arrives without a message. <span class="highlight">!stack</span> and <span class="highlight">+copy</span> on an emblem take spare copies out of your bank.<br>
+<span class="indent"></span>Everything in the shop needs buying first, and <span class="highlight">!turret</span> works. <span class="highlight">!hudcolor</span> sets your HUD colour, <span class="highlight">!nextmap</span> answers like other messages, and command tips show <span class="highlight">!</span> instead of "[tag]".
+HTML],
+	['2026-11-18', <<<'HTML'
+Bank items (emblems, hats, celweps, shop props and hobos you have out) have their own limit of 50 and no longer count toward your props. The prop limit is 200.<br>
+<span class="indent"></span><span class="highlight">!freezeall</span> and <span class="highlight">!unfreezeall</span> freeze or unfreeze everything you own, and <span class="highlight">!nofly</span> turns noclip off for visitors in your land.<br>
+<span class="indent"></span>Digging up a Black or White emblem is a 1 in 10,000 find. The website has a new look and a <span class="highlight">Guides</span> page.
+HTML],
+	['2026-11-16', <<<'HTML'
+Everything you buy is yours to keep and trade: shop props are one copy per purchase, kept in your <span class="highlight">!bank</span>, and <span class="highlight">!give</span> or <span class="highlight">!trade</span> hands them over for good.<br>
+<span class="indent"></span><span class="highlight">!perm</span> locks a prop so it can't be moved or deleted by accident, and <span class="highlight">!fee</span> charges visitors to enter your land.<br>
+<span class="indent"></span>NPC props are cyclers again: shoot one to change its pose, press E to pause it, and your saved builds keep the pose. <span class="highlight">!npckills</span> shows how many of each enemy you've killed.<br>
+<span class="indent"></span>Internet cels stop their video when you close them or walk away, <span class="highlight">!solid</span> lets players walk through props again, and many server crashes are fixed.
+HTML],
 	['2026-11-14', <<<'HTML'
 Enemy spawn pads: every 1,000 kills of an enemy in a map's dungeon earns you one of its spawn pads. See your kills with <span class="highlight">!spawnpads</span>/<b><i>v_spawnpads</i></b> and place one with <span class="highlight">!spawnpad</span>/<b><i>v_spawnpad</i></b>.
 <span class="indent"></span><span class="highlight">!spawnpoint</span>/<b><i>v_spawnpoint</i></b> puts a spawn point in your land: anyone who dies in your land respawns on it.
