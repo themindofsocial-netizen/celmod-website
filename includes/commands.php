@@ -73,6 +73,7 @@ return [
 		[['spawnpoint'], '', 'Spawns a spawn point in your land: anyone who dies in your land respawns on it.'],
 		[['teleport'], '', 'Spawns a teleport pad. Use it twice: the first pad sends players to the second.'],
 		[['text'], '<words> (^ in front for small text)', 'Writes words in the world out of text screens where you aim: !text <words> (^ in front for small text).'],
+		[['turret'], '', 'Places a floor turret where you aim that fights enemies (never players). Sold in the shop.'],
 		[['wep'], '<weapon>', 'Creates a weapon bit that will give a weapon when the player touches it.'],
 	],
 	'Land' => [
@@ -139,6 +140,7 @@ return [
 	'Player and Chat' => [
 		[['feed'], '', 'Turns the command feed (the list of recent commands) on or off.'],
 		[['fly'], '', 'Enables/disables noclip on the player.'],
+		[['hudcolor'], '<colour or r g b | random>', 'Changes the colour of your HUD text: !hudcolor <colour or r g b>, or random.'],
 		[['noclip'], '', 'Enables/disables noclip on the player.'],
 		[['nokill'], '', 'Enables/disables godmode on the player.'],
 		[['pmute'], '<player>', 'Mutes (or unmutes) a player just for you, voice and chat: !pmute <name>.'],
