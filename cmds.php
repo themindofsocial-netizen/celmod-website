@@ -11,7 +11,7 @@ cm_page_start('|CelMod| - Command List');
 <p>These commands go into the chat. To open chat press <span class="h">Y</span> on your keyboard.<br>
 In the console, type <b>v_</b> instead of <b>!</b> (<span class="h">v_land</span> is the same as <span class="h">!land</span>).</p>
 <p>Spawn any prop by typing its name: <span class="h">!blastdoor3</span> &middot; <a href="props/"><b>Props List</b></a> &middot;
-<a href="colors.php"><b>Colors List</b></a> &middot; <a href="effects.php"><b>Effects List</b></a> &middot; <a href="sounds.php"><b>Sounds List</b></a> &middot; <a href="music.php"><b>Music List</b></a></p>
+<a href="colors.php"><b>Colors List</b></a> &middot; <a href="effects.php"><b>Effects List</b></a> &middot; <a href="renderfx.php"><b>Render Effects</b></a> &middot; <a href="sounds.php"><b>Sounds List</b></a> &middot; <a href="music.php"><b>Music List</b></a></p>
 
 <div class="searchbar"><input type="search" id="cmdfind" placeholder="Find a command... (press /)" aria-label="Find a command">
 <span class="count" id="cmdcount" aria-live="polite"></span> <a href="#" id="cmdall" class="muted">show all</a></div>

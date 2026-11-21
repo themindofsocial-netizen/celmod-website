@@ -80,6 +80,7 @@ cm_tile('cmds.php', 'icn_cmds.png', 'Commands List', 'Every chat command');
 cm_tile('props/', 'icn_props.png', 'Props List', 'Spawnable props A - Z');
 cm_tile('colors.php', 'icn_colors.png', 'Colors List', 'For !color and !paint');
 cm_tile('effects.php', 'icn_fx.png', 'Effects List', 'For !effect');
+cm_tile('renderfx.php', 'icn_fx.png', 'Render Effects', 'For !renderfx');
 cm_tile('sounds.php', 'icn_cmds.png', 'Sounds List', 'For !sound, searchable');
 cm_tile('music.php', 'icn_updates.png', 'Music List', 'For !music');
 cm_tile('emblem-editor/', 'icn_fx.png', 'Emblem Editor', 'Design emblems in 3D');
