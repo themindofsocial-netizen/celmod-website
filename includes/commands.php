@@ -162,6 +162,8 @@ return [
 		[['props', 'proplist'], '', 'Displays the prop list.'],
 		[['reportbug'], '<what happened>', 'Reports a bug or glitch to the admins: !reportbug <what happened>.'],
 		[['rules'], '', 'Shows the server\'s welcome page and rules.'],
+		[['soundlist'], '', 'Lists the sounds a sound cel can play: !soundlist [part of a name].'],
+		[['sounds'], '', 'Lists the sounds a sound cel can play (same as !soundlist).'],
 		[['updates', 'updatelist'], '', 'Displays the update list.'],
 	],
 	'Admin' => [

@@ -80,6 +80,8 @@ cm_tile('cmds.php', 'icn_cmds.png', 'Commands List', 'Every chat command');
 cm_tile('props/', 'icn_props.png', 'Props List', 'Spawnable props A - Z');
 cm_tile('colors.php', 'icn_colors.png', 'Colors List', 'For !color and !paint');
 cm_tile('effects.php', 'icn_fx.png', 'Effects List', 'For !effect');
+cm_tile('sounds.php', 'icn_cmds.png', 'Sounds List', 'For !sound, searchable');
+cm_tile('music.php', 'icn_updates.png', 'Music List', 'For !music');
 cm_tile('emblem-editor/', 'icn_fx.png', 'Emblem Editor', 'Design emblems in 3D');
 cm_tile('buyhelp.php', 'icn_shop.png', 'Bank Help', 'Earning and spending CL');
 ?>
@@ -100,7 +102,6 @@ cm_tile('https://github.com/rockzehh/celmod', 'icn_github-code.png', 'GitHub Rep
 <!--<a href="top5.php"><b>Top 5 Builders</b></a><br>
 <a href="embstats.php"><b>Emblem Stats.</b></a><br>
 <a href="anims.php"><b>Animation Help</b></a><br>
-<a href="music.php"><b>Music List</b></a><br>
-<a href="sounds.php"><b>Sounds List</b></a><br>-->
+-->
 <a href="steam://connect/<?= h($address) ?>"><b>Connect to <?= h(cm_config('server')['name']) ?></b></a></p>
 <?php cm_page_end(); ?>
