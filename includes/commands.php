@@ -165,6 +165,7 @@ return [
 		[['updates', 'updatelist'], '', 'Displays the update list.'],
 	],
 	'Admin' => [
+		[['adminmode'], '', 'Admin mode: area and land rules off for you, and +move picks up players (use again to turn it off).'],
 		[['auction'], '<kind> <item> <starting bid> <minutes>', 'Auctions an emblem, hat or weapon above the Guess Booth, or cancels the auction.'],
 		[['autobuild'], '<x> <y> <z>', 'Stacks props on the x, y and z axis.'],
 		[['blacklist'], '<prop name>', 'Adds/removes a prop from the spawn blacklist.'],
@@ -200,6 +201,6 @@ return [
 		[['trashcan'], '', 'Marks the prop you are looking at (a map\'s own garbage can or dumpster, too) as a trash can for dug up junk, or unmarks it.'],
 		[['tune'], '', 'Sets where held emblems, celweps or your hat sit, and saves it.'],
 		[['zone'], '', 'Creates an event or restricted area. Use it at one corner, then at the opposite corner.'],
-		[['zonebypass'], '', 'Turns the event and restricted area rules off for you (use again to turn them back on).'],
+		[['zonebypass'], '', 'Same as !adminmode.'],
 	],
 ];
