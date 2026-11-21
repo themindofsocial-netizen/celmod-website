@@ -85,7 +85,6 @@
   <span data-copy="!tree5" title="Click to copy !tree5">tree5</span><br>
   <span data-copy="!treecliff1" title="Click to copy !treecliff1">treecliff1</span><br>
   <span data-copy="!treecliff2" title="Click to copy !treecliff2">treecliff2</span><br>
-  <span data-copy="!treegroup" title="Click to copy !treegroup">treegroup</span><br>
   <span data-copy="!treeoak" title="Click to copy !treeoak">treeoak</span><br>
   <span data-copy="!truck" title="Click to copy !truck">truck</span><br>
   <span data-copy="!truckcab" title="Click to copy !truckcab">truckcab</span><br>
