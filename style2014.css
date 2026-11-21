@@ -1462,3 +1462,21 @@ details.soundgroup .search-results {
 	padding: 0 8px 8px;
 	margin: 0;
 }
+
+/* Emblems catalogue */
+.emb-grid {
+	margin: 10px 0 14px;
+}
+.emb-card .swatch {
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+}
+.emb-card:target {
+	box-shadow: inset 3px 0 0 var(--green);
+	background: rgba(113, 225, 0, 0.1);
+}
+.emb-card .rarity {
+	font-size: 0.72em;
+	margin-left: 4px;
+}

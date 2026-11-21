@@ -3,7 +3,7 @@
 <h2><span class="celColor">|CelMod| Guides</span><br>
 </h2>
 <p class="guide-intro">Everything you need to build, earn, level up and collect on the server. Commands go in chat (press <span class="h">Y</span>);
-in the console type <b>v_</b> instead of <b>!</b>. Every command is on the <a href="cmds.php"><b>Commands</b></a> page, and every prop on the <a href="props/"><b>Props</b></a> list.</p>
+in the console type <b>v_</b> instead of <b>!</b>. Every command is on the <a href="cmds.php"><b>Commands</b></a> page, and every prop, sound, color and effect on the <a href="lists.php"><b>Lists</b></a>.</p>
 
 <div class="btngrid">
 <a href="#start">Quick Start</a>
@@ -11,6 +11,8 @@ in the console type <b>v_</b> instead of <b>!</b>. Every command is on the <a hr
 <a href="#protect">Protecting</a>
 <a href="#land">Your Land</a>
 <a href="#saves">Saving</a>
+<a href="#buttons">Buttons &amp; Animation</a>
+<a href="#sounds">Sounds &amp; Music</a>
 <a href="#money">Money</a>
 <a href="#bank">Bank</a>
 <a href="#xp">Tactics</a>
@@ -81,6 +83,35 @@ in the console type <b>v_</b> instead of <b>!</b>. Every command is on the <a hr
 <p>Your land has to be big enough, and the build has to fit in your limits. Saves keep colours, skins, welds, perm, poses and cels. Builds vanish when the map changes; saves don't, so save often.</p>
 </div>
 
+<div class="guide" id="buttons">
+<h3><span class="celColor">Buttons &amp; Animation</span></h3>
+<p><b>Buttons:</b> <span class="h">!button</span> spawns one. Pick its look with <span class="h">!button &lt;model&gt;</span>: switch, combine, elevator, keypad,
+firetrap, switchbox, lever, or the name of any prop (<span class="h">!button oildrum001</span>).</p>
+<p><b>Links:</b> type <span class="h">!link</span> on the button, then <span class="h">!link</span> on what it should work: a door, light, effect, sound can, music radio,
+message or animated prop. One button works up to <b>3</b> things at once; <span class="h">!unlink</span> clears them. <span class="h">!setpass</span> puts a passcode on it.</p>
+<p><b>Animating a prop:</b> move it where it starts and type <span class="h">!animate 1</span>, move it again and type <span class="h">!animate 2</span>, up to 10 frames.
+Each frame also keeps the prop's color, see-through (<span class="h">!alpha</span>), skin and render effect, so a prop can fade or change color as it moves.
+Link a button to it: each press plays the frames smoothly, and the next press plays them back.</p>
+<table class="cmtable">
+<tr><th>Command</th><th>What it does</th></tr>
+<tr><td><span class="h">!animate &lt;1-10&gt;</span></td><td>Saves the prop as it is now as that frame</td></tr>
+<tr><td><span class="h">!animate speed &lt;seconds&gt;</span></td><td>How long each frame takes (0.5 seconds unless you change it)</td></tr>
+<tr><td><span class="h">!animate play</span></td><td>Plays it once to try it</td></tr>
+<tr><td><span class="h">!animate clear</span></td><td>Starts over</td></tr>
+</table>
+<p>Buttons, links and animations are all saved with your build.</p>
+</div>
+
+<div class="guide" id="sounds">
+<h3><span class="celColor">Sounds &amp; Music</span></h3>
+<p><b>Sound cans:</b> <span class="h">!sound &lt;name&gt;</span> spawns a can that plays its sound when you press <b>E</b> on it (or a linked button). Every
+Half-Life 2 sound is there, thousands of them: <span class="h">!sounds</span> opens the <a href="sounds.php"><b>Sounds</b></a> list, and
+<span class="h">!soundlist &lt;word&gt;</span> searches it in chat.</p>
+<p><b>Music radios:</b> <span class="h">!music &lt;song&gt; [speed 50-200]</span> spawns a radio: press <b>E</b> to play the song and again to stop it.
+<span class="h">!celmusic</span> lists the songs, and they're on the <a href="music.php"><b>Music</b></a> list too.</p>
+<p>Sound cans and music radios count as <b>cels</b>, not props.</p>
+</div>
+
 <div class="guide" id="money">
 <h3><span class="celColor">Making Money</span></h3>
 <div class="table-scroll"><table class="cmtable">
@@ -133,7 +164,12 @@ for example <b>Time</b>: left click fast-forwards you, right click rewinds you 3
 <li><b>Digging:</b> the Black and White emblems can only be dug up (1 in 10,000 finds). A Vial tells you when one is buried nearby.</li>
 <li><b>The shop</b>, trading with other players, and Christmas presents (<span class="h">!wrap</span>).</li>
 </ul>
-<p><b>Power Booth:</b> it stands somewhere on the map. Bring several copies of the same emblem and press <span class="h">E</span> to upgrade them (for example Red Error, then Green, then Blue Error).</p>
+<p><b>Powers:</b> each basic color has its own: Fire is a flamethrower, Blue walks on water, Green jumps high, Purple runs fast.
+Pressing an ability that is still recharging tells you in chat how long is left. Every emblem, its power and its upgrade is on the
+<a href="emblems.php"><b>Emblems</b></a> page.</p>
+<p><b>Power Booth:</b> it stands somewhere on the map. Bring 3 copies of the same emblem and press <span class="h">E</span> to upgrade them.
+Upgraded basic emblems have <b>(S)</b> in their name: Fire (S) burns hotter, Blue (S) sprays water that puts out fires, Pink (S) sprays a healing gas,
+Purple (S) keeps Purple's speed with normal jumps and Yellow (S) is electric. Several copies also make a <b>big</b> emblem, about half again as strong.</p>
 <p><b>Hats:</b> <span class="h">!hat &lt;name&gt;</span> puts one on; <span class="h">!thirdperson</span> lets you see your hat and emblem.
 Design your own emblem in the <a href="emblem-editor/"><b>Emblem Editor</b></a>.</p>
 </div>

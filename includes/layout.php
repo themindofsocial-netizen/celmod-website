@@ -15,9 +15,9 @@ function cm_nav_items(): array
 		['Stats', 'statistics.php'],
 		['Leaderboards', 'leaderboard.php'],
 		['Commands', 'cmds.php'],
-		['Props', 'props/'],
+		['Lists', 'lists.php'],
 		['Guides', 'guides.php'],
-		['Emblems', 'emblem-editor/'],
+		['Emblems', 'emblems.php'],
 		['Updates', 'updates.php'],
 	];
 }
@@ -102,6 +102,13 @@ function cm_navbar(): void
 		$active = $path === ''
 			? $current === 'index.php'
 			: ($current === $path || (substr($path, -1) === '/' && strpos($current, $path) === 0));
+		// "Lists" is lit on every list page, "Emblems" in the editor too.
+		if ($path === 'lists.php' && (strpos($current, 'props/') === 0 || in_array($current, ['colors.php', 'effects.php', 'renderfx.php', 'sounds.php', 'music.php'], true))) {
+			$active = true;
+		}
+		if ($path === 'emblems.php' && strpos($current, 'emblem-editor/') === 0) {
+			$active = true;
+		}
 		$href = ($b . $path) === '' ? './' : $b . $path; // "" would reload the current page
 		echo '<a href="' . $href . '"' . ($active ? ' class="active"' : '') . '>' . h($label) . '</a>';
 	}

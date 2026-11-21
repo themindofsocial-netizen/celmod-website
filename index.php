@@ -83,6 +83,7 @@ cm_tile('effects.php', 'icn_fx.png', 'Effects List', 'For !effect');
 cm_tile('renderfx.php', 'icn_fx.png', 'Render Effects', 'For !renderfx');
 cm_tile('sounds.php', 'icn_cmds.png', 'Sounds List', 'For !sound, searchable');
 cm_tile('music.php', 'icn_updates.png', 'Music List', 'For !music');
+cm_tile('emblems.php', 'icn_fx.png', 'Emblems', 'Every emblem, power and upgrade');
 cm_tile('emblem-editor/', 'icn_fx.png', 'Emblem Editor', 'Design emblems in 3D');
 cm_tile('buyhelp.php', 'icn_shop.png', 'Bank Help', 'Earning and spending CL');
 ?>
@@ -99,7 +100,7 @@ cm_tile('https://github.com/rockzehh/celmod', 'icn_github-code.png', 'GitHub Rep
 </div>
 
 <p>Extras:<br>
-<a href="emblems.php"><b>Emblems Info.</b></a><br>
+<a href="lists.php"><b>All the lists</b></a><br>
 <!--<a href="top5.php"><b>Top 5 Builders</b></a><br>
 <a href="embstats.php"><b>Emblem Stats.</b></a><br>
 <a href="anims.php"><b>Animation Help</b></a><br>

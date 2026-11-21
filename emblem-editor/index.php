@@ -100,6 +100,9 @@ the emblems on the server can't be changed or removed from this page.</p>
 			<label data-f="ignite">Ignite target (seconds)<input name="ignite" type="number" min="0" step="any"></label>
 			<label data-f="slow">Slow target (seconds)<input name="slow" type="number" min="0" step="any"></label>
 			<label data-f="knockback">Knockback force<input name="knockback" type="number" min="0" step="any"></label>
+			<label data-f="gas">The gas<select name="gas"><option value="water">Water: puts out fires</option><option value="heal">Heal: heals players</option><option value="none">Just looks</option></select></label>
+			<label data-f="normaljump">Jumps<select name="normaljump"><option value="0">Changed by the speed</option><option value="1">Normal height (like Purple (S))</option></select></label>
+			<label data-f="chain">Jumps to more players<input name="chain" type="number" min="0" max="10" step="1"></label>
 			<label>Speed multiplier while held<input name="speed" type="number" min="0.1" step="any"></label>
 			<label class="wide">Right click attack<select name="secondary"><option value="none">None</option><option value="fireball">Fireball: flies and explodes</option><option value="icestorm">Ice storm: burst that hurts and slows</option><option value="bigshot">Big shot: heavy bolt with recoil</option></select></label>
 			<label data-f="secondaryvalue">Right click damage / blast size<input name="secondaryvalue" type="number" min="0" step="any"></label>

@@ -21,7 +21,7 @@ const POWERS = [
 	['flash', 'Flash: blinds players facing you', ['cooldown', 'range', 'duration', 'sprite'], ''],
 	['smog', 'Smog: smoke cloud, players inside cough', ['value', 'cooldown', 'range', 'duration'], 'Damage per second'],
 	['nuke', 'Nuke: headcrab canister from the sky', ['value', 'cooldown', 'range'], 'Impact damage'],
-	['speed', 'Speed: run faster', ['value'], 'Speed multiplier'],
+	['speed', 'Speed: run faster', ['value', 'normaljump'], 'Speed multiplier'],
 	['sprint', 'Sprint: never runs out', [], ''],
 	['gravity', 'Gravity: lighter or heavier', ['value'], 'Gravity multiplier'],
 	['jump', 'Jump: jump higher', ['value'], 'Jump speed (normal is about 200)'],
@@ -32,6 +32,14 @@ const POWERS = [
 	['cloak', 'Cloak: turn translucent', ['value'], 'Visibility (0 to 255)'],
 	['drain', 'Drain: hurts its holder', ['value'], 'Damage per second'],
 	['gold', 'Gold: earn money', ['value'], 'CL per minute'],
+	['fire', 'Fire: sets the target alight', ['value', 'cooldown', 'range', 'ignite', 'fx'], 'Damage per hit'],
+	['blizzard', 'Blizzard: hurts and slows', ['value', 'cooldown', 'range', 'slow', 'fx'], 'Damage per hit'],
+	['shock', 'Shock: lightning that can jump between players', ['value', 'cooldown', 'range', 'chain', 'fx'], 'Damage per hit'],
+	['push', 'Push: shoves the target away', ['value', 'cooldown', 'range', 'fx'], 'Push force'],
+	['gas', 'Gas: a coloured jet (puts out fires or heals)', ['value', 'cooldown', 'range', 'gas'], 'Health per hit (heal gas)'],
+	['phase', 'Phase: hold right click to pass through walls', [], ''],
+	['time', 'Time: left click fast-forward, right click rewind', ['value', 'cooldown'], 'Fast-forward seconds'],
+	['waterwalk', 'Water walk: walk on water (crouch to swim)', [], ''],
 ];
 const FX = [
 	['beam', 'Beam with impact ring', false], ['flame', 'Flame sprites', true], ['ice', 'Ice shards', true],
@@ -69,7 +77,7 @@ const DEFAULTS = {
 	handoffset: '0 0 0', handangles: '0 0 0', power: 'none', dropweight: '10',
 };
 const ORDER = ['name', 'model', 'skin', 'color', 'scale', 'handscale', 'handoffset', 'handangles', 'power', 'value', 'cooldown',
-	'duration', 'range', 'dmgtype', 'ignite', 'slow', 'knockback', 'speed', 'fx', 'sprite', 'secondary', 'secondaryvalue', 'secondarycooldown', 'beamcolor', 'jumpboost', 'falldamage', 'playercolor', 'glow', 'upgradesto', 'upgradecost', 'dropweight'];
+	'duration', 'range', 'dmgtype', 'ignite', 'slow', 'knockback', 'speed', 'fx', 'sprite', 'secondary', 'secondaryvalue', 'secondarycooldown', 'beamcolor', 'jumpboost', 'falldamage', 'playercolor', 'glow', 'gas', 'normaljump', 'chain', 'freeze', 'aura', 'upgradesto', 'upgradecost', 'dropweight'];
 
 // ---- State ---------------------------------------------------------------------------------
 let emblems = [{ id: 'new_emblem', kv: { ...DEFAULTS } }];
@@ -325,6 +333,9 @@ function fillForm() {
 	form.power.value = POWERS.some(([id]) => id === kv.power) ? kv.power : 'none';
 	form.dmgtype.value = kv.dmgtype || 'generic';
 	form.fx.value = kv.fx || 'beam';
+	form.gas.value = ['water', 'heal'].includes(kv.gas) ? kv.gas : 'none';
+	form.normaljump.value = kv.normaljump === '1' ? '1' : '0';
+	form.chain.value = kv.chain ?? '';
 	form.beamauto.value = kv.beamcolor ? '0' : '1';
 	form.beamcolor.value = toHex(kv.beamcolor || kv.color);
 	showFields();
@@ -354,6 +365,9 @@ function readForm() {
 	}
 	if (shown.has('dmgtype') && form.dmgtype.value !== 'generic') kv.dmgtype = form.dmgtype.value; else delete kv.dmgtype;
 	if (shown.has('fx') && form.fx.value !== 'beam') kv.fx = form.fx.value; else delete kv.fx;
+	if (shown.has('gas') && form.gas.value !== 'none') kv.gas = form.gas.value; else delete kv.gas;
+	if (shown.has('normaljump') && form.normaljump.value === '1') kv.normaljump = '1'; else delete kv.normaljump;
+	if (shown.has('chain') && form.chain.value !== '' && +form.chain.value > 0) kv.chain = form.chain.value; else delete kv.chain;
 	if (shown.has('beamcolor') && form.beamauto.value === '0') kv.beamcolor = toRGBA(form.beamcolor.value); else delete kv.beamcolor;
 	if (form.speed.value !== '' && +form.speed.value !== 1 && kv.power !== 'speed') kv.speed = form.speed.value; else delete kv.speed;
 	if (form.scale.value !== '' && +form.scale.value !== 1) kv.scale = form.scale.value; else delete kv.scale;

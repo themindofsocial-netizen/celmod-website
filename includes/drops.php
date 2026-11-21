@@ -71,6 +71,7 @@ function cm_drop_emblems(): array
 			'exclusive' => $exclusive,
 			'default'   => $weight > 0 && $exclusive === '',
 			'color'     => $kv['color'] ?? '',
+			'kv'        => $kv,
 		];
 	}
 	return $out;
