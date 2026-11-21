@@ -66,7 +66,7 @@ return [
 		[['internet'], '', 'Creates a working internet cel.'],
 		[['ladder'], '<1 or 2>', 'Creates a working ladder cel.'],
 		[['light'], '[distance]', 'Creates a working light cel.'],
-		[['link'], '', 'Creates a link between a trigger bit and an entity.'],
+		[['link'], '', 'Links a button to a door, light, effect or animated prop (up to 3 per button): !link on the button, then on the thing.'],
 		[['message'], '<text>', 'Spawns a message cel that shows your text to whoever uses it.'],
 		[['music'], '<song>', 'Spawns a music cel that plays a song when used (and stops it when used again).'],
 		[['pass'], '<passcode>', 'Uses a passcode button with its passcode: !pass <passcode>.'],
@@ -77,6 +77,7 @@ return [
 		[['teleport'], '', 'Spawns a teleport pad. Use it twice: the first pad sends players to the second.'],
 		[['text'], '<words> (^ in front for small text)', 'Writes words in the world out of text screens where you aim: !text <words> (^ in front for small text).'],
 		[['turret'], '', 'Places a floor turret where you aim that fights enemies (never players). Sold in the shop.'],
+		[['unlink'], '', 'Clears the links of the button you are looking at.'],
 		[['wep'], '<weapon>', 'Creates a weapon bit that will give a weapon when the player touches it.'],
 	],
 	'Land' => [
