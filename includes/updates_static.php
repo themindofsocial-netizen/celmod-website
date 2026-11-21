@@ -4,6 +4,11 @@
  * Each entry: [date (Y-m-d), HTML]. New updates are posted on admin.php (Updates tab) and stored in cm_updates.
  */
 return [
+	['2026-11-21', <<<'HTML'
+The basic emblems work like the originals again, each with an upgrade made at the Power Booth (skin 2, with (S) in its name): <span class="highlight">Fire (S)</span> burns hotter, <span class="highlight">Blue</span> walks on water and <span class="highlight">Blue (S)</span> sprays water that puts out fires, <span class="highlight">Pink (S)</span> sprays a healing gas, <span class="highlight">Green</span> jumps, <span class="highlight">Purple (S)</span> keeps Purple's speed with normal jumps, and the new <span class="highlight">Yellow (S)</span> is electric. Black turns you black and White makes you glow.<br>
+<span class="indent"></span><span class="highlight">!animate</span> is back: save up to 10 frames of a prop and <span class="highlight">!link</span> a button to play them. <span class="highlight">!extinguish</span> puts out every fire in your land.<br>
+<span class="indent"></span>NPC kills outside dungeons count toward spawn pads (except enemies from your own pads). The treegroup prop is gone. Admins can read and resolve disputes in game with <span class="highlight">!disputes</span>.
+HTML],
 	['2026-11-20', <<<'HTML'
 Building: you can only build in someone else's land if they add you with <span class="highlight">!addteam</span>. <span class="highlight">!rotate</span> and <span class="highlight">!roll</span> now turn props around their own axes, so turning back always undoes a turn, and <span class="highlight">!straight</span> shows the same effect as rotate. <span class="highlight">!skin</span> on its own tells you how many skins a prop has.<br>
 <span class="indent"></span>Big builds load smoothly: they spawn a little at a time instead of freezing the server.<br>
