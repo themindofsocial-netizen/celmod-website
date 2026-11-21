@@ -56,7 +56,7 @@ return [
 		[['ammocrate'], '<smg, ar2, rpg, grenade or cball>', 'Creates an ammo crate bit that will give ammo to the player.'],
 		[['anim'], '', 'Animates a prop (same as !animate).'],
 		[['animate'], '<1-10> | speed <seconds> | play | clear', 'Animates a prop: !animate <1-10> saves where it is now as that frame; !link a button to it to play the frames. !animate speed <seconds>, play, clear.'],
-		[['button'], '', 'Spawns a button trigger bit.'],
+		[['button'], '[model] (switch, combine, elevator, keypad, firetrap, switchbox, lever or a prop)', 'Spawns a button trigger bit: !button [model], where the model is switch, combine, elevator, keypad, firetrap, switchbox, lever or any prop\'s name (!button list).'],
 		[['celmusic'], '', 'Lists the songs the music cel can play.'],
 		[['charger'], '<health or suit>', 'Creates a health/suit charger bit that will give health/suit to the player.'],
 		[['door'], '<door skin>', 'Spawns a working door cel.'],
