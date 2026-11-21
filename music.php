@@ -2,7 +2,7 @@
 <!-- Written by tools/export_sounds.py (celmod repo) from the server's sounds.txt: edit that file, not this one. -->
 <h2><span class="celColor">|CelMod| Music</span><br>
 </h2>
-<p>24 songs for the music cel. Spawn a radio with <span class="h">!music &lt;song&gt; [speed 50-200]</span>, then press <b>E</b> on it to play the song, and again to stop it. In game, <span class="h">!celmusic</span> lists them.<br>
+<p>25 songs for the music cel. Spawn a radio with <span class="h">!music &lt;song&gt; [speed 50-200]</span>, then press <b>E</b> on it to play the song, and again to stop it. In game, <span class="h">!celmusic</span> lists them.<br>
 Click a song to copy its command.</p>
 <div class="searchbar"><input type="search" id="soundfind" placeholder="Find a song... (press /)" aria-label="Find a song" autocomplete="off"> <span class="count" id="soundcount" aria-live="polite"></span></div>
 <div class="btngrid"><a href="sounds.php">Sound List</a> <a href="cmds.php">Commands</a></div>
@@ -32,6 +32,7 @@ Click a song to copy its command.</p>
 <tr data-name="nosup"><td><b data-copy="!music nosup" title="Copy !music nosup">nosup</b></td><td class="num">3:49</td></tr>
 <tr data-name="arctic"><td><b data-copy="!music arctic" title="Copy !music arctic">arctic</b></td><td class="num">1:19</td></tr>
 <tr data-name="storm"><td><b data-copy="!music storm" title="Copy !music storm">storm</b></td><td class="num">1:22</td></tr>
+<tr data-name="summersolace"><td><b data-copy="!music summersolace" title="Copy !music summersolace">summersolace</b></td><td class="num">4:11</td></tr>
 </table></div>
 <?php cm_page_end(<<<'JS'
 <script>
