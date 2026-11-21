@@ -48,7 +48,9 @@ Click a song to copy its command.</p>
 			if (ok) { shown++; }
 		});
 		groups.forEach(function (g) {
-			g.style.display = g.querySelector('[data-name]:not([style*="none"])') ? '' : 'none';
+			var any = g.querySelector('[data-name]:not([style*="none"])');
+			g.style.display = any ? '' : 'none';
+			if (g.tagName === 'DETAILS') { g.open = q !== '' && !!any; }
 		});
 		count.textContent = q === '' ? '' : (shown === 0 ? 'Nothing matches' : shown + ' match' + (shown === 1 ? '' : 'es'));
 	});

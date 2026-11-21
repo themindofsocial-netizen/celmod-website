@@ -1441,3 +1441,24 @@ mark {
 		animation: none;
 	}
 }
+
+/* Sound list: folders that open */
+details.soundgroup {
+	margin: 4px 0;
+	text-align: left;
+	background: var(--well);
+	border: 1px solid #000;
+}
+details.soundgroup > summary {
+	cursor: pointer;
+	padding: 4px 10px;
+	list-style-position: inside;
+}
+details.soundgroup > summary:hover {
+	background: var(--well-hover);
+}
+details.soundgroup .search-results {
+	justify-content: flex-start;
+	padding: 0 8px 8px;
+	margin: 0;
+}
