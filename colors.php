@@ -36,5 +36,5 @@
 <button type="button" class="swatch-card" data-copy="!color rainbow" title="Copy !color rainbow"><span class="chip chip-rainbow"></span><span class="txt"><b>rainbow</b><small>cycles through every color</small></span></button>
 <button type="button" class="swatch-card" data-copy="!color error" title="Copy !color error"><span class="chip chip-error"></span><span class="txt"><b>error</b><small>fades red-orange and black</small></span></button>
 </div>
-<div class="btngrid"><a href="renderfx.php">Render Effects</a> <a href="effects.php">Effects</a> <a href="lists.php">All Lists</a></div>
+<div class="btngrid"><a href="renderfx">Render Effects</a> <a href="effects">Effects</a> <a href="lists">All Lists</a></div>
 <?php cm_page_end(); ?>

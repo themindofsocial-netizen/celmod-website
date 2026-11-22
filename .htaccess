@@ -5,18 +5,38 @@ Options -Indexes
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 
-	# Old .html links (in-game MOTD URLs, bookmarks) -> the new .php pages
-	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteCond %{REQUEST_FILENAME} ^(.+)\.html$
-	RewriteCond %1.php -f
-	RewriteRule ^(.+)\.html$ $1.php [R=301,L]
+	# Never serve internals directly (checked before anything else, the clean addresses included)
+	RewriteRule ^(includes|sql)/ - [F,L]
+	RewriteRule ^config(\.sample)?(\.php)?$ - [F,L]
+	RewriteRule ^old/.*\.zip$ - [F,L]
 
 	# FastDL: a file that isn't there must be a real 404, never a web page (the game would save the page as the file)
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteRule ^fastdl/ - [R=404,L]
 
-	# Never serve internals directly
-	RewriteRule ^(includes|sql)/ - [F,L]
-	RewriteRule ^config(\.sample)?\.php$ - [F,L]
-	RewriteRule ^old/.*\.zip$ - [F,L]
+	# Old .html links (in-game MOTD URLs, bookmarks) -> the clean address (/shop)
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} ^(.+)\.html$
+	RewriteCond %1.php -f
+	RewriteRule ^(.+)\.html$ /$1 [R=301,L]
+
+	# Clean addresses: celmod.net/shop instead of celmod.net/shop.php.
+	# An old link to a .php page (when it's just a visit, not a form or the game server's API) is sent to the clean
+	# address, and /index.php to the site's root.
+	RewriteCond %{REQUEST_METHOD} =GET
+	RewriteCond %{THE_REQUEST} \s/+(.*?)index\.php[\s?]
+	RewriteRule ^ /%1 [R=301,L,NE]
+	RewriteCond %{REQUEST_METHOD} =GET
+	RewriteCond %{REQUEST_URI} !^/(api|fastdl)/
+	RewriteCond %{THE_REQUEST} \s/+([^?\s]+?)\.php[\s?]
+	RewriteRule ^ /%1 [R=301,L,NE]
+	# A trailing slash on a page (/shop/) is dropped, so the page's own links work.
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^(.+)/$ /$1 [R=301,L]
+	# /shop is answered by shop.php.
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_FILENAME}.php -f
+	RewriteRule ^(.+)$ $1.php [L]
+
 </IfModule>

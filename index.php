@@ -18,6 +18,7 @@ $address = cm_server_address();
 
 function cm_tile(string $href, string $icon, string $label, string $sub = ''): void
 {
+	$href = preg_replace('/\.php(?=$|[?#])/', '', $href); // clean addresses: /shop, not /shop.php
 	echo '<a class="tile" href="' . $href . '"><img src="images/' . $icon . '" alt=""><span>' . $label
 		. ($sub !== '' ? '<small>' . $sub . '</small>' : '') . "</span></a>\n";
 }
@@ -59,7 +60,7 @@ cm_page_start('|CelMod| - A Living Project');
 	<?php else: ?>
 	<?= $latest['html'] ?><br>
 	<?php endif; ?>
-	<a href="updates.php"><b>All updates</b></a>
+	<a href="updates"><b>All updates</b></a>
 </div>
 <?php endif; ?>
 
@@ -100,10 +101,10 @@ cm_tile('https://github.com/rockzehh/celmod', 'icn_github-code.png', 'GitHub Rep
 </div>
 
 <p>Extras:<br>
-<a href="lists.php"><b>All the lists</b></a><br>
-<!--<a href="top5.php"><b>Top 5 Builders</b></a><br>
-<a href="embstats.php"><b>Emblem Stats.</b></a><br>
-<a href="anims.php"><b>Animation Help</b></a><br>
+<a href="lists"><b>All the lists</b></a><br>
+<!--<a href="top5"><b>Top 5 Builders</b></a><br>
+<a href="embstats"><b>Emblem Stats.</b></a><br>
+<a href="anims"><b>Animation Help</b></a><br>
 -->
 <a href="steam://connect/<?= h($address) ?>"><b>Connect to <?= h(cm_config('server')['name']) ?></b></a></p>
 <?php cm_page_end(); ?>

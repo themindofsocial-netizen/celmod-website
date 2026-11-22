@@ -40,7 +40,7 @@ function cm_shop_available(array $it, array $pendingByItem): ?int
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	$back = 'shop.php' . (isset($_POST['c']) && $_POST['c'] !== '' ? '?c=' . urlencode((string)$_POST['c']) : '');
+	$back = 'shop' . (isset($_POST['c']) && $_POST['c'] !== '' ? '?c=' . urlencode((string)$_POST['c']) : '');
 
 	if (!$user || !$db || !cm_csrf_check()) {
 		cm_flash('Your session expired, please try again.', 'bloody');
@@ -178,7 +178,7 @@ cm_page_start('|CelMod| - Shop', '', ['wide' => true]);
 	<span class="stat"><b><?= h(cm_cl($spendable)) ?></b>Ready to spend<?php if ($reserved): ?><br><span class="muted"><?= h(cm_cl($reserved)) ?> held for orders</span><?php endif; ?></span>
 	<span class="stat"><b><?= count(array_filter($owned, static fn ($v) => $v === true)) ?></b>Things you own here</span>
 <?php else: ?>
-	<span class="stat"><b><a href="login.php?return=shop.php">Sign in through Steam</a></b>to buy from the website</span>
+	<span class="stat"><b><a href="login?return=shop">Sign in through Steam</a></b>to buy from the website</span>
 <?php endif; ?>
 	<span class="stat"><b><?= count($items) ?></b>For sale right now</span>
 </div>
@@ -195,9 +195,9 @@ cm_page_start('|CelMod| - Shop', '', ['wide' => true]);
 
 <?php if ($items): ?>
 <div class="tabs">
-	<a href="shop.php" class="<?= $filter === '' ? 'active' : '' ?>">Everything <span class="count"><?= count($items) ?></span></a>
+	<a href="shop" class="<?= $filter === '' ? 'active' : '' ?>">Everything <span class="count"><?= count($items) ?></span></a>
 <?php foreach (array_keys($byCategory) as $cat): ?>
-	<a href="shop.php?c=<?= h(urlencode($cat)) ?>" class="<?= $filter === $cat ? 'active' : '' ?>"><?= h($cat) ?> <span class="count"><?= (int)$counts[$cat] ?></span></a>
+	<a href="shop?c=<?= h(urlencode($cat)) ?>" class="<?= $filter === $cat ? 'active' : '' ?>"><?= h($cat) ?> <span class="count"><?= (int)$counts[$cat] ?></span></a>
 <?php endforeach; ?>
 </div>
 
@@ -261,7 +261,7 @@ cm_page_start('|CelMod| - Shop', '', ['wide' => true]);
 				<button class="cmbutton<?= $afford ? ' go' : '' ?>" data-confirm="Buy for <?= h(cm_cl($price)) ?>?" <?= $afford ? '' : 'disabled title="You need ' . h(cm_cl($price - $spendable)) . ' more"' ?>><?= $state === true ? 'Buy another' : 'Buy' ?></button>
 			</form>
 		<?php else: ?>
-			<a href="login.php?return=shop.php" class="muted">Sign in to buy</a>
+			<a href="login?return=shop" class="muted">Sign in to buy</a>
 		<?php endif; ?>
 		</div>
 	</div>
@@ -300,5 +300,5 @@ cm_page_start('|CelMod| - Shop', '', ['wide' => true]);
 <?php endforeach; ?>
 </table>
 <?php endif; ?>
-<p><a href="buyhelp.php"><b>Bank Help</b></a> <span class="splitter">|</span> <a href="player.php"><b>Your Profile</b></a></p>
+<p><a href="buyhelp"><b>Bank Help</b></a> <span class="splitter">|</span> <a href="player"><b>Your Profile</b></a></p>
 <?php cm_page_end('<script type="text/javascript" src="' . cm_base() . 'scripts/shop.js?v=' . (int)@filemtime(CM_ROOT . '/scripts/shop.js') . '"></script>' . "\n"); ?>

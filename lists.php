@@ -4,6 +4,7 @@ require __DIR__ . '/includes/bootstrap.php';
 // Every reference list on the site, in one place.
 function cm_list_tile(string $href, string $icon, string $label, string $sub): void
 {
+	$href = preg_replace('/\.php(?=$|[?#])/', '', $href); // clean addresses: /shop, not /shop.php
 	echo '<a class="tile" href="' . $href . '"><img src="images/' . $icon . '" alt=""><span>' . h($label)
 		. '<small>' . h($sub) . '</small></span></a>' . "\n";
 }

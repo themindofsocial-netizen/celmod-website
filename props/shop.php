@@ -4,7 +4,7 @@
 </h2>
 <p>These props are CelItems: each one you buy is one copy, kept in your <b>!bank</b>. You can only have as many out
 as you own, and !give, !trade or selling one makes it the other player's for good. Buy them in the
-<a href="../shop.php">shop</a> or in game with <span class="highlight">!buy prop_&lt;name&gt;</span>.
+<a href="../shop">shop</a> or in game with <span class="highlight">!buy prop_&lt;name&gt;</span>.
 Seasonal props are only sold in their season.</p>
 <div class="table-scroll"><table class="cmtable">
 <tr><th>Prop</th><th>Spawn with</th><th>Category</th><th>Price</th><th>Sold</th></tr>

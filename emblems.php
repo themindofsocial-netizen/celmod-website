@@ -109,7 +109,7 @@ again as strong. Powers don't work in event areas.</p>
 </div>
 <?php endif; ?>
 
-<div class="btngrid"><a href="emblem-editor/">Design your own in the Emblem Editor</a> <a href="guides.php#emblems">Emblems guide</a></div>
+<div class="btngrid"><a href="emblem-editor/">Design your own in the Emblem Editor</a> <a href="guides#emblems">Emblems guide</a></div>
 <?php cm_page_end(<<<'JS'
 <script>
 (function () {

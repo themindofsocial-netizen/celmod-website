@@ -49,7 +49,7 @@ Looking for something? Search, or pick a year.</p>
 <?php endforeach; ?>
 </div>
 <p class="muted" id="updnone" hidden>No update mentions that.</p>
-<div class="btngrid"><a href="originalupdates.php">The original 2009 - 2014 updates</a></div>
+<div class="btngrid"><a href="originalupdates">The original 2009 - 2014 updates</a></div>
 <?php cm_page_end(<<<'JS'
 <script>
 (function () {

@@ -5,7 +5,7 @@
 <p>5511 sounds for the sound cel: every Half-Life 2 sound, by folder. Spawn one with <span class="h">!sound &lt;name&gt;</span>, then press <b>E</b> on the can (or link a button to it) to play it. In game, <span class="h">!soundlist</span> shows the folders and <span class="h">!soundlist &lt;word&gt;</span> searches.<br>
 Click a sound to copy its command, ready to paste into the chat.</p>
 <div class="searchbar"><input type="search" id="soundfind" placeholder="Find a sound... (press /)" aria-label="Find a sound" autocomplete="off"> <span class="count" id="soundcount" aria-live="polite"></span></div>
-<div class="btngrid"><a href="music.php">Music List</a> <a href="cmds.php">Commands</a></div>
+<div class="btngrid"><a href="music">Music List</a> <a href="cmds">Commands</a></div>
 <details class="soundgroup"><summary><b>ambience</b> <span class="muted">(2)</span></summary>
 <div class="search-results soundlist">
   <button type="button" data-name="mechwhine ambience/mechwhine.wav" data-copy="!sound mechwhine" title="ambience/mechwhine.wav">mechwhine</button>

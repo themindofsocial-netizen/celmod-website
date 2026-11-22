@@ -109,27 +109,27 @@ function cm_navbar(): void
 		if ($path === 'emblems.php' && strpos($current, 'emblem-editor/') === 0) {
 			$active = true;
 		}
-		$href = ($b . $path) === '' ? './' : $b . $path; // "" would reload the current page
+		$href = ($b . $path) === '' ? './' : $b . preg_replace('/\.php$/', '', $path); // "" would reload the current page; links have no .php
 		echo '<a href="' . $href . '"' . ($active ? ' class="active"' : '') . '>' . h($label) . '</a>';
 	}
 	echo "</div>\n" . '<div class="nav-status">';
 
 	if ($server && $server['online']) {
-		echo '<a href="' . $b . 'live.php"><span class="grassy">&#9679;</span> <b>' . (int)$server['players'] . '/' . (int)$server['max_players'] . '</b> on <span class="h">' . h($server['map']) . '</span></a>';
+		echo '<a href="' . $b . 'live"><span class="grassy">&#9679;</span> <b>' . (int)$server['players'] . '/' . (int)$server['max_players'] . '</b> on <span class="h">' . h($server['map']) . '</span></a>';
 	} elseif ($server) {
-		echo '<a href="' . $b . 'live.php"><span class="bloody">&#9679;</span> Server offline</a>';
+		echo '<a href="' . $b . 'live"><span class="bloody">&#9679;</span> Server offline</a>';
 	} else {
-		echo '<a href="' . $b . 'live.php">Live Server</a>';
+		echo '<a href="' . $b . 'live">Live Server</a>';
 	}
 
 	echo ' <span class="splitter">|</span> ';
 
 	if ($user) {
-		echo '<a href="' . $b . 'player.php?id=' . h($user['steamid64']) . '"><b>' . h($user['name']) . '</b></a>';
+		echo '<a href="' . $b . 'player?id=' . h($user['steamid64']) . '"><b>' . h($user['name']) . '</b></a>';
 		echo ' <span class="h">' . h(cm_cl($user['balance'])) . '</span>';
-		echo ' <span class="splitter">|</span> <a href="' . $b . 'logout.php">Sign out</a>';
+		echo ' <span class="splitter">|</span> <a href="' . $b . 'logout">Sign out</a>';
 	} else {
-		echo '<a href="' . $b . 'login.php?return=' . urlencode($here) . '"><b>Sign in through Steam</b></a>';
+		echo '<a href="' . $b . 'login?return=' . urlencode($here) . '"><b>Sign in through Steam</b></a>';
 	}
 
 	echo "</div>\n";
@@ -138,7 +138,7 @@ function cm_navbar(): void
 	$season = cm_current_season();
 	if ($season) {
 		echo '<div class="season-banner"><b>' . h($season[1]['greeting']) . '</b> ' . h($season[1]['line'])
-			. ' <a href="' . $b . 'shop.php?c=' . urlencode($season[1]['shop']) . '"><b>Visit the ' . h($season[1]['shop']) . '</b></a></div>' . "\n";
+			. ' <a href="' . $b . 'shop?c=' . urlencode($season[1]['shop']) . '"><b>Visit the ' . h($season[1]['shop']) . '</b></a></div>' . "\n";
 	}
 
 	echo "</div>\n";
@@ -195,7 +195,7 @@ function cm_db_offline_notice(): void
 	if (cm_is_admin() || !CM_CONFIG_FOUND) {
 		$err = cm_db_error();
 		echo '<br><br><span class="muted">' . (!CM_CONFIG_FOUND ? 'config.php is missing.' : h('[' . ($err['code'] ?? '?') . '] ' . ($err['message'] ?? ''))) . '</span>'
-			. '<br><a href="' . cm_base() . 'check.php"><b>Open the setup check</b></a>';
+			. '<br><a href="' . cm_base() . 'check"><b>Open the setup check</b></a>';
 	}
 	echo '</p>';
 }

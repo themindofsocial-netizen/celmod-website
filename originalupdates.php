@@ -20,10 +20,10 @@ Chat commands in <span class="highlight">green italics</span>.<br>
 <tr><td><b>-=- 1/5/12: </b>Players can now <span class="highlight">!kick</span> others from their land (land-bans player for 10 seconds).</td></tr>
 <tr><td><b>-=- 12/26/11: </b>The Official <b>|CelMod| Server</b> has turned 2 years old today! There will be a <b>surprise event</b> later today.</td></tr>
 <tr><td><b>-=- 12/22/11: </b>The command <span class="highlight">!give</span> is back and is here to stay.</td></tr>
-<tr><td><b>-=- 12/20/11: </b>Players can now use build templates. <a href="./templates.php">Click here for more info.</a></td></tr>
+<tr><td><b>-=- 12/20/11: </b>Players can now use build templates. <a href="./templates">Click here for more info.</a></td></tr>
 <tr><td><b>-=- 12/19/11: </b>The map <u>Cubeland</u> has been updated with more build space.</td></tr>
 <tr><td><b>-=- 12/16/11: </b>Players can now <span class="highlight">!block</span> and <span class="highlight">!unblock</span> themselves from player lands.<br>
-<span class="indent"></span>A ton of props and commands are now free, check the <a href="./shop.php">Shop</a> to see which.</td></tr>
+<span class="indent"></span>A ton of props and commands are now free, check the <a href="./shop">Shop</a> to see which.</td></tr>
 <tr><td><b>-=- 12/7/11: </b>The map <u>Park</u> has been hit by old man winter. There is a new challenge here.</td></tr>
 <tr><td><b>-=- 12/1/11: </b>The map <u>Cubicle</u> has been frozen over! You can now win a <span class="highlight">blizzard emblem</span> from the challenge there.</td></tr>
 <tr><td><b>-=- 11/30/11: </b>New props <span class="highlight">roof1</span> to <span class="highlight">roof5</span> have been added.</td></tr>

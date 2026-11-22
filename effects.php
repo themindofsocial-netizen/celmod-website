@@ -12,5 +12,5 @@
 <tr><td><b data-copy="!effect spotlight" title="Copy !effect spotlight">spotlight</b></td><td>Spotlight</td><td>A beam of light pointing the way the cel faces.</td></tr>
 <tr><td><b data-copy="!effect steam" title="Copy !effect steam">steam</b></td><td>Steam</td><td>A jet of steam.</td></tr>
 </table></div>
-<div class="btngrid"><a href="renderfx.php">Render Effects</a> <a href="colors.php">Colors</a> <a href="lists.php">All Lists</a></div>
+<div class="btngrid"><a href="renderfx">Render Effects</a> <a href="colors">Colors</a> <a href="lists">All Lists</a></div>
 <?php cm_page_end(); ?>

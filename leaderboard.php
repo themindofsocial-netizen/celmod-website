@@ -96,7 +96,7 @@ cm_page_start('|CelMod| - Leaderboards');
 	</div>
 <?php endforeach; ?>
 </div>
-<form class="board-select" method="get" action="leaderboard.php">
+<form class="board-select" method="get" action="leaderboard">
 	<label>Board <select name="by" onchange="this.form.submit()">
 	<?php foreach ($groups as $group => $list): ?>
 		<optgroup label="<?= h($group) ?>">
@@ -116,7 +116,7 @@ cm_page_start('|CelMod| - Leaderboards');
 	<div class="place p<?= $i + 1 ?>">
 		<span class="rank"><?= $i + 1 ?></span>
 		<?= cm_board_face($r, 'face big') ?>
-		<a href="player.php?id=<?= h($r['steamid64']) ?>"><b><?= h($r['name']) ?></b></a><?php if ($r['is_online']): ?> <span class="grassy" title="Online now">&#9679;</span><?php endif; ?>
+		<a href="player?id=<?= h($r['steamid64']) ?>"><b><?= h($r['name']) ?></b></a><?php if ($r['is_online']): ?> <span class="grassy" title="Online now">&#9679;</span><?php endif; ?>
 		<span class="v"><?= h(cm_board_value($r['v'], $format)) ?></span>
 	</div>
 <?php endforeach; ?>
@@ -131,7 +131,7 @@ cm_page_start('|CelMod| - Leaderboards');
 <?php foreach ($rows as $i => $r): if (count($rows) >= 3 && $i < 3) continue; ?>
 <tr<?= $me && $me['steamid64'] === $r['steamid64'] ? ' class="me"' : '' ?>>
 	<td class="num"><b><?= $i + 1 ?></b></td>
-	<td class="who"><?= cm_board_face($r) ?><a href="player.php?id=<?= h($r['steamid64']) ?>"><?= h($r['name']) ?></a><?php if ($r['is_online']): ?> <span class="grassy" title="Online now">&#9679;</span><?php endif; ?></td>
+	<td class="who"><?= cm_board_face($r) ?><a href="player?id=<?= h($r['steamid64']) ?>"><?= h($r['name']) ?></a><?php if ($r['is_online']): ?> <span class="grassy" title="Online now">&#9679;</span><?php endif; ?></td>
 	<td class="num barcell"><span class="bar" style="width:<?= max(2, (int)round((float)$r['v'] * 100 / $top)) ?>%"></span><span class="h"><?= h(cm_board_value($r['v'], $format)) ?></span></td>
 </tr>
 <?php endforeach; ?>
@@ -149,5 +149,5 @@ cm_page_start('|CelMod| - Leaderboards');
 <p class="muted">You're not on this board yet.</p>
 <?php endif; ?>
 <?php endif; ?>
-<p><a href="top5.php"><b>Classic Top 5 Builders</b></a></p>
+<p><a href="top5"><b>Classic Top 5 Builders</b></a></p>
 <?php cm_page_end(); ?>

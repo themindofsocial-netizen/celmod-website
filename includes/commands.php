@@ -124,6 +124,7 @@ return [
 		[['trade'], '<player> <price>', 'Offers the entity you are looking at in a trade with another player.'],
 	],
 	'Emblems, Hats and Collecting' => [
+		[['auction'], '<emblem/hat/weapon> <name> <minutes> [starting bid] | cancel', 'Auctions one of your emblems, hats or celweps above the Guess Booth: !auction <emblem/hat/weapon> <name> <minutes> [starting bid], or !auction cancel.'],
 		[['bid'], '<amount>', 'Bids on the item being auctioned above the Guess Booth.'],
 		[['emblem'], '<emblem or off>', 'Spawns an emblem you own, or disables your active emblem.'],
 		[['firstperson'], '', 'Switches back to the first person view.'],
@@ -170,7 +171,6 @@ return [
 	],
 	'Admin' => [
 		[['adminmode'], '', 'Admin mode: area and land rules off for you, and +move picks up players (use again to turn it off).'],
-		[['auction'], '<kind> <item> <starting bid> <minutes>', 'Auctions an emblem, hat or weapon above the Guess Booth, or cancels the auction.'],
 		[['autobuild'], '<x> <y> <z>', 'Stacks props on the x, y and z axis.'],
 		[['blacklist'], '<prop name>', 'Adds/removes a prop from the spawn blacklist.'],
 		[['deldungeonspawner'], '[number or all]', 'Removes the dungeon spawner nearest to where you aim, or one by number (all = every one on this map).'],

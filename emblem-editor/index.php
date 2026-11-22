@@ -156,7 +156,7 @@ the emblems on the server can't be changed or removed from this page.</p>
 	<p class="title"><b>:Suggest This Emblem:</b></p>
 	<div class="panel">
 <?php if (!$user): ?>
-		<p><a href="../login.php?return=<?= urlencode($_SERVER['REQUEST_URI'] ?? '/emblem-editor/') ?>"><b>Sign in through Steam</b></a> to suggest your emblem to the admins.</p>
+		<p><a href="../login?return=<?= urlencode($_SERVER['REQUEST_URI'] ?? '/emblem-editor/') ?>"><b>Sign in through Steam</b></a> to suggest your emblem to the admins.</p>
 <?php else: ?>
 		<p class="hint" style="margin-top:0">Sends the selected emblem to the admins. It needs a new id (not one already on the server) and a name.
 		Admins add the ones they like to the server by hand.</p>
@@ -196,5 +196,5 @@ the emblems on the server can't be changed or removed from this page.</p>
 		<p class="hint">Import accepts a whole <code>collectibles.txt</code>, just its "Emblems" section, or one or more emblem blocks. Keys this editor does not know are kept as they are.</p>
 	</div>
 </div>
-<p><a href="../emblems.php"><b>About Emblems</b></a></p>
+<p><a href="../emblems"><b>About Emblems</b></a></p>
 <?php cm_page_end('<script type="module" src="editor.js"></script>' . "\n"); ?>

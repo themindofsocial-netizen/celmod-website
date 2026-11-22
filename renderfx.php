@@ -14,5 +14,5 @@ Render effects can be part of <span class="h">!animate</span> frames too. Click 
 <tr><td><b data-copy="!renderfx distort" title="Copy !renderfx distort">distort</b></td><td>Wobbles and flickers</td></tr>
 <tr><td><b data-copy="!renderfx hologram" title="Copy !renderfx hologram">hologram</b></td><td>Looks like a fading hologram</td></tr>
 </table></div>
-<div class="btngrid"><a href="colors.php">Colors List</a> <a href="effects.php">Effects List</a> <a href="cmds.php">Commands</a></div>
+<div class="btngrid"><a href="colors">Colors List</a> <a href="effects">Effects List</a> <a href="cmds">Commands</a></div>
 <?php cm_page_end(); ?>

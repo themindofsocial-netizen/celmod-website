@@ -94,18 +94,30 @@ DNS at the new host when you switch over.
    Settings land in `cfg/sourcemod/celmod.database.cfg` (`cm_db_server_id`
    must match `server.id` in `config.php`). `cm_db_status` checks the connection.
 
+### Addresses
+Pages have clean addresses: `celmod.net/shop`, `celmod.net/admin`, `celmod.net/props/c`. Old links that end in
+`.php` still work and are sent on to the clean address. The rules for each web server are below.
+
 ### Apache
-`.htaccess` is included (needs `mod_rewrite`). It also blocks `includes/`,
+`.htaccess` is included (needs `mod_rewrite`). It gives the clean addresses, and blocks `includes/`,
 `sql/` and the config files.
+
+### IIS (Windows)
+`web.config` is included. It needs the **URL Rewrite** module (install it from Microsoft's site, then restart IIS).
 
 ### nginx
 ```nginx
 location ~ ^/(includes|sql)/ { deny all; }
 location ~ ^/config(\.sample)?\.php$ { deny all; }
 location ~ \.html$ { try_files $uri @html2php; }
-location @html2php { rewrite ^(.+)\.html$ $1.php permanent; }
+location @html2php { rewrite ^(.+)\.html$ $1 permanent; }
 location /fastdl/ { try_files $uri =404; }   # a missing FastDL file must be a real 404
-location / { index index.php; try_files $uri $uri/ =404; }
+# Clean addresses: /shop is answered by shop.php, and old /shop.php links (plain visits) go to /shop.
+if ($request_method = GET) { set $clean "G"; }
+if ($request_uri ~ "^/(?!api/|fastdl/)(.+?)\.php(\?.*)?$") { set $clean "${clean}P"; }
+if ($clean = "GP") { rewrite ^/(.+?)(index)?\.php$ /$1 permanent; }
+location / { index index.php; try_files $uri $uri/ @php; }
+location @php { rewrite ^/(.+?)/?$ /$1.php last; }
 location ~ \.php$ { include fastcgi_params; fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; fastcgi_pass unix:/run/php/php-fpm.sock; }
 ```
 

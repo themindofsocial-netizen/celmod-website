@@ -48,7 +48,7 @@ cm_page_start('|CelMod| - ' . ($player ? $player['name'] : 'Player'));
 <p>First joined: <span class="highlight"><?= h(date('F j, Y', strtotime($player['first_seen']))) ?></span></p>
 
 <p><b>:Unlocked:</b></p>
-<p><?php if (!$owned): ?><span class="muted">Nothing yet.</span> <?php if ($isMe): ?><a href="shop.php"><b>Visit the Shop</b></a><?php endif; ?><?php endif; ?>
+<p><?php if (!$owned): ?><span class="muted">Nothing yet.</span> <?php if ($isMe): ?><a href="shop"><b>Visit the Shop</b></a><?php endif; ?><?php endif; ?>
 <?php foreach ($owned as $o): ?>
 <b><span class="h"><?= h($o['item']) ?></span></b> <span class="muted"><?= h($o['display_name'] ?? '') ?><?= $o['source'] === 'web' ? ' (web)' : '' ?></span><br>
 <?php endforeach; ?></p>
@@ -63,5 +63,5 @@ cm_page_start('|CelMod| - ' . ($player ? $player['name'] : 'Player'));
 </table>
 <?php endif; ?>
 <?php endif; ?>
-<p><a href="leaderboard.php"><b>Leaderboards</b></a></p>
+<p><a href="leaderboard"><b>Leaderboards</b></a></p>
 <?php cm_page_end(); ?>

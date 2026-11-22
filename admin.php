@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db && isset($_POST['announce'])) {
 			cm_flash('The database refused that: the website needs INSERT, UPDATE and DELETE on cm_announcements (see the README).', 'bloody');
 		}
 	}
-	header('Location: admin.php?tab=announcements');
+	header('Location: admin?tab=announcements');
 	exit;
 }
 
@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db && isset($_POST['update'])) {
 			cm_flash('The database refused that: the website needs INSERT, UPDATE and DELETE on cm_updates, and the game server must have created the table (see the README).', 'bloody');
 		}
 	}
-	header('Location: admin.php?tab=updates');
+	header('Location: admin?tab=updates');
 	exit;
 }
 
@@ -175,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db && isset($_POST['drops'])) {
 			cm_flash('The database refused that: the website needs INSERT, UPDATE and DELETE on cm_drop_pool and cm_drop_schedule (and INSERT, UPDATE on cm_site_settings), and the game server must have created the tables (see the README).', 'bloody');
 		}
 	}
-	header('Location: admin.php?tab=drops');
+	header('Location: admin?tab=drops');
 	exit;
 }
 
@@ -192,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db && isset($_POST['rotation'])) {
 			cm_flash('The database refused that: the website needs INSERT and UPDATE on cm_site_settings (see the README).', 'bloody');
 		}
 	}
-	header('Location: admin.php?tab=announcements');
+	header('Location: admin?tab=announcements');
 	exit;
 }
 
@@ -216,7 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db && isset($_POST['bug'])) {
 			cm_flash('The database refused that: the website needs UPDATE and DELETE on cm_bug_reports, and the game server must have created the table (see the README).', 'bloody');
 		}
 	}
-	header('Location: admin.php?tab=bugs&show=' . $show);
+	header('Location: admin?tab=bugs&show=' . $show);
 	exit;
 }
 
@@ -240,7 +240,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db && isset($_POST['dispute'])) {
 			cm_flash('The database refused that: the website needs UPDATE and DELETE on cm_disputes, and the game server must have created the table (see the README).', 'bloody');
 		}
 	}
-	header('Location: admin.php?tab=disputes&show=' . $show);
+	header('Location: admin?tab=disputes&show=' . $show);
 	exit;
 }
 
@@ -262,7 +262,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['season'])) {
 			cm_flash('The database refused that: the website needs INSERT and UPDATE on cm_site_settings (see the README).', 'bloody');
 		}
 	}
-	header('Location: admin.php?tab=season');
+	header('Location: admin?tab=season');
 	exit;
 }
 
@@ -277,7 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db) {
 		$st->execute([$status, mb_substr(trim((string)($_POST['admin_note'] ?? '')), 0, 255), cm_user()['steamid64'], (int)($_POST['id'] ?? 0)]);
 		cm_flash($st->rowCount() ? 'Suggestion ' . $status . '.' : 'That suggestion was already reviewed or withdrawn.', $st->rowCount() ? 'h' : 'bloody');
 	}
-	header('Location: admin.php?tab=suggestions&show=' . urlencode((string)($_POST['show'] ?? 'pending')));
+	header('Location: admin?tab=suggestions&show=' . urlencode((string)($_POST['show'] ?? 'pending')));
 	exit;
 }
 
@@ -307,7 +307,7 @@ cm_page_start('|CelMod| - Admin', '', ['wide' => true]);
 	<a href="?tab=drops" class="<?= $tab === 'drops' ? 'active' : '' ?>">Emblem Drops</a>
 	<a href="?tab=bugs" class="<?= $tab === 'bugs' ? 'active' : '' ?>">Bug Reports<?= $openBugs ? ' (' . $openBugs . ')' : '' ?></a>
 	<a href="?tab=disputes" class="<?= $tab === 'disputes' ? 'active' : '' ?>">Disputes<?= $openDisputes ? ' (' . $openDisputes . ')' : '' ?></a>
-	<a href="check.php">Setup Check</a>
+	<a href="check">Setup Check</a>
 </div>
 
 <?php if ($tab === 'orders'):
@@ -319,7 +319,7 @@ cm_page_start('|CelMod| - Admin', '', ['wide' => true]);
 <?php foreach ($orders as $o): ?>
 <tr>
 	<td><?= (int)$o['id'] ?></td>
-	<td><a href="player.php?id=<?= h($o['steamid64']) ?>"><?= h($o['name'] ?? $o['steamid64']) ?></a></td>
+	<td><a href="player?id=<?= h($o['steamid64']) ?>"><?= h($o['name'] ?? $o['steamid64']) ?></a></td>
 	<td><span class="h"><?= h($o['display_name'] ?? $o['item']) ?></span> <span class="muted"><?= h($o['item']) ?></span></td>
 	<td class="num"><?= h(cm_cl($o['price'])) ?></td>
 	<td><?= h($o['status']) ?><?php if ($o['message'] !== ''): ?><br><span class="muted"><?= h($o['message']) ?></span><?php endif; ?></td>
@@ -336,7 +336,7 @@ cm_page_start('|CelMod| - Admin', '', ['wide' => true]);
 		if ((int)$u['id'] === $editId) $editing = $u;
 	}
 ?>
-<p class="notice">Updates posted here show on the <a href="updates.php"><b>Updates</b></a> page with the older ones, newest first.
+<p class="notice">Updates posted here show on the <a href="updates"><b>Updates</b></a> page with the older ones, newest first.
 Write plain text: each new line starts an indented line under the date. <span class="h">!commands</span> and
 <span class="h">/commands</span> turn green by themselves, and <span class="h">**bold**</span>, <span class="h">*italics*</span>
 and <span class="h">~~struck out~~</span> work.</p>
@@ -351,7 +351,7 @@ and <span class="h">~~struck out~~</span> work.</p>
 	<textarea name="body" id="update-body" rows="8" required maxlength="8000" class="kvbox" style="color:var(--gold);font-family:Pu,sans-serif;margin-top:6px" placeholder="Land skins are back! Pick one with !landskin.&#10;Hoopies bounce players again."><?= h($editing['body'] ?? '') ?></textarea>
 	<div style="display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap">
 		<button class="cmbutton go"><?= $editing ? 'Save' : 'Post' ?></button>
-		<?php if (!$editing): ?><label class="muted"><input type="checkbox" name="draft" value="1"> Save as a hidden draft</label><?php else: ?><a href="admin.php?tab=updates" class="muted">Cancel</a><?php endif; ?>
+		<?php if (!$editing): ?><label class="muted"><input type="checkbox" name="draft" value="1"> Save as a hidden draft</label><?php else: ?><a href="admin?tab=updates" class="muted">Cancel</a><?php endif; ?>
 	</div>
 </form>
 <div class="panel" style="text-align:left">
@@ -371,7 +371,7 @@ and <span class="h">~~struck out~~</span> work.</p>
 	<td style="text-align:left"><?= cm_update_format($u['body']) ?></td>
 	<td><?= h($u['name'] ?? ($u['created_by'] ?? '')) ?></td>
 	<td style="white-space:nowrap">
-		<a class="cmbutton" href="admin.php?tab=updates&amp;edit=<?= (int)$u['id'] ?>">Edit</a>
+		<a class="cmbutton" href="admin?tab=updates&amp;edit=<?= (int)$u['id'] ?>">Edit</a>
 		<form method="post" style="display:inline;margin:0">
 			<input type="hidden" name="csrf" value="<?= h(cm_csrf_token()) ?>">
 			<input type="hidden" name="id" value="<?= (int)$u['id'] ?>">
@@ -665,7 +665,7 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>).</p>
 		<?php if ($b['status'] !== 'open'): ?><br><span class="pill <?= $b['status'] === 'fixed' ? 'green' : '' ?>"><?= h($b['status']) ?></span><?php endif; ?>
 		<?php if ($b['admin_note'] !== ''): ?><br><span class="muted">Note: <?= h($b['admin_note']) ?></span><?php endif; ?>
 		<br><span class="muted"><?= h(cm_ago($b['created_at'])) ?></span></td>
-	<td><a href="player.php?id=<?= h($b['steamid64']) ?>"><?= h($b['name']) ?></a></td>
+	<td><a href="player?id=<?= h($b['steamid64']) ?>"><?= h($b['name']) ?></a></td>
 	<td><?= h($b['map']) ?><br><span class="muted" title="setpos <?= h(sprintf('%.0f %.0f %.0f', $b['pos_x'], $b['pos_y'], $b['pos_z'])) ?>"><?= h(sprintf('%.0f %.0f %.0f', $b['pos_x'], $b['pos_y'], $b['pos_z'])) ?></span>
 		<?= $b['server_id'] !== null ? '<br><span class="muted">server #' . (int)$b['server_id'] . '</span>' : '' ?></td>
 	<td>
@@ -736,9 +736,9 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>).</p>
 		<?php if ($d['admin_note'] !== ''): ?><br><span class="muted">Note: <?= h($d['admin_note']) ?></span><?php endif; ?>
 		<br><span class="muted"><?= h($d['map']) ?> &middot; <?= h(cm_ago($d['created_at'])) ?></span>
 		<?php if (($d['demo'] ?? '') !== ''): ?><br><span class="muted" title="SourceTV demo in the game server's hl2mp folder">Demo: <span class="h"><?= h($d['demo']) ?></span></span><?php endif; ?></td>
-	<td><?= $d['target_steamid64'] !== '' ? '<a href="player.php?id=' . h($d['target_steamid64']) . '">' . h($d['target_name']) . '</a>' : h($d['target_name']) ?>
+	<td><?= $d['target_steamid64'] !== '' ? '<a href="player?id=' . h($d['target_steamid64']) . '">' . h($d['target_name']) . '</a>' : h($d['target_name']) ?>
 		<?php if ($n > 1): ?><br><span class="pill red" title="Disputes against this player"><?= $n ?> disputes</span><?php endif; ?></td>
-	<td><a href="player.php?id=<?= h($d['steamid64']) ?>"><?= h($d['name']) ?></a></td>
+	<td><a href="player?id=<?= h($d['steamid64']) ?>"><?= h($d['name']) ?></a></td>
 	<td>
 		<form method="post" style="margin:0">
 			<input type="hidden" name="csrf" value="<?= h(cm_csrf_token()) ?>">
@@ -841,7 +841,7 @@ rebuilt from checked values, uses a new id, and can't replace an existing emblem
 <?php foreach ($suggestions as $sg): ?>
 <div class="panel" style="text-align:left">
 	<p style="margin:0 0 6px"><b class="celColor"><?= h($sg['title']) ?></b> <span class="muted"><?= h($sg['emblem_id']) ?> - #<?= (int)$sg['id'] ?></span><br>
-	by <a href="player.php?id=<?= h($sg['steamid64']) ?>"><b><?= h($sg['player_name']) ?></b></a>, <?= h(cm_ago($sg['created_at'])) ?>
+	by <a href="player?id=<?= h($sg['steamid64']) ?>"><b><?= h($sg['player_name']) ?></b></a>, <?= h(cm_ago($sg['created_at'])) ?>
 	- <span class="<?= ['accepted' => 'grassy', 'rejected' => 'bloody', 'withdrawn' => 'muted'][$sg['status']] ?? 'highlight' ?>"><?= h(ucfirst($sg['status'])) ?></span>
 	<?php if ($sg['admin_note'] !== ''): ?><span class="muted">(<?= h($sg['admin_note']) ?>)</span><?php endif; ?></p>
 	<?php if ($sg['note'] !== ''): ?><p style="margin:0 0 6px">"<?= nl2br(h($sg['note'])) ?>"</p><?php endif; ?>

@@ -5,7 +5,7 @@
 <p>25 songs for the music cel. Spawn a radio with <span class="h">!music &lt;song&gt; [speed 50-200]</span>, then press <b>E</b> on it to play the song, and again to stop it. In game, <span class="h">!celmusic</span> lists them.<br>
 Click a song to copy its command.</p>
 <div class="searchbar"><input type="search" id="soundfind" placeholder="Find a song... (press /)" aria-label="Find a song" autocomplete="off"> <span class="count" id="soundcount" aria-live="polite"></span></div>
-<div class="btngrid"><a href="sounds.php">Sound List</a> <a href="cmds.php">Commands</a></div>
+<div class="btngrid"><a href="sounds">Sound List</a> <a href="cmds">Commands</a></div>
 <div class="table-scroll soundlist"><table class="cmtable">
 <tr><th>Song</th><th class="num">Length</th></tr>
 <tr data-name="song3"><td><b data-copy="!music song3" title="Copy !music song3">song3</b></td><td class="num">2:11</td></tr>

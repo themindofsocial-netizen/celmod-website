@@ -3,7 +3,7 @@
 <h2><span class="celColor">|CelMod| Guides</span><br>
 </h2>
 <p class="guide-intro">Everything you need to build, earn, level up and collect on the server. Commands go in chat (press <span class="h">Y</span>);
-in the console type <b>v_</b> instead of <b>!</b>. Every command is on the <a href="cmds.php"><b>Commands</b></a> page, and every prop, sound, color and effect on the <a href="lists.php"><b>Lists</b></a>.</p>
+in the console type <b>v_</b> instead of <b>!</b>. Every command is on the <a href="cmds"><b>Commands</b></a> page, and every prop, sound, color and effect on the <a href="lists"><b>Lists</b></a>.</p>
 
 <div class="btngrid">
 <a href="#start">Quick Start</a>
@@ -43,8 +43,8 @@ in the console type <b>v_</b> instead of <b>!</b>. Every command is on the <a hr
 <p><b>Repeating:</b> <span class="h">!stack &lt;x&gt; &lt;y&gt; &lt;z&gt; [copies]</span> makes up to 10 copies in a row (<span class="h">!stack 0 0 50 5</span> is a tower), and <span class="h">!stackinfo</span> on two props gives you the offset between them.
 <span class="h">+copy</span> copies a prop and carries the copy; <span class="h">!copy</span> and <span class="h">!paste</span> keep it for later.</p>
 <p><b>Joining:</b> <span class="h">!weld</span> on one prop, then on another, makes the first move with the second. <span class="h">!release</span> undoes it.</p>
-<p><b>Looks:</b> <span class="h">!color</span> (see <a href="colors.php">colors</a>), <span class="h">!skin</span> (on its own it tells you how many skins a prop has), <span class="h">!alpha</span>, <span class="h">!renderfx</span>, <span class="h">!fadecolor</span>,
-<span class="h">!effect</span> (see <a href="effects.php">effects</a>), and <span class="h">!text &lt;words&gt;</span> to write on a wall.</p>
+<p><b>Looks:</b> <span class="h">!color</span> (see <a href="colors">colors</a>), <span class="h">!skin</span> (on its own it tells you how many skins a prop has), <span class="h">!alpha</span>, <span class="h">!renderfx</span>, <span class="h">!fadecolor</span>,
+<span class="h">!effect</span> (see <a href="effects">effects</a>), and <span class="h">!text &lt;words&gt;</span> to write on a wall.</p>
 <p><b>Cels:</b> working pieces like <span class="h">!door</span>, <span class="h">!ladder</span>, <span class="h">!light</span>, <span class="h">!internet</span> (a web page), <span class="h">!music</span>, <span class="h">!sound</span>, <span class="h">!message</span>,
 <span class="h">!teleport</span>, <span class="h">!spawnpoint</span>, buttons, chargers and ammo crates. A <span class="h">!turret</span> fights enemies and never shoots players.</p>
 <p><b>Scenes:</b> NPC props such as <span class="h">!alyx</span> or <span class="h">!combine1</span> are posable: shoot one to change its pose, press <span class="h">E</span> to pause it. Saved builds keep each pose.</p>
@@ -105,10 +105,10 @@ Link a button to it: each press plays the frames smoothly, and the next press pl
 <div class="guide" id="sounds">
 <h3><span class="celColor">Sounds &amp; Music</span></h3>
 <p><b>Sound cans:</b> <span class="h">!sound &lt;name&gt;</span> spawns a can that plays its sound when you press <b>E</b> on it (or a linked button). Every
-Half-Life 2 sound is there, thousands of them: <span class="h">!sounds</span> opens the <a href="sounds.php"><b>Sounds</b></a> list, and
+Half-Life 2 sound is there, thousands of them: <span class="h">!sounds</span> opens the <a href="sounds"><b>Sounds</b></a> list, and
 <span class="h">!soundlist &lt;word&gt;</span> searches it in chat.</p>
 <p><b>Music radios:</b> <span class="h">!music &lt;song&gt; [speed 50-200]</span> spawns a radio: press <b>E</b> to play the song and again to stop it.
-<span class="h">!celmusic</span> lists the songs, and they're on the <a href="music.php"><b>Music</b></a> list too.</p>
+<span class="h">!celmusic</span> lists the songs, and they're on the <a href="music"><b>Music</b></a> list too.</p>
 <p>Sound cans and music radios count as <b>cels</b>, not props.</p>
 </div>
 
@@ -123,14 +123,14 @@ Half-Life 2 sound is there, thousands of them: <span class="h">!sounds</span> op
 <tr><td><b>Gold emblem</b> enabled</td><td>A little every minute</td></tr>
 </table></div>
 <p><span class="h">!balance</span> shows your money. <span class="h">!cl &lt;amount&gt;</span> drops cleers in a box only you can open; look at it and <span class="h">!give &lt;player&gt;</span> to pay someone.
-Spend it in the <a href="shop.php"><b>shop</b></a> (in game: <span class="h">!buy</span>) on commands, props, emblems and player models.</p>
+Spend it in the <a href="shop"><b>shop</b></a> (in game: <span class="h">!buy</span>) on commands, props, emblems and player models.</p>
 </div>
 
 <div class="guide" id="bank">
 <h3><span class="celColor">Bank &amp; CelItems</span></h3>
 <p><span class="h">!bank</span> lists everything you own, numbered, and opens the bank menu (press ESC): <b>CelItems</b> (shop and event props, dug-up finds), <b>celweps</b> and <b>emblems</b>.
 <span class="h">!bank &lt;number&gt;</span> takes one out where you aim; <span class="h">!bank add</span> puts back the item you're looking at.</p>
-<p>Everything in the bank is finite: buying a <a href="props/shop.php">shop prop</a> gives you one copy, and only as many copies as you own can be out at once.
+<p>Everything in the bank is finite: buying a <a href="props/shop">shop prop</a> gives you one copy, and only as many copies as you own can be out at once.
 Giving, trading or selling one moves it to the other player for good. <span class="h">!stack</span> or <span class="h">+copy</span> on an emblem takes spare copies out of your bank.</p>
 </div>
 
@@ -166,7 +166,7 @@ for example <b>Time</b>: left click fast-forwards you, right click rewinds you 3
 </ul>
 <p><b>Powers:</b> each basic color has its own: Fire is a flamethrower, Blue walks on water, Green jumps high, Purple runs fast.
 Pressing an ability that is still recharging tells you in chat how long is left. Every emblem, its power and its upgrade is on the
-<a href="emblems.php"><b>Emblems</b></a> page.</p>
+<a href="emblems"><b>Emblems</b></a> page.</p>
 <p><b>Power Booth:</b> it stands somewhere on the map. Bring 3 copies of the same emblem and press <span class="h">E</span> to upgrade them.
 Upgraded basic emblems have <b>(S)</b> in their name: Fire (S) burns hotter, Blue (S) sprays water that puts out fires, Pink (S) sprays a healing gas,
 Purple (S) keeps Purple's speed with normal jumps and Yellow (S) is electric. Several copies also make a <b>big</b> emblem, about half again as strong.</p>

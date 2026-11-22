@@ -93,7 +93,7 @@ Total Shop Purchases: <span class='highlight'><?= number_format($purchases) ?></
 <?php endforeach; ?>
 </table>
 <?php endif; ?>
-<p><a href="leaderboard.php"><b>View the Leaderboards</b></a> - <a href="live.php"><b>Live Server</b></a></p>
+<p><a href="leaderboard"><b>View the Leaderboards</b></a> - <a href="live"><b>Live Server</b></a></p>
 <?php endif; ?>
 
 <p><b><a href="javascript:void(0);" onclick="var s=document.getElementById('legacy');s.style.display=s.style.display=='none'?'block':'none';"><span class="h">Classic Statistics (2011 - 2014)</span></a></b></p>
@@ -110,7 +110,7 @@ Total Dolls: <span class='highlight'>23444</span><br>
 Total Cels: <span class='highlight'>41335</span><br>
 Total Bits: <span class='highlight'>50050</span><br>
 Total Big Rocks: <span class='highlight'>54</span><br>
-<a href="embstats.php">Total Rocks</a>: <span class='highlight'>1677</span><br>
+<a href="embstats">Total Rocks</a>: <span class='highlight'>1677</span><br>
 Total File Size(builds): <span class='highlight'>90.1 MB</span><br>
 Total Server Time: <span class='highlight'>777 days (2.13 years)</span><br>
 Total |CelMod| Time: <span class='highlight'>1074 days (2.94 years)</span><br>

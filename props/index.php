@@ -16,35 +16,35 @@
 <div class="searchbar"><input type="search" id="propfind" placeholder="Search all 686 props... (press /)" aria-label="Search props" autocomplete="off"> <span class="count" id="propcount" aria-live="polite"></span></div>
 <div class="search-results" id="propresults" hidden></div>
 <div class="btngrid letters">
-<a href="a.php">A</a>
-<a href="b.php">B</a>
-<a href="c.php">C</a>
-<a href="d.php">D</a>
-<a href="e.php">E</a>
-<a href="f.php">F</a>
-<a href="g.php">G</a>
-<a href="h.php">H</a>
-<a href="i.php">I</a>
-<a href="j.php">J</a>
-<a href="k.php">K</a>
-<a href="l.php">L</a>
-<a href="m.php">M</a>
-<a href="n.php">N</a>
-<a href="o.php">O</a>
-<a href="p.php">P</a>
+<a href="a">A</a>
+<a href="b">B</a>
+<a href="c">C</a>
+<a href="d">D</a>
+<a href="e">E</a>
+<a href="f">F</a>
+<a href="g">G</a>
+<a href="h">H</a>
+<a href="i">I</a>
+<a href="j">J</a>
+<a href="k">K</a>
+<a href="l">L</a>
+<a href="m">M</a>
+<a href="n">N</a>
+<a href="o">O</a>
+<a href="p">P</a>
 <b title="No props yet">Q</b>
-<a href="r.php">R</a>
-<a href="s.php">S</a>
-<a href="t.php">T</a>
-<a href="u.php">U</a>
-<a href="v.php">V</a>
-<a href="w.php">W</a>
+<a href="r">R</a>
+<a href="s">S</a>
+<a href="t">T</a>
+<a href="u">U</a>
+<a href="v">V</a>
+<a href="w">W</a>
 <b title="No props yet">X</b>
 <b title="No props yet">Y</b>
-<a href="z.php">Z</a>
+<a href="z">Z</a>
 <b title="No props yet">0-9</b>
 </div>
-<div class="btngrid"><a href="shop.php">Shop Props</a> <a href="dis.php">Discontinued Props</a></div>
+<div class="btngrid"><a href="shop">Shop Props</a> <a href="dis">Discontinued Props</a></div>
 <p>
 </p>
 <?php cm_page_end('<script src="search.js?v=' . (int)@filemtime(__DIR__ . '/search.js') . '" defer></script>'); ?>
