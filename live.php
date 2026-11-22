@@ -45,7 +45,7 @@ ob_start();
 	}
 	function link(name, id) {
 		var a = el('a', name);
-		a.href = 'player.php?id=' + encodeURIComponent(id);
+		a.href = 'player?id=' + encodeURIComponent(id);
 		return a;
 	}
 	function dur(s) {
@@ -91,7 +91,16 @@ ob_start();
 		}
 		d.players.forEach(function (p) {
 			var r = pt.insertRow();
-			r.insertCell().appendChild(link(p.name, p.steamid64));
+			var who = link(p.name, p.steamid64), face;
+			if (p.avatar) {
+				face = document.createElement('img');
+				face.src = p.avatar; face.alt = ''; face.className = 'face-xs'; face.referrerPolicy = 'no-referrer';
+			} else {
+				face = el('span', (p.name.replace(/[^\p{L}\p{N}]/gu, '') || '?').charAt(0).toUpperCase(), 'face-xs letter');
+			}
+			who.insertBefore(face, who.firstChild);
+			who.className = 'who';
+			r.insertCell().appendChild(who);
 			[p.props, p.cels, p.balance, p.time].forEach(function (v) {
 				var c = r.insertCell(); c.className = 'num'; c.textContent = v;
 			});

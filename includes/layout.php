@@ -125,7 +125,7 @@ function cm_navbar(): void
 	echo ' <span class="splitter">|</span> ';
 
 	if ($user) {
-		echo '<a href="' . $b . 'player?id=' . h($user['steamid64']) . '"><b>' . h($user['name']) . '</b></a>';
+		echo '<a href="' . $b . 'player?id=' . h($user['steamid64']) . '" class="nav-me">' . cm_avatar($user, 'face-xs') . '<b>' . h($user['name']) . '</b></a>';
 		echo ' <span class="h">' . h(cm_cl($user['balance'])) . '</span>';
 		echo ' <span class="splitter">|</span> <a href="' . $b . 'logout">Sign out</a>';
 	} else {

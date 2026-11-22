@@ -27,3 +27,6 @@ require __DIR__ . '/db.php';
 require __DIR__ . '/auth.php';
 require __DIR__ . '/season.php';
 require __DIR__ . '/layout.php';
+require __DIR__ . '/avatars.php';
+
+cm_avatars_after_page();

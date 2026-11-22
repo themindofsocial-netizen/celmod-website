@@ -23,11 +23,12 @@ if (isset($_GET['openid_mode'])) {
 
 	// Fill in name/avatar if we have an API key (the game server fills these in too).
 	$profile = cm_steam_profile($steamid);
-	if ($profile && cm_db()) {
+	if ($profile) {
 		$_SESSION['steam_name'] = $profile['personaname'] ?? null;
-		cm_db()->prepare('UPDATE cm_players SET avatar_url = ? WHERE steamid64 = ?')
-			->execute([$profile['avatarfull'] ?? '', $steamid]);
 	}
+	// Their Steam picture, now (everyone else's is kept up to date in the background, see includes/avatars.php).
+	$avatar = $profile && cm_avatar_url_ok((string)($profile['avatarfull'] ?? '')) ? [$steamid => $profile['avatarfull']] : cm_steam_avatars([$steamid], 4.0);
+	cm_save_avatars($avatar);
 
 	$known = cm_db() && cm_value('SELECT 1 FROM cm_players WHERE steamid64 = ?', [$steamid]);
 	cm_flash($known ? 'Signed in. Welcome back!' : 'Signed in! Join the server once to link your in-game stats.');

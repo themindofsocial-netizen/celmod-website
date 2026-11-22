@@ -194,8 +194,21 @@ Common causes when the game server connects but the website doesn't:
 
 ## Signing in
 "Sign in through Steam" uses Steam's OpenID, so no API key is needed. Add a
-`steam_api_key` to `config.php` if you also want Steam avatars on profiles.
+`steam_api_key` to `config.php` to fetch Steam pictures faster (see below).
 Players need to have joined the server once before the web shop unlocks for them.
+
+## Steam profile pictures
+Every player's picture on the site (leaderboards, profiles, the Live page, the admin panel, the menu bar) is their
+Steam avatar. The website keeps them up to date by itself (`includes/avatars.php`): at most once every 10 minutes,
+after a page has been sent, it asks Steam for the pictures of players who don't have one yet, then of those seen most
+recently. With a `steam_api_key` it does 100 players at a time through the Steam Web API; without one it reads 10
+public Steam profiles at a time, so it still works, just more slowly. A player's own picture is also fetched when they
+sign in. Until a picture arrives, the player's first letter is shown instead.
+
+It needs the `UPDATE (avatar_url) ON cm_players` and `cm_site_settings` GRANTs above, and outbound HTTPS from the web
+server to `api.steampowered.com` / `steamcommunity.com`. On PHP-FPM the refresh runs after the visitor has their page;
+on Apache's mod_php the visitor that triggers it can wait up to ~5 seconds once every 10 minutes. Set
+`'steam_avatars' => false` in `config.php` to turn it off.
 
 ## Page layout
 Every page is built from `includes/layout.php`: the logo, the navigation bar

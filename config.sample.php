@@ -22,8 +22,12 @@ return [
 	'site_url' => 'https://celmod.net',
 
 	// Optional: a Steam Web API key (https://steamcommunity.com/dev/apikey).
-	// Only used to fetch avatars. Leave empty to skip.
+	// Only used to fetch Steam profile pictures, 100 at a time. Without it they're still fetched, from the
+	// players' public Steam profiles, 10 at a time.
 	'steam_api_key' => '',
+
+	// Keep every player's picture up to date with their Steam avatar (see README, "Steam profile pictures").
+	'steam_avatars' => true,
 
 	// The server the "Connect" links and live page show by default.
 	'server' => [

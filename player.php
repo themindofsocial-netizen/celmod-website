@@ -21,9 +21,7 @@ cm_page_start('|CelMod| - ' . ($player ? $player['name'] : 'Player'));
 <?php else: ?>
 <h2><span class="celColor"><?= h($player['name']) ?></span><br>
 </h2>
-<?php if ($player['avatar_url']): ?>
-<p><img src="<?= h($player['avatar_url']) ?>" width="92" height="92" style="border: 1px solid black;"></p>
-<?php endif; ?>
+<p><?= cm_avatar($player, 'avatar-lg') ?></p>
 <p><?php if ($player['is_online']): ?><span class="grassy">&#9679;</span> <b>Building on the server right now</b><?php else: ?>Last seen <span class="h"><?= h(cm_ago($player['last_seen'])) ?></span><?php endif; ?><br>
 <a href="https://steamcommunity.com/profiles/<?= h($player['steamid64']) ?>"><span class="muted">Steam Profile</span></a></p>
 <p>

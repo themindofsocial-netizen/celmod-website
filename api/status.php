@@ -17,8 +17,8 @@ if (!$server) {
 }
 
 $players = cm_rows(
-	'SELECT o.steamid64, o.name, o.props, o.cels, o.balance, TIMESTAMPDIFF(SECOND, o.joined_at, NOW()) AS seconds
-	 FROM cm_online_players o WHERE o.server_id = ? ORDER BY o.joined_at',
+	'SELECT o.steamid64, o.name, p.avatar_url, o.props, o.cels, o.balance, TIMESTAMPDIFF(SECOND, o.joined_at, NOW()) AS seconds
+	 FROM cm_online_players o LEFT JOIN cm_players p ON p.steamid64 = o.steamid64 WHERE o.server_id = ? ORDER BY o.joined_at',
 	[$serverId]
 );
 
@@ -50,6 +50,7 @@ cm_json([
 		return [
 			'steamid64' => $p['steamid64'],
 			'name'      => $p['name'],
+			'avatar'    => (string)($p['avatar_url'] ?? ''),
 			'props'     => (int)$p['props'],
 			'cels'      => (int)$p['cels'],
 			'balance'   => cm_cl($p['balance']),

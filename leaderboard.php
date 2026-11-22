@@ -46,12 +46,7 @@ $top = $rows ? max((float)$rows[0]['v'], 0.000001) : 1;
 /** A player's Steam picture, or their first letter in a circle when there isn't one. */
 function cm_board_face(array $r, string $class = 'face'): string
 {
-	if (($r['avatar_url'] ?? '') !== '') {
-		return '<img class="' . $class . '" src="' . h($r['avatar_url']) . '" alt="" loading="lazy">';
-	}
-	$letter = mb_strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N}]/u', '', $r['name']) ?: '?', 0, 1));
-	$hue = crc32($r['steamid64']) % 360;
-	return '<span class="' . $class . ' letter" style="background:hsl(' . $hue . ',45%,32%)">' . h($letter) . '</span>';
+	return cm_avatar($r, $class);
 }
 
 function cm_board_value($v, string $format): string
