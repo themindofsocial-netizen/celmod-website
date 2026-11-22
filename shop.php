@@ -217,8 +217,8 @@ cm_page_start('|CelMod| - Shop', '', ['wide' => true]);
 <p class="notice shop-empty" id="shop-empty">Nothing matches that search.</p>
 
 <?php foreach ($byCategory as $category => $list): if ($filter !== '' && $filter !== $category) continue; ?>
-<div class="shop-section">
-<p class="title">- <?= h($category) ?> -</p>
+<div class="shop-section" id="cat-<?= h(preg_replace('/[^a-z0-9]+/', '-', strtolower($category))) ?>">
+<p class="title shop-heading"><?= h($category) ?> <span class="count"><?= count($list) ?></span></p>
 <div class="shop-grid">
 <?php foreach ($list as $n => $it):
 	$state = $owned[$it['item']] ?? false;
@@ -227,7 +227,7 @@ cm_page_start('|CelMod| - Shop', '', ['wide' => true]);
 	$price = (int)$it['price'];
 	$afford = $user && $spendable >= $price;
 	$isOwned = $state === true && !$repeat;
-	$classes = ['shop-card'];
+	$classes = ['shop-card', 'kind-' . preg_replace('/[^a-z]/', '', (string)$it['kind'])];
 	if ($isOwned) $classes[] = 'owned';
 	if ($left === 0 && $state !== true) $classes[] = 'soldout';
 	if (in_array($category, $seasonal, true)) $classes[] = 'seasonal';
@@ -238,6 +238,12 @@ cm_page_start('|CelMod| - Shop', '', ['wide' => true]);
 		<span><span class="pill"><?= h(cm_shop_kind((string)$it['kind'])) ?></span><?php if ($repeat): ?> <span class="pill gold" title="Can be bought more than once">Stacks</span><?php endif; ?><?php if ($left !== null && $left > 0): ?> <span class="pill <?= $left <= 5 ? 'red' : 'green' ?>"><?= $left <= 5 ? 'Only ' . $left : $left ?> left</span><?php endif; ?></span>
 		<span class="usage"><?= h(cm_shop_usage($it)) ?></span>
 		<?php if ($it['description'] !== ''): ?><span class="desc"><?= h($it['description']) ?></span><?php endif; ?>
+		<?php if ($user && !$afford && !$isOwned && $left !== 0 && $price > 0): $pct = max(0, min(100, (int)floor($spendable * 100 / $price))); ?>
+		<span class="save" title="You have <?= $pct ?>% of the price">
+			<span class="save-bar"><span style="width:<?= $pct ?>%"></span></span>
+			<span class="muted"><?= h(cm_cl($price - $spendable)) ?> to go</span>
+		</span>
+		<?php endif; ?>
 		<div class="buy">
 			<span class="cmd">!buy <?= h($it['item']) ?></span>
 		<?php if ($isOwned): ?>

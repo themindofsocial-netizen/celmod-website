@@ -40,7 +40,19 @@ $board = isset($boards[$_GET['by'] ?? '']) ? $_GET['by'] : 'balance';
 [$title, $expr, $label, $format, $blurb] = $boards[$board];
 
 $where = "$expr > 0" . ($board === 'kd' ? ' AND kills >= 25' : '');
-$rows = cm_rows("SELECT steamid64, name, is_online, $expr AS v FROM cm_players WHERE $where ORDER BY v DESC, name LIMIT 25");
+$rows = cm_rows("SELECT steamid64, name, avatar_url, is_online, $expr AS v FROM cm_players WHERE $where ORDER BY v DESC, name LIMIT 25");
+$top = $rows ? max((float)$rows[0]['v'], 0.000001) : 1;
+
+/** A player's Steam picture, or their first letter in a circle when there isn't one. */
+function cm_board_face(array $r, string $class = 'face'): string
+{
+	if (($r['avatar_url'] ?? '') !== '') {
+		return '<img class="' . $class . '" src="' . h($r['avatar_url']) . '" alt="" loading="lazy">';
+	}
+	$letter = mb_strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N}]/u', '', $r['name']) ?: '?', 0, 1));
+	$hue = crc32($r['steamid64']) % 360;
+	return '<span class="' . $class . ' letter" style="background:hsl(' . $hue . ',45%,32%)">' . h($letter) . '</span>';
+}
 
 function cm_board_value($v, string $format): string
 {
@@ -72,25 +84,38 @@ cm_page_start('|CelMod| - Leaderboards');
 <h2><span class="celColor">|CelMod| Leaderboards</span><br>
 </h2>
 
-<div class="board-groups">
+<div class="board-picker">
 <?php foreach ($groups as $group => $list): ?>
-	<div class="board-group">
-		<b><?= h($group) ?></b>
+	<div class="board-row">
+		<span class="board-label"><?= h($group) ?></span>
+		<span class="board-links">
 	<?php foreach ($list as $key => $b): ?>
 		<a href="?by=<?= $key ?>"<?= $key === $board ? ' class="active"' : '' ?>><?= h($b[0]) ?></a>
 	<?php endforeach; ?>
+		</span>
 	</div>
 <?php endforeach; ?>
 </div>
+<form class="board-select" method="get" action="leaderboard.php">
+	<label>Board <select name="by" onchange="this.form.submit()">
+	<?php foreach ($groups as $group => $list): ?>
+		<optgroup label="<?= h($group) ?>">
+		<?php foreach ($list as $key => $b): ?><option value="<?= $key ?>"<?= $key === $board ? ' selected' : '' ?>><?= h($b[0]) ?></option><?php endforeach; ?>
+		</optgroup>
+	<?php endforeach; ?>
+	</select></label>
+	<noscript><button class="cmbutton">Show</button></noscript>
+</form>
 
 <?php if (!cm_db()): cm_db_offline_notice(); else: ?>
-<p><b>:<?= h($title) ?>:</b><br><span class="board-blurb"><?= h($blurb) ?></span></p>
+<div class="board-title"><b><?= h($title) ?></b><span class="board-blurb"><?= h($blurb) ?></span></div>
 
 <?php if (count($rows) >= 3): ?>
 <div class="podium">
 <?php foreach ([1, 0, 2] as $i): $r = $rows[$i]; ?>
 	<div class="place p<?= $i + 1 ?>">
 		<span class="rank"><?= $i + 1 ?></span>
+		<?= cm_board_face($r, 'face big') ?>
 		<a href="player.php?id=<?= h($r['steamid64']) ?>"><b><?= h($r['name']) ?></b></a><?php if ($r['is_online']): ?> <span class="grassy" title="Online now">&#9679;</span><?php endif; ?>
 		<span class="v"><?= h(cm_board_value($r['v'], $format)) ?></span>
 	</div>
@@ -106,14 +131,22 @@ cm_page_start('|CelMod| - Leaderboards');
 <?php foreach ($rows as $i => $r): if (count($rows) >= 3 && $i < 3) continue; ?>
 <tr<?= $me && $me['steamid64'] === $r['steamid64'] ? ' class="me"' : '' ?>>
 	<td class="num"><b><?= $i + 1 ?></b></td>
-	<td><a href="player.php?id=<?= h($r['steamid64']) ?>"><?= h($r['name']) ?></a><?php if ($r['is_online']): ?> <span class="grassy" title="Online now">&#9679;</span><?php endif; ?></td>
-	<td class="num"><span class="h"><?= h(cm_board_value($r['v'], $format)) ?></span></td>
+	<td class="who"><?= cm_board_face($r) ?><a href="player.php?id=<?= h($r['steamid64']) ?>"><?= h($r['name']) ?></a><?php if ($r['is_online']): ?> <span class="grassy" title="Online now">&#9679;</span><?php endif; ?></td>
+	<td class="num barcell"><span class="bar" style="width:<?= max(2, (int)round((float)$r['v'] * 100 / $top)) ?>%"></span><span class="h"><?= h(cm_board_value($r['v'], $format)) ?></span></td>
 </tr>
 <?php endforeach; ?>
 </table>
 
 <?php if ($myPlace): ?>
-<p>You are <b class="h">#<?= (int)$myPlace[0] ?></b> on this board with <b><?= h(cm_board_value($myPlace[1], $format)) ?></b>.</p>
+<p class="my-place">You're <b class="h">#<?= (int)$myPlace[0] ?></b> on this board with <b><?= h(cm_board_value($myPlace[1], $format)) ?></b><?php
+	if ($myPlace[0] > 1):
+		$ahead = cm_row("SELECT name, $expr AS v FROM cm_players WHERE $where AND $expr > ? ORDER BY v ASC LIMIT 1", [$myPlace[1]]);
+		if ($ahead && $format !== 'ratio'):
+			echo ': <b>' . h(cm_board_value((float)$ahead['v'] - (float)$myPlace[1], $format === 'time' ? 'time' : $format)) . '</b> more to pass <b>' . h($ahead['name']) . '</b>';
+		endif;
+	endif; ?>.</p>
+<?php elseif ($me && empty($me['_new'])): ?>
+<p class="muted">You're not on this board yet.</p>
 <?php endif; ?>
 <?php endif; ?>
 <p><a href="top5.php"><b>Classic Top 5 Builders</b></a></p>
