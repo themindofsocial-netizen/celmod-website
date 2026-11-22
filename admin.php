@@ -11,7 +11,7 @@ if (!cm_is_admin()) {
 	exit;
 }
 
-$tab = in_array($_GET['tab'] ?? '', ['orders', 'suggestions', 'announcements', 'updates', 'season', 'drops', 'bugs', 'disputes'], true) ? $_GET['tab'] : 'orders';
+$tab = in_array($_GET['tab'] ?? '', ['overview', 'orders', 'suggestions', 'announcements', 'updates', 'season', 'drops', 'bugs', 'disputes'], true) ? $_GET['tab'] : 'overview';
 $db = cm_db();
 
 // Announcements: written here, shown in chat by the game server (celmod-database polls cm_announcements).
@@ -282,51 +282,221 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db) {
 }
 
 $show = in_array($_GET['show'] ?? '', ['pending', 'accepted', 'rejected', 'all'], true) ? $_GET['show'] : 'pending';
-$pendingCount = (int)cm_value("SELECT COUNT(*) FROM cm_emblem_suggestions WHERE status = 'pending'");
-try {
-	$openBugs = $db ? (int)$db->query("SELECT COUNT(*) FROM cm_bug_reports WHERE status = 'open'")->fetchColumn() : 0;
-} catch (Throwable $e) {
-	$openBugs = 0; // the game server hasn't created the table yet
-}
-try {
-	$openDisputes = $db ? (int)$db->query("SELECT COUNT(*) FROM cm_disputes WHERE status = 'open'")->fetchColumn() : 0;
-} catch (Throwable $e) {
-	$openDisputes = 0;
+/** How many rows of a table have each status, plus 'all'. Empty when the table isn't there yet. */
+function adm_counts(?PDO $db, string $table): array
+{
+	if (!$db) {
+		return [];
+	}
+	try {
+		$out = [];
+		foreach ($db->query("SELECT status, COUNT(*) AS n FROM $table GROUP BY status") as $r) {
+			$out[$r['status']] = (int)$r['n'];
+		}
+		$out['all'] = array_sum($out);
+		return $out;
+	} catch (Throwable $e) {
+		return [];
+	}
 }
 
-cm_page_start('|CelMod| - Admin', '', ['wide' => true]);
+/** The status filter above a list: one button per status, each with its count. */
+function adm_filter(string $tab, string $current, array $options, array $counts): string
+{
+	$out = '<nav class="adm-seg" aria-label="Show">';
+	foreach ($options as $f) {
+		$n = $counts[$f] ?? 0;
+		$out .= '<a href="admin?tab=' . $tab . '&amp;show=' . $f . '"' . ($current === $f ? ' class="on" aria-current="true"' : '') . '>'
+			. ucfirst($f) . ' <span>' . $n . '</span></a>';
+	}
+	return $out . '</nav>';
+}
+
+/** The "How this works" box at the top of a tab, folded away once you know it. */
+function adm_help(string $html): string
+{
+	return '<details class="adm-help"><summary>How this works</summary><div>' . $html . '</div></details>';
+}
+
+/** A status as a colored pill. */
+function adm_status(string $status): string
+{
+	$color = ['open' => 'gold', 'pending' => 'gold', 'processing' => 'gold', 'fixed' => 'green', 'resolved' => 'green',
+		'completed' => 'green', 'accepted' => 'green', 'failed' => 'red', 'rejected' => 'red', 'cancelled' => ''][$status] ?? '';
+	return '<span class="pill ' . $color . '">' . h($status) . '</span>';
+}
+
+$show = in_array($_GET['show'] ?? '', ['pending', 'accepted', 'rejected', 'all'], true) ? $_GET['show'] : 'pending';
+$suggestionCounts = adm_counts($db, 'cm_emblem_suggestions');
+$bugCounts = adm_counts($db, 'cm_bug_reports');
+$disputeCounts = adm_counts($db, 'cm_disputes');
+$orderCounts = adm_counts($db, 'cm_web_orders');
+$pendingCount = $suggestionCounts['pending'] ?? 0;
+$openBugs = $bugCounts['open'] ?? 0;
+$openDisputes = $disputeCounts['open'] ?? 0;
+$pendingOrders = ($orderCounts['pending'] ?? 0) + ($orderCounts['processing'] ?? 0);
+
+$nav = [
+	'Inbox' => [
+		'overview' => ['Overview', 0],
+		'bugs' => ['Bug Reports', $openBugs],
+		'disputes' => ['Disputes', $openDisputes],
+		'suggestions' => ['Emblem Suggestions', $pendingCount],
+		'orders' => ['Web Orders', $pendingOrders],
+	],
+	'Game server' => [
+		'announcements' => ['Announcements', 0],
+		'drops' => ['Emblem Drops', 0],
+	],
+	'Website' => [
+		'updates' => ['Updates', 0],
+		'season' => ['Seasonal Theme', 0],
+	],
+];
+$title = 'Overview';
+foreach ($nav as $items) {
+	if (isset($items[$tab])) {
+		$title = $items[$tab][0];
+	}
+}
+
+cm_page_start('|CelMod| - Admin - ' . $title, '', ['wide' => true]);
 ?>
 <h2><span class="celColor">|CelMod| Admin</span><br>
 </h2>
-<div class="tabs">
-	<a href="?tab=orders" class="<?= $tab === 'orders' ? 'active' : '' ?>">Web Orders</a>
-	<a href="?tab=suggestions" class="<?= $tab === 'suggestions' ? 'active' : '' ?>">Emblem Suggestions<?= $pendingCount ? ' (' . $pendingCount . ')' : '' ?></a>
-	<a href="?tab=announcements" class="<?= $tab === 'announcements' ? 'active' : '' ?>">Announcements</a>
-	<a href="?tab=updates" class="<?= $tab === 'updates' ? 'active' : '' ?>">Updates</a>
-	<a href="?tab=season" class="<?= $tab === 'season' ? 'active' : '' ?>">Seasonal Theme</a>
-	<a href="?tab=drops" class="<?= $tab === 'drops' ? 'active' : '' ?>">Emblem Drops</a>
-	<a href="?tab=bugs" class="<?= $tab === 'bugs' ? 'active' : '' ?>">Bug Reports<?= $openBugs ? ' (' . $openBugs . ')' : '' ?></a>
-	<a href="?tab=disputes" class="<?= $tab === 'disputes' ? 'active' : '' ?>">Disputes<?= $openDisputes ? ' (' . $openDisputes . ')' : '' ?></a>
-	<a href="check">Setup Check</a>
+<div class="adm">
+<nav class="adm-nav" aria-label="Admin">
+<?php foreach ($nav as $group => $items): ?>
+	<div class="adm-group">
+		<b><?= h($group) ?></b>
+		<?php foreach ($items as $key => [$label, $badge]): ?>
+		<a href="admin?tab=<?= $key ?>"<?= $tab === $key ? ' class="on" aria-current="page"' : '' ?>><?= h($label) ?><?= $badge ? ' <span class="adm-badge">' . $badge . '</span>' : '' ?></a>
+		<?php endforeach; ?>
+	</div>
+<?php endforeach; ?>
+	<div class="adm-group">
+		<b>Tools</b>
+		<a href="check">Setup Check</a>
+		<a href="emblem-editor/">Emblem Editor</a>
+		<a href="live">Live Server</a>
+	</div>
+</nav>
+<div class="adm-main">
+<h3 class="adm-title"><?= h($title) ?></h3>
+
+<?php if ($tab === 'overview'):
+	$servers = $db ? cm_rows('SELECT *, TIMESTAMPDIFF(SECOND, updated_at, NOW()) AS age FROM cm_servers ORDER BY server_id') : [];
+	$online = $db ? cm_rows('SELECT o.*, p.avatar_url FROM cm_online_players o LEFT JOIN cm_players p ON p.steamid64 = o.steamid64 ORDER BY o.joined_at LIMIT 64') : [];
+	$players = (int)cm_value('SELECT COUNT(*) FROM cm_players');
+	$newToday = (int)cm_value('SELECT COUNT(*) FROM cm_players WHERE first_seen >= NOW() - INTERVAL 1 DAY');
+	$activeAnnouncements = (int)cm_value('SELECT COUNT(*) FROM cm_announcements WHERE active = 1 AND (ends_at IS NULL OR ends_at > NOW())');
+	try {
+		$nextDrop = $db ? $db->query('SELECT run_at FROM cm_drop_schedule WHERE active = 1 ORDER BY run_at LIMIT 1')->fetchColumn() : false;
+	} catch (Throwable $e) {
+		$nextDrop = false;
+	}
+	try {
+		$recentBugs = $db ? cm_rows("SELECT id, name, message, created_at FROM cm_bug_reports WHERE status = 'open' ORDER BY id DESC LIMIT 5") : [];
+	} catch (Throwable $e) {
+		$recentBugs = [];
+	}
+	try {
+		$recentDisputes = $db ? cm_rows("SELECT id, name, target_name, reason, created_at FROM cm_disputes WHERE status = 'open' ORDER BY id DESC LIMIT 5") : [];
+	} catch (Throwable $e) {
+		$recentDisputes = [];
+	}
+	$recentOrders = $db ? cm_rows('SELECT o.id, o.item, o.status, o.price, o.created_at, p.name, s.display_name FROM cm_web_orders o LEFT JOIN cm_players p ON p.steamid64 = o.steamid64 LEFT JOIN cm_shop_items s ON s.item = o.item ORDER BY o.id DESC LIMIT 5') : [];
+	$cards = [
+		['bugs', $openBugs, 'open bug report' . ($openBugs === 1 ? '' : 's'), true],
+		['disputes', $openDisputes, 'open dispute' . ($openDisputes === 1 ? '' : 's'), true],
+		['suggestions', $pendingCount, 'emblem suggestion' . ($pendingCount === 1 ? '' : 's') . ' to review', true],
+		['orders', $pendingOrders, 'web order' . ($pendingOrders === 1 ? '' : 's') . ' waiting', true],
+		['announcements', $activeAnnouncements, 'active announcement' . ($activeAnnouncements === 1 ? '' : 's'), false],
+		['overview', $players, 'players (' . $newToday . ' new today)', false],
+	];
+?>
+<?php if (!$db): ?><?php cm_db_offline_notice(); ?><?php endif; ?>
+<div class="adm-cards">
+<?php foreach ($cards as [$to, $n, $label, $todo]): ?>
+	<a class="adm-card<?= $todo && $n ? ' todo' : '' ?>" href="admin?tab=<?= $to ?>"><b><?= number_format($n) ?></b><?= h($label) ?></a>
+<?php endforeach; ?>
 </div>
 
-<?php if ($tab === 'orders'):
-	$orders = cm_rows('SELECT o.*, p.name, s.display_name FROM cm_web_orders o LEFT JOIN cm_players p ON p.steamid64 = o.steamid64 LEFT JOIN cm_shop_items s ON s.item = o.item ORDER BY o.id DESC LIMIT 50');
+<div class="adm-cols">
+	<section class="panel">
+		<h4>Game servers</h4>
+		<?php if (!$servers): ?><p class="muted">No game server has reported in yet.</p><?php endif; ?>
+		<?php foreach ($servers as $sv): $up = (int)$sv['age'] <= (int)cm_config('offline_after', 90); ?>
+		<p class="adm-server"><span class="dot <?= $up ? 'up' : 'down' ?>"></span>
+			<b><?= h($sv['hostname'] !== '' ? $sv['hostname'] : 'Server #' . $sv['server_id']) ?></b><br>
+			<?php if ($up): ?><span class="h"><?= (int)$sv['players'] ?>/<?= (int)$sv['max_players'] ?></span> on <span class="h"><?= h($sv['map']) ?></span>
+			&middot; <?= number_format((int)$sv['total_props']) ?> props, <?= number_format((int)$sv['total_cels']) ?> cels
+			<?php else: ?><span class="bloody">Offline</span> <span class="muted">(last heard from <?= h(cm_ago($sv['updated_at'])) ?>)</span><?php endif; ?>
+			<?= $sv['version'] !== '' ? '<br><span class="muted">CelMod ' . h($sv['version']) . '</span>' : '' ?></p>
+		<?php endforeach; ?>
+		<?php if ($online): ?>
+		<div class="adm-online">
+			<?php foreach ($online as $op): ?>
+			<a href="player?id=<?= h($op['steamid64']) ?>" title="<?= h($op['name'] . ' - ' . (int)$op['props'] . ' props, ' . cm_cl($op['balance'])) ?>"><?= cm_avatar($op, 'face-xs') ?><?= h($op['name']) ?></a>
+			<?php endforeach; ?>
+		</div>
+		<?php endif; ?>
+		<p class="muted" style="margin:8px 0 0">Next emblem drop: <?= $nextDrop ? '<span class="h">' . h(strtotime((string)$nextDrop) <= time() ? 'due now' : 'in ' . cm_duration(strtotime((string)$nextDrop) - time())) . '</span>' : 'none scheduled' ?>
+		&middot; <a href="admin?tab=drops">Schedule one</a></p>
+	</section>
+
+	<section class="panel">
+		<h4>Open bug reports</h4>
+		<?php if (!$recentBugs): ?><p class="muted">Nothing open.</p><?php endif; ?>
+		<ul class="adm-list">
+		<?php foreach ($recentBugs as $b): ?>
+			<li><a href="admin?tab=bugs">#<?= (int)$b['id'] ?></a> <?= h($b['message']) ?> <span class="muted">- <?= h($b['name']) ?>, <?= h(cm_ago($b['created_at'])) ?></span></li>
+		<?php endforeach; ?>
+		</ul>
+		<h4>Open disputes</h4>
+		<?php if (!$recentDisputes): ?><p class="muted">Nothing open.</p><?php endif; ?>
+		<ul class="adm-list">
+		<?php foreach ($recentDisputes as $d): ?>
+			<li><a href="admin?tab=disputes">#<?= (int)$d['id'] ?></a> <b><?= h($d['reason']) ?></b>: <?= h($d['target_name']) ?> <span class="muted">- from <?= h($d['name']) ?>, <?= h(cm_ago($d['created_at'])) ?></span></li>
+		<?php endforeach; ?>
+		</ul>
+		<h4>Latest web orders</h4>
+		<?php if (!$recentOrders): ?><p class="muted">No orders yet.</p><?php endif; ?>
+		<ul class="adm-list">
+		<?php foreach ($recentOrders as $o): ?>
+			<li><?= adm_status($o['status']) ?> <span class="h"><?= h($o['display_name'] ?? $o['item']) ?></span> for <?= h($o['name'] ?? '?') ?> <span class="muted">- <?= h(cm_cl($o['price'])) ?>, <?= h(cm_ago($o['created_at'])) ?></span></li>
+		<?php endforeach; ?>
+		</ul>
+	</section>
+</div>
+
+<?php elseif ($tab === 'orders'):
+	$oShow = in_array($_GET['show'] ?? '', ['pending', 'processing', 'completed', 'failed', 'cancelled', 'all'], true) ? $_GET['show'] : 'all';
+	$orders = $db ? cm_rows('SELECT o.*, p.name, s.display_name FROM cm_web_orders o LEFT JOIN cm_players p ON p.steamid64 = o.steamid64 LEFT JOIN cm_shop_items s ON s.item = o.item'
+		. ($oShow === 'all' ? '' : ' WHERE o.status = ' . $db->quote($oShow)) . ' ORDER BY o.id DESC LIMIT 100') : [];
 ?>
-<p class="title">:Latest Web Orders:</p>
+<?= adm_help('Players buy from the <a href="shop">Shop</a> while signed in. The order waits as <span class="h">pending</span> until the
+game server picks it up (within about 30 seconds, while the player is on it), takes the CL and gives the item; then it is
+<span class="h">completed</span>, or <span class="h">failed</span> with the reason (not enough CL, already owned...).') ?>
+<?= adm_filter('orders', $oShow, ['all', 'pending', 'processing', 'completed', 'failed', 'cancelled'], $orderCounts) ?>
+<div class="table-scroll">
 <table class="cmtable">
 <tr><th>#</th><th>Player</th><th>Item</th><th class="num">Price</th><th>Status</th><th>Placed</th></tr>
+<?php if (!$orders): ?>
+<tr><td colspan="6" class="muted">No <?= $oShow === 'all' ? '' : h($oShow) . ' ' ?>orders.</td></tr>
+<?php endif; ?>
 <?php foreach ($orders as $o): ?>
 <tr>
 	<td><?= (int)$o['id'] ?></td>
 	<td><a href="player?id=<?= h($o['steamid64']) ?>"><?= h($o['name'] ?? $o['steamid64']) ?></a></td>
 	<td><span class="h"><?= h($o['display_name'] ?? $o['item']) ?></span> <span class="muted"><?= h($o['item']) ?></span></td>
 	<td class="num"><?= h(cm_cl($o['price'])) ?></td>
-	<td><?= h($o['status']) ?><?php if ($o['message'] !== ''): ?><br><span class="muted"><?= h($o['message']) ?></span><?php endif; ?></td>
+	<td><?= adm_status($o['status']) ?><?php if ($o['message'] !== ''): ?><br><span class="muted"><?= h($o['message']) ?></span><?php endif; ?></td>
 	<td><?= h(cm_ago($o['created_at'])) ?></td>
 </tr>
 <?php endforeach; ?>
 </table>
+</div>
 
 <?php elseif ($tab === 'updates'):
 	$posted = $db ? cm_rows('SELECT u.*, p.name FROM cm_updates u LEFT JOIN cm_players p ON p.steamid64 = u.created_by ORDER BY u.posted_on DESC, u.id DESC LIMIT 100') : [];
@@ -336,10 +506,10 @@ cm_page_start('|CelMod| - Admin', '', ['wide' => true]);
 		if ((int)$u['id'] === $editId) $editing = $u;
 	}
 ?>
-<p class="notice">Updates posted here show on the <a href="updates"><b>Updates</b></a> page with the older ones, newest first.
+<details class="adm-help"><summary>How this works</summary><div>Updates posted here show on the <a href="updates"><b>Updates</b></a> page with the older ones, newest first.
 Write plain text: each new line starts an indented line under the date. <span class="h">!commands</span> and
 <span class="h">/commands</span> turn green by themselves, and <span class="h">**bold**</span>, <span class="h">*italics*</span>
-and <span class="h">~~struck out~~</span> work.</p>
+and <span class="h">~~struck out~~</span> work.</div></details>
 
 <div class="admin-grid">
 <form method="post" class="panel" style="text-align:left">
@@ -407,10 +577,10 @@ and <span class="h">~~struck out~~</span> work.</p>
 	$active = cm_current_season();
 	$preview = $_SESSION['season_preview'] ?? '';
 ?>
-<p class="notice">Each holiday gets its own look on the website while its seasonal shop is open: the same frame,
+<details class="adm-help"><summary>How this works</summary><div>Each holiday gets its own look on the website while its seasonal shop is open: the same frame,
 with the holiday's colours, a banner and a little falling snow, bats, confetti or clocks behind the page.
 On <span class="h">automatic</span> the look follows the game server: when a seasonal shop is open there (by date, or with
-<span class="h">!forceseason</span>), the site dresses up for it. Otherwise it goes by the shop's dates.</p>
+<span class="h">!forceseason</span>), the site dresses up for it. Otherwise it goes by the shop's dates.</div></details>
 
 <p>Showing now: <b class="h"><?= $active ? h($active[1]['name']) : 'no seasonal theme' ?></b><?= $preview !== '' ? ' <span class="pill gold">Your preview</span>' : '' ?>
 <br><span class="muted">Setting for everyone: <?= h($setting === 'auto' ? 'automatic' : ($setting === 'none' ? 'off' : (cm_seasons()[$setting]['name'] ?? $setting))) ?></span></p>
@@ -478,13 +648,13 @@ On <span class="h">automatic</span> the look follows the game server: when a sea
 	unset($list);
 	$tierChances = ['60%', '25%', '10%', '4%', '1%'];
 ?>
-<p class="notice">Emblem boxes fall from the sky during a drop. Each box first rolls a rarity
+<details class="adm-help"><summary>How this works</summary><div>Emblem boxes fall from the sky during a drop. Each box first rolls a rarity
 (<?= implode(', ', array_map(static fn ($n, $c) => h($n) . ' ' . $c, CM_RARITIES, $tierChances)) ?> by default,
 <span class="h">cm_drop_tier_chances</span>), then picks one of the emblems ticked <span class="h">Drops</span> of that rarity.
 Untick an emblem to keep it out of drops (for event exclusives), or tick one that collectibles.txt leaves out.
 <span class="h">Build</span> picks the emblems the one-time free emblem that appears in a player's build can be
 (the server's <span class="h">cm_emblem_gift_list</span> until you change it). The server picks up changes within
-about 30 seconds. Times use the database server's clock.</p>
+about 30 seconds. Times use the database server's clock.</div></details>
 
 <?php if (!$poolOk): ?>
 <p class="flash bloody">The drop tables aren't there yet. They are created by the game server's <span class="h">celmod-database</span>
@@ -637,20 +807,16 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>), and th
 		$bugsOk = false;
 	}
 ?>
-<p class="notice">Players report bugs in game with <span class="h">!reportbug &lt;what happened&gt;</span>. Each report keeps
+<details class="adm-help"><summary>How this works</summary><div>Players report bugs in game with <span class="h">!reportbug &lt;what happened&gt;</span>. Each report keeps
 the map and where they were standing. Admins on the server see new reports in chat, and every report is also written to
-<span class="h">data/celmod/bugreports.txt</span> on the game server.</p>
+<span class="h">data/celmod/bugreports.txt</span> on the game server.</div></details>
 
 <?php if (!$bugsOk): ?>
 <p class="flash bloody">The bug report table isn't there yet: it's created by the game server's <span class="h">celmod-database</span>
 the next time it connects (or run <span class="h">sql/schema.sql</span>).</p>
 <?php endif; ?>
 
-<div class="btngrid">
-<?php foreach (['open', 'fixed', 'closed', 'all'] as $f): ?>
-	<a href="?tab=bugs&amp;show=<?= $f ?>"<?= $bugShow === $f ? ' style="color:#71E100"' : '' ?>><?= ucfirst($f) ?></a>
-<?php endforeach; ?>
-</div>
+<?= adm_filter('bugs', $bugShow, ['open', 'fixed', 'closed', 'all'], $bugCounts) ?>
 
 <div class="table-scroll">
 <table class="cmtable">
@@ -662,7 +828,7 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>).</p>
 <tr<?= $b['status'] === 'open' ? '' : ' class="muted"' ?>>
 	<td><?= (int)$b['id'] ?></td>
 	<td style="text-align:left"><?= h($b['message']) ?>
-		<?php if ($b['status'] !== 'open'): ?><br><span class="pill <?= $b['status'] === 'fixed' ? 'green' : '' ?>"><?= h($b['status']) ?></span><?php endif; ?>
+		<br><?= adm_status($b['status']) ?>
 		<?php if ($b['admin_note'] !== ''): ?><br><span class="muted">Note: <?= h($b['admin_note']) ?></span><?php endif; ?>
 		<br><span class="muted"><?= h(cm_ago($b['created_at'])) ?></span></td>
 	<td><a href="player?id=<?= h($b['steamid64']) ?>"><?= h($b['name']) ?></a></td>
@@ -705,22 +871,18 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>).</p>
 	} catch (Throwable $e) {
 	}
 ?>
-<p class="notice">Players report someone causing them problems in game with <span class="h">!dispute</span>: they pick the
+<details class="adm-help"><summary>How this works</summary><div>Players report someone causing them problems in game with <span class="h">!dispute</span>: they pick the
 player, then what they're doing (or <span class="h">Other</span> and type it). Admins on the server see new disputes in chat,
 and each one is also written to <span class="h">data/celmod/disputes.txt</span> on the game server.
 When SourceTV is on (<span class="h">tv_enable 1</span>), each dispute also records a demo on the game server (in its
-<span class="h">hl2mp</span> folder) with the reported player's name, SteamID, IP, country, the time and the map in it.</p>
+<span class="h">hl2mp</span> folder) with the reported player's name, SteamID, IP, country, the time and the map in it.</div></details>
 
 <?php if (!$disputesOk): ?>
 <p class="flash bloody">The disputes table isn't there yet: it's created by the game server's <span class="h">celmod-database</span>
 the next time it connects (or run <span class="h">sql/schema.sql</span>).</p>
 <?php endif; ?>
 
-<div class="btngrid">
-<?php foreach (['open', 'resolved', 'closed', 'all'] as $f): ?>
-	<a href="?tab=disputes&amp;show=<?= $f ?>"<?= $dShow === $f ? ' style="color:#71E100"' : '' ?>><?= ucfirst($f) ?></a>
-<?php endforeach; ?>
-</div>
+<?= adm_filter('disputes', $dShow, ['open', 'resolved', 'closed', 'all'], $disputeCounts) ?>
 
 <div class="table-scroll">
 <table class="cmtable">
@@ -732,7 +894,7 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>).</p>
 <tr<?= $d['status'] === 'open' ? '' : ' class="muted"' ?>>
 	<td><?= (int)$d['id'] ?></td>
 	<td style="text-align:left"><b><?= h($d['reason']) ?></b><?= $d['message'] !== '' ? '<br>' . h($d['message']) : '' ?>
-		<?php if ($d['status'] !== 'open'): ?><br><span class="pill <?= $d['status'] === 'resolved' ? 'green' : '' ?>"><?= h($d['status']) ?></span><?php endif; ?>
+		<br><?= adm_status($d['status']) ?>
 		<?php if ($d['admin_note'] !== ''): ?><br><span class="muted">Note: <?= h($d['admin_note']) ?></span><?php endif; ?>
 		<br><span class="muted"><?= h($d['map']) ?> &middot; <?= h(cm_ago($d['created_at'])) ?></span>
 		<?php if (($d['demo'] ?? '') !== ''): ?><br><span class="muted" title="SourceTV demo in the game server's hl2mp folder">Demo: <span class="h"><?= h($d['demo']) ?></span></span><?php endif; ?></td>
@@ -762,10 +924,10 @@ the next time it connects (or run <span class="h">sql/schema.sql</span>).</p>
 	$announcements = $db ? cm_rows('SELECT a.*, p.name FROM cm_announcements a LEFT JOIN cm_players p ON p.steamid64 = a.created_by ORDER BY a.active DESC, a.id DESC LIMIT 100') : [];
 	$servers = $db ? cm_rows('SELECT server_id, hostname FROM cm_servers ORDER BY server_id') : [];
 ?>
-<p class="notice">Announcements show in chat on the game server as <span class="h">|CM| your message</span>
+<details class="adm-help"><summary>How this works</summary><div>Announcements show in chat on the game server as <span class="h">|CM| your message</span>
 within about 30 seconds. A new one is shown to everyone once; set <span class="h">Repeat</span> to show it again every few
 minutes, and <span class="h">Show on join</span> to show it to players as they join. Color tags such as
-<span class="h">{green}</span> and <span class="h">{default}</span> work. Times use the database server's clock.</p>
+<span class="h">{green}</span> and <span class="h">{default}</span> work. Times use the database server's clock.</div></details>
 
 <?php $rotation = (int)cm_setting('announce_rotation', '0'); ?>
 <form method="post" class="panel" style="text-align:left">
@@ -827,14 +989,10 @@ minutes, and <span class="h">Show on join</span> to show it to players as they j
 	$where = $show === 'all' ? '1' : 's.status = ' . $db->quote($show);
 	$suggestions = $db ? cm_rows("SELECT s.* FROM cm_emblem_suggestions s WHERE $where ORDER BY s.id DESC LIMIT 50") : [];
 ?>
-<p class="notice">Suggestions are never added to the server automatically. To add one, copy its block into the
+<details class="adm-help"><summary>How this works</summary><div>Suggestions are never added to the server automatically. To add one, copy its block into the
 <span class="h">"Emblems"</span> section of <span class="h">collectibles.txt</span> on the game server. Every block here was
-rebuilt from checked values, uses a new id, and can't replace an existing emblem.</p>
-<div class="btngrid">
-<?php foreach (['pending', 'accepted', 'rejected', 'all'] as $f): ?>
-	<a href="?tab=suggestions&amp;show=<?= $f ?>"<?= $show === $f ? ' style="color:#71E100"' : '' ?>><?= ucfirst($f) ?></a>
-<?php endforeach; ?>
-</div>
+rebuilt from checked values, uses a new id, and can't replace an existing emblem.</div></details>
+<?= adm_filter('suggestions', $show, ['pending', 'accepted', 'rejected', 'all'], $suggestionCounts) ?>
 <?php if (!$suggestions): ?>
 <p class="muted">Nothing here.</p>
 <?php endif; ?>
@@ -842,7 +1000,7 @@ rebuilt from checked values, uses a new id, and can't replace an existing emblem
 <div class="panel" style="text-align:left">
 	<p style="margin:0 0 6px"><b class="celColor"><?= h($sg['title']) ?></b> <span class="muted"><?= h($sg['emblem_id']) ?> - #<?= (int)$sg['id'] ?></span><br>
 	by <a href="player?id=<?= h($sg['steamid64']) ?>"><b><?= h($sg['player_name']) ?></b></a>, <?= h(cm_ago($sg['created_at'])) ?>
-	- <span class="<?= ['accepted' => 'grassy', 'rejected' => 'bloody', 'withdrawn' => 'muted'][$sg['status']] ?? 'highlight' ?>"><?= h(ucfirst($sg['status'])) ?></span>
+	- <?= adm_status($sg['status']) ?>
 	<?php if ($sg['admin_note'] !== ''): ?><span class="muted">(<?= h($sg['admin_note']) ?>)</span><?php endif; ?></p>
 	<?php if ($sg['note'] !== ''): ?><p style="margin:0 0 6px">"<?= nl2br(h($sg['note'])) ?>"</p><?php endif; ?>
 	<textarea readonly class="kvbox" rows="<?= min(16, substr_count($sg['kv'], "\n") + 1) ?>"><?= h($sg['kv']) ?></textarea>
@@ -863,4 +1021,6 @@ rebuilt from checked values, uses a new id, and can't replace an existing emblem
 </div>
 <?php endforeach; ?>
 <?php endif; ?>
+</div>
+</div>
 <?php cm_page_end(); ?>

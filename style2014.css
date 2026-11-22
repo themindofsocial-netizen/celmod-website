@@ -1859,3 +1859,254 @@ details.soundgroup .search-results {
 		font-size: 18px;
 	}
 }
+
+/* ---- Steam pictures ---- */
+.face-xs, .avatar-lg {
+	display: inline-block;
+	border: 1px solid #000;
+	object-fit: cover;
+	vertical-align: middle;
+}
+.face-xs {
+	width: 18px;
+	height: 18px;
+	margin-right: 5px;
+}
+.face-xs.letter, .avatar-lg.letter {
+	text-align: center;
+	color: #fff;
+	font-weight: bold;
+	text-shadow: 0 1px 1px #000;
+}
+.face-xs.letter {
+	font-size: 11px;
+	line-height: 18px;
+}
+.avatar-lg {
+	width: 92px;
+	height: 92px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+.avatar-lg.letter {
+	font-size: 44px;
+	line-height: 92px;
+}
+.nav-me, .who {
+	white-space: nowrap;
+}
+
+/* ---- Admin panel ---- */
+.adm {
+	display: flex;
+	gap: 14px;
+	align-items: flex-start;
+	text-align: left;
+}
+.adm-nav {
+	flex: 0 0 190px;
+	position: sticky;
+	top: 8px;
+	background: var(--well);
+	border: 1px solid #000;
+	padding: 6px 0;
+}
+.adm-group + .adm-group {
+	margin-top: 6px;
+	padding-top: 6px;
+	border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.adm-group > b {
+	display: block;
+	padding: 2px 12px;
+	font-size: 0.72em;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--blue);
+}
+.adm-nav a {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 4px 12px;
+	border-left: 3px solid transparent;
+	transition: background 0.2s, border-color 0.2s;
+}
+.adm-nav a:hover {
+	background: var(--well-hover);
+}
+.adm-nav a.on {
+	color: var(--green);
+	border-left-color: var(--green);
+	background: rgba(0, 0, 0, 0.35);
+}
+.adm-badge {
+	min-width: 18px;
+	padding: 0 5px;
+	border-radius: 9px;
+	background: #b3261e;
+	color: #fff;
+	font-size: 0.75em;
+	font-weight: bold;
+	line-height: 18px;
+	text-align: center;
+}
+.adm-main {
+	flex: 1;
+	min-width: 0;
+}
+.adm-main > .panel, .adm-main .cmtable {
+	text-align: left;
+}
+.adm-title {
+	margin: 0 0 8px;
+	color: var(--blue);
+	font-size: 1.3em;
+}
+.adm-help {
+	margin: 0 0 10px;
+	background: var(--well);
+	border: 1px solid #000;
+	border-left: 3px solid var(--blue);
+}
+.adm-help summary {
+	cursor: pointer;
+	padding: 4px 10px;
+	color: var(--blue);
+}
+.adm-help > div {
+	padding: 0 10px 8px;
+}
+.adm-seg {
+	display: inline-flex;
+	flex-wrap: wrap;
+	margin: 0 0 10px;
+	border: 1px solid #000;
+	background: var(--well);
+}
+.adm-seg a {
+	padding: 3px 12px;
+	border-right: 1px solid rgba(0, 0, 0, 0.6);
+}
+.adm-seg a:last-child {
+	border-right: 0;
+}
+.adm-seg a span {
+	margin-left: 3px;
+	font-size: 0.8em;
+	color: var(--blue);
+}
+.adm-seg a.on {
+	color: var(--green);
+	background: rgba(0, 0, 0, 0.45);
+	box-shadow: inset 0 -2px 0 var(--green);
+}
+.adm-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: 8px;
+	margin-bottom: 12px;
+}
+.adm-card {
+	display: block;
+	padding: 8px 10px;
+	background: var(--well);
+	border: 1px solid #000;
+	border-top: 3px solid rgba(255, 255, 255, 0.12);
+	color: inherit;
+	transition: background 0.2s;
+}
+.adm-card:hover {
+	background: var(--well-hover);
+}
+.adm-card b {
+	display: block;
+	font-size: 1.7em;
+	color: var(--blue);
+}
+.adm-card.todo {
+	border-top-color: var(--gold);
+}
+.adm-card.todo b {
+	color: var(--gold);
+}
+.adm-cols {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
+}
+.adm-cols .panel {
+	margin: 0;
+}
+.adm-cols h4 {
+	margin: 0 0 6px;
+	color: var(--blue);
+}
+.adm-cols h4 + p.muted {
+	margin-top: 0;
+}
+.adm-server {
+	margin: 0 0 8px;
+}
+.adm-server .dot {
+	display: inline-block;
+	width: 9px;
+	height: 9px;
+	margin-right: 5px;
+	border-radius: 50%;
+	background: var(--blood);
+}
+.adm-server .dot.up {
+	background: var(--green);
+	box-shadow: 0 0 6px var(--green);
+}
+.adm-online {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 10px;
+}
+.adm-list {
+	margin: 0 0 10px;
+	padding: 0;
+	list-style: none;
+}
+.adm-list li {
+	padding: 3px 0;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+}
+@media (max-width: 800px) {
+	.adm {
+		display: block;
+	}
+	.adm-nav {
+		position: static;
+		display: flex;
+		overflow-x: auto;
+		padding: 0;
+		margin-bottom: 10px;
+	}
+	.adm-group {
+		display: flex;
+		flex: 0 0 auto;
+	}
+	.adm-group + .adm-group {
+		margin: 0;
+		padding: 0;
+		border-top: 0;
+		border-left: 1px solid rgba(255, 255, 255, 0.08);
+	}
+	.adm-group > b {
+		display: none;
+	}
+	.adm-nav a {
+		white-space: nowrap;
+		gap: 5px;
+		border-left: 0;
+		border-bottom: 3px solid transparent;
+	}
+	.adm-nav a.on {
+		border-bottom-color: var(--green);
+	}
+	.adm-cols {
+		grid-template-columns: 1fr;
+	}
+}
