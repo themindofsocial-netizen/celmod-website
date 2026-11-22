@@ -1480,3 +1480,141 @@ details.soundgroup .search-results {
 	font-size: 0.72em;
 	margin-left: 4px;
 }
+
+/* Colors list: big swatches you click to copy */
+.swatch-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: 8px;
+	margin: 12px 0;
+	text-align: left;
+}
+.swatch-card {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	padding: 6px 8px;
+	font-family: Pu, sans-serif;
+	font-size: 0.95em;
+	color: var(--gold);
+	text-align: left;
+	background: var(--well);
+	border: 1px solid #000;
+	cursor: copy;
+	transition: background 0.2s, transform 0.15s;
+}
+.swatch-card:hover {
+	background: var(--well-hover);
+	transform: translateY(-1px);
+}
+.swatch-card .txt {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	line-height: 1.2;
+}
+.swatch-card .chip {
+	flex: none;
+	width: 34px;
+	height: 34px;
+	border: 1px solid #000;
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+.swatch-card small {
+	color: var(--muted);
+	font-size: 0.75em;
+}
+.chip-rainbow {
+	background: linear-gradient(135deg, red, orange, yellow, lime, cyan, blue, magenta);
+}
+.chip-error {
+	background: linear-gradient(135deg, #ff2000, #000);
+}
+
+/* Updates timeline */
+.timeline {
+	position: relative;
+	margin: 12px 0;
+	text-align: left;
+}
+.timeline::before {
+	content: "";
+	position: absolute;
+	left: 34px;
+	top: 0;
+	bottom: 0;
+	width: 2px;
+	background: rgba(0, 0, 0, 0.45);
+}
+.update-card {
+	position: relative;
+	display: grid;
+	grid-template-columns: 70px 1fr;
+	gap: 12px;
+	margin: 0 0 10px;
+	scroll-margin-top: 90px;
+}
+.update-date {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	align-self: start;
+	padding: 4px 0 5px;
+	line-height: 1.05;
+	background: #2c2c2c;
+	border: 1px solid #000;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+	text-shadow: 0 1px 1px #000;
+}
+.update-date .d {
+	font-size: 1.45em;
+	font-weight: bold;
+	color: var(--gold);
+}
+.update-date .m {
+	font-size: 0.8em;
+	font-weight: bold;
+	color: var(--blue);
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+}
+.update-date .y {
+	font-size: 0.7em;
+	color: var(--muted);
+}
+.update-card.fresh .update-date {
+	border-color: #1e4a00;
+	box-shadow: 0 0 0 1px rgba(113, 225, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+.update-body {
+	padding: 6px 12px 4px;
+	background: var(--well);
+	border: 1px solid #000;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+.update-card.fresh .update-body {
+	border-left: 3px solid var(--green);
+}
+.update-body p {
+	margin: 4px 0 6px;
+}
+.update-body .update-list {
+	margin: 4px 0 6px;
+}
+.update-card:target .update-body {
+	background: rgba(113, 225, 0, 0.1);
+}
+@media (max-width: 640px) {
+	.timeline::before {
+		left: 22px;
+	}
+	.update-card {
+		grid-template-columns: 46px 1fr;
+		gap: 8px;
+	}
+	.update-body {
+		padding: 5px 8px 3px;
+	}
+}
