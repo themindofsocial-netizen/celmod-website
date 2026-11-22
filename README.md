@@ -107,18 +107,31 @@ Pages have clean addresses: `celmod.net/shop`, `celmod.net/admin`, `celmod.net/p
 
 ### nginx
 ```nginx
-location ~ ^/(includes|sql)/ { deny all; }
-location ~ ^/config(\.sample)?\.php$ { deny all; }
-location ~ \.html$ { try_files $uri @html2php; }
-location @html2php { rewrite ^(.+)\.html$ $1 permanent; }
-location /fastdl/ { try_files $uri =404; }   # a missing FastDL file must be a real 404
-# Clean addresses: /shop is answered by shop.php, and old /shop.php links (plain visits) go to /shop.
-if ($request_method = GET) { set $clean "G"; }
-if ($request_uri ~ "^/(?!api/|fastdl/)(.+?)\.php(\?.*)?$") { set $clean "${clean}P"; }
-if ($clean = "GP") { rewrite ^/(.+?)(index)?\.php$ /$1 permanent; }
-location / { index index.php; try_files $uri $uri/ @php; }
-location @php { rewrite ^/(.+?)/?$ /$1.php last; }
-location ~ \.php$ { include fastcgi_params; fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; fastcgi_pass unix:/run/php/php-fpm.sock; }
+# In the http block (SWAG/linuxserver: at the top of the site's .conf file, outside server {}):
+map $request_method:$request_uri $cm_clean_redirect {
+    default "";
+    "~^GET:/(?!api/|fastdl/)(?<cm_page>[^?]*?)(?:index)?\.php(?<cm_query>\?.*)?$" "/$cm_page$cm_query";
+}
+
+# In the server block:
+index index.php index.html;
+if ($cm_clean_redirect) { return 301 $cm_clean_redirect; }        # old /live.php links -> /live
+location ~ ^/(includes|sql)(/|$) { return 404; }
+location ~ ^/config(\.sample)?(\.php)?$ { return 404; }
+location ~ ^/(README\.md|web\.config|CNAME)$ { return 404; }
+location ~ ^/old/.*\.zip$ { return 404; }
+location ~ /\.(?!well-known) { deny all; }
+location /fastdl/ { try_files $uri =404; }                        # a missing FastDL file must be a real 404
+location ~ \.html$ { try_files $uri @cm_html; }
+location @cm_html { rewrite ^(.+)\.html$ $1 permanent; }
+location / { try_files $uri $uri/ @cm_page; }                     # NOT "/index.php": that page answers "Not found."
+location @cm_page { rewrite ^/(.+?)/?$ /$1.php last; }            # /live is answered by live.php
+location ~ \.php$ {
+    if (!-f $document_root$fastcgi_script_name) { return 404; }
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_pass unix:/run/php/php-fpm.sock;                      # SWAG: 127.0.0.1:9000
+}
 ```
 
 ## Troubleshooting: "The |CelMod| database is offline"
