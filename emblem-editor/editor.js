@@ -55,21 +55,22 @@ const FX = [
 //   rim: $rimlight; bump: normal map; env: reflection strength ($envmap); glass: see-through.
 const PHONG = [7, 0.4];
 const SKINS = [
-	{ c: '#a9c0cb', note: 'glass', self: true, phong: PHONG, rim: true, env: 0.45, glass: 0.55 },
+	{ t: 'glasswindowbreak070a_mask', note: 'cracked glass', self: true, phong: PHONG, rim: true },
 	{ t: 's2', c: '#30343a', note: 'chrome', self: true, env: 1.0 },
-	{ c: '#eef3f7', note: 'snow', self: true, phong: PHONG, rim: true },
+	{ t: 'snowfloor001a', note: 'snow', scroll: [1.0, 0], self: true, phong: PHONG, rim: true },
 	{ t: 's4', frames: [66, 20], scroll: [1.0, 0], self: true, phong: PHONG, rim: true },
-	{ c: '#ff5a48', note: 'pulsing light', pulse: 0.5, self: true, phong: PHONG, rim: true },
+	{ t: 'new_light1', note: 'pulsing light', pulse: 0.5, self: true, phong: PHONG, rim: true },
 	{ t: 's6', scroll: [0.1, -45], self: true, phong: PHONG, rim: true, bump: 's6_n' },
-	{ t: 's7', frames: [121, 30], self: true },
-	{ c: '#3fd0ff', note: 'combine shield', self: true, phong: PHONG, rim: true },
-	{ t: 's9', scroll: [0.01, 0] },
+	{ t: 's7', frames: [121, 30], note: 'static', self: true },
+	// Its base (shadertest/camo_envmask) is nearly black; the combine shield is added on top, scrolling ($detail, mode 1).
+	{ c: '#14171b', note: 'combine shield', detail: { t: 'comshieldwall', scale: 2, scroll: [0.1, -45] }, self: true, phong: PHONG, rim: true },
+	{ t: 's9', scroll: [0.01, 0], note: 'lit by the map' },
 	{ c: '#cfd6dd', wire: true, note: 'wireframe', self: true },
 	{ t: 's11_3', scroll: [0.5, 270], self: true, phong: PHONG, rim: true, env: 0.3 },
-	{ c: '#6b6f73', note: 'tram metal', self: true, phong: [10, 0.5], rim: true, bump: 's12_n' },
-	{ c: '#2b3440', note: 'citadel metal', self: true, phong: PHONG, rim: true },
+	{ t: 'metal_tram001a', note: 'tram metal', self: true, phong: [10, 0.5], rim: true, bump: 's12_n' },
+	{ t: 'citadel_metalwall072c', note: 'citadel metal', self: true, phong: PHONG, rim: true },
 	{ t: 's14', scroll: [0.1, -45], self: true, phong: PHONG, rim: true, bump: 's14_n' },
-	{ t: 's15', bump: 's15_n' },
+	{ t: 's15', bump: 's15_n', note: 'lit by the map' },
 	{ c: '#808080', note: 'no preview', self: true }, { c: '#808080', note: 'no preview', self: true },
 ];
 const DEFAULTS = {
@@ -143,13 +144,23 @@ const pivot = new THREE.Group(); scene.add(pivot);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.NoToneMapping;
 const material = new THREE.MeshPhongMaterial({ side: THREE.DoubleSide });
-const rimUniforms = { rimColor: { value: new THREE.Color(0, 0, 0) }, rimExponent: { value: 2.0 } };
+// The UVs are always passed on, for the detail layer.
+material.defines = { USE_UV: '' };
+const blackTexture = new THREE.DataTexture(new Uint8Array([0, 0, 0, 255]), 1, 1);
+blackTexture.needsUpdate = true;
+const rimUniforms = {
+	rimColor: { value: new THREE.Color(0, 0, 0) }, rimExponent: { value: 2.0 },
+	// $detail with $detailblendmode 1: a second texture added on top, tinted, with its own scale and scroll.
+	detailMap: { value: blackTexture }, detailColor: { value: new THREE.Color(0, 0, 0) },
+	detailScale: { value: 1.0 }, detailOffset: { value: new THREE.Vector2(0, 0) },
+};
 material.onBeforeCompile = (shader) => {
-	shader.uniforms.rimColor = rimUniforms.rimColor;
-	shader.uniforms.rimExponent = rimUniforms.rimExponent;
-	shader.fragmentShader = 'uniform vec3 rimColor;\nuniform float rimExponent;\n' + shader.fragmentShader.replace(
+	Object.assign(shader.uniforms, rimUniforms);
+	shader.fragmentShader = 'uniform vec3 rimColor;\nuniform float rimExponent;\nuniform sampler2D detailMap;\nuniform vec3 detailColor;\nuniform float detailScale;\nuniform vec2 detailOffset;\n'
+		+ shader.fragmentShader.replace(
 		'#include <opaque_fragment>',
-		'outgoingLight += rimColor * pow(1.0 - clamp(abs(dot(normal, normalize(vViewPosition))), 0.0, 1.0), rimExponent);\n#include <opaque_fragment>');
+		'outgoingLight += rimColor * pow(1.0 - clamp(abs(dot(normal, normalize(vViewPosition))), 0.0, 1.0), rimExponent);\n'
+		+ 'outgoingLight += detailColor * texture2D(detailMap, vUv * detailScale + detailOffset).rgb;\n#include <opaque_fragment>');
 };
 // Even light: soft light from above and below, plus a gentle light from the viewer that makes the highlights.
 scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8f96, 1.1));
@@ -172,6 +183,38 @@ function makeEnvironment() {
 	return tex;
 }
 const environment = makeEnvironment();
+
+// Backdrops: the plain studio, or "in game": a Half-Life 2 sky, a snowy floor and the map's haze, the way an emblem
+// looks lying on the ground or held out on a map. Self-lit skins look the same in both, as they do in game.
+function makeSky() {
+	const cv = document.createElement('canvas'); cv.width = 16; cv.height = 256;
+	const ctx = cv.getContext('2d'), g = ctx.createLinearGradient(0, 0, 0, 256);
+	g.addColorStop(0, '#5f7fa6'); g.addColorStop(0.45, '#a9bfd6'); g.addColorStop(0.5, '#c9d3dc'); g.addColorStop(1, '#8d939a');
+	ctx.fillStyle = g; ctx.fillRect(0, 0, 16, 256);
+	const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+	return tex;
+}
+const sky = makeSky();
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshLambertMaterial({ color: 0xffffff }));
+floor.rotation.x = -Math.PI / 2;
+floor.position.y = -1.15;
+floor.visible = false;
+scene.add(floor);
+let backdrop = 'studio';
+function setBackdrop(mode) {
+	backdrop = mode;
+	const inGame = mode === 'game';
+	if (inGame && !floor.material.map) {
+		const tex = loadTexture('snowfloor001a');
+		floor.material.map = tex.clone(); floor.material.map.needsUpdate = true;
+		floor.material.map.repeat.set(12, 12);
+		floor.material.needsUpdate = true;
+	}
+	floor.visible = inGame;
+	scene.background = inGame ? sky : null;
+	scene.fog = inGame ? new THREE.Fog(0xbcc6cf, 8, 30) : null;
+	document.querySelectorAll('[data-backdrop]').forEach((b) => b.classList.toggle('sel', b.dataset.backdrop === mode));
+}
 const animated = {};
 let activeSkin = SKINS[0], tintColor = new THREE.Color(1, 1, 1), clock = performance.now();
 const loader = new THREE.TextureLoader();
@@ -256,6 +299,16 @@ function applyLook() {
 	material.opacity = skin.glass || 1;
 	material.depthWrite = !skin.glass;
 
+	// Detail layer (the combine shield): added on top in the emblem's colour.
+	if (skin.detail) {
+		rimUniforms.detailMap.value = loadTexture(skin.detail.t);
+		rimUniforms.detailColor.value.copy(tintColor);
+		rimUniforms.detailScale.value = skin.detail.scale || 1;
+	} else {
+		rimUniforms.detailMap.value = blackTexture;
+		rimUniforms.detailColor.value.setRGB(0, 0, 0);
+	}
+
 	// Rim light: a soft glow along the edges, in a light version of the emblem's colour.
 	if (skin.rim) {
 		rimUniforms.rimColor.value.copy(base).lerp(new THREE.Color(1, 1, 1), 0.5).multiplyScalar(0.35);
@@ -283,6 +336,10 @@ function animate(now) {
 		tex.offset.x = (tex.offset.x + Math.cos(ang) * skin.scroll[0] * dt) % 1;
 		tex.offset.y = (tex.offset.y + Math.sin(ang) * skin.scroll[0] * dt) % 1;
 	}
+	if (skin.detail && skin.detail.scroll) {
+		const ang = skin.detail.scroll[1] * Math.PI / 180, off = rimUniforms.detailOffset.value;
+		off.set((off.x + Math.cos(ang) * skin.detail.scroll[0] * dt) % 1, (off.y + Math.sin(ang) * skin.detail.scroll[0] * dt) % 1);
+	}
 	if (skin.pulse) {
 		// The light pulses between 10% and full brightness, as its Sine proxy does in game.
 		material.emissiveIntensity = 0.1 + 0.9 * (0.5 + 0.5 * Math.sin(t * 2 * Math.PI / skin.pulse));
@@ -296,12 +353,29 @@ function frame() {
 	}
 	camera.position.set(Math.sin(yaw) * Math.cos(pitch) * dist, Math.sin(pitch) * dist, Math.cos(yaw) * Math.cos(pitch) * dist);
 	camera.lookAt(0, 0, 0);
-	if (!dragging) yaw += 0.003;
+	if (!dragging && spinning) yaw += 0.003;
 	animate(performance.now());
 	renderer.render(scene, camera);
 	requestAnimationFrame(frame);
 }
-let dragging = false, lastX = 0, lastY = 0;
+let dragging = false, lastX = 0, lastY = 0, spinning = true;
+
+// Preview controls: backdrop, spin, the game's own views, and a picture of the preview.
+const VIEWS = { front: [0, 0.05, 3.4], top: [0.7, 1.25, 3.6], side: [Math.PI / 2, 0.15, 3.6], hand: [-0.35, -0.12, 2.3] };
+document.addEventListener('click', (ev) => {
+	const b = ev.target.closest('[data-backdrop],[data-view],#spin,#snap');
+	if (!b) return;
+	if (b.dataset.backdrop) setBackdrop(b.dataset.backdrop);
+	if (b.dataset.view) { [yaw, pitch, dist] = VIEWS[b.dataset.view]; spinning = false; $('spin').classList.remove('sel'); }
+	if (b.id === 'spin') { spinning = !spinning; b.classList.toggle('sel', spinning); }
+	if (b.id === 'snap') {
+		renderer.render(scene, camera);
+		const a = document.createElement('a');
+		a.download = ((emblems[current] && emblems[current].id) || 'emblem') + '.png';
+		a.href = canvas.toDataURL('image/png');
+		a.click();
+	}
+});
 canvas.addEventListener('pointerdown', (ev) => { dragging = true; lastX = ev.clientX; lastY = ev.clientY; canvas.setPointerCapture(ev.pointerId); });
 canvas.addEventListener('pointerup', () => { dragging = false; });
 canvas.addEventListener('pointermove', (ev) => {
@@ -315,7 +389,15 @@ requestAnimationFrame(frame);
 // ---- UI -------------------------------------------------------------------------------------
 form.power.innerHTML = POWERS.map(([id, label]) => `<option value="${id}">${label}</option>`).join('');
 form.fx.innerHTML = FX.map(([id, label]) => `<option value="${id}">${label}</option>`).join('');
-$('skins').innerHTML = SKINS.map((s, i) => `<button type="button" data-skin="${i}" title="Skin ${i}${s.note ? ' (' + s.note + ')' : ''}" style="background-color:${s.c || '#555'};${s.t ? `background-image:url(textures/${s.t}.png)` : ''}">${i}</button>`).join('');
+// The skin buttons show each skin's texture tinted with the emblem's colour, the way the game tints it.
+function renderSkins(tint) {
+	$('skins').innerHTML = SKINS.map((s, i) => {
+		const tex = s.t || (s.detail && s.detail.t);
+		const bg = tex ? `background-image:url(textures/${tex}.png);background-color:${tint};` : `background-color:${s.c || '#555'};`;
+		return `<button type="button" data-skin="${i}" title="Skin ${i}${s.note ? ': ' + s.note : ''}" style="${bg}"><span>${i}</span></button>`;
+	}).join('');
+}
+renderSkins('#ffffff');
 
 function renderList() {
 	$('list').innerHTML = emblems.map((e, i) => `<li data-i="${i}" class="${i === current ? 'sel' : ''}"><span class="dot" style="background:${toHex(e.kv.color)}"></span>${escapeHtml(e.kv.name || e.id)}</li>`).join('');
@@ -339,7 +421,10 @@ function fillForm() {
 	form.beamauto.value = kv.beamcolor ? '0' : '1';
 	form.beamcolor.value = toHex(kv.beamcolor || kv.color);
 	showFields();
+	renderSkins(toHex(kv.color));
 	document.querySelectorAll('#skins button').forEach((b) => b.classList.toggle('sel', b.dataset.skin === String(+kv.skin || 0)));
+	const sk = SKINS[+kv.skin || 0];
+	if ($('skinName')) $('skinName').textContent = 'Skin ' + (+kv.skin || 0) + (sk && sk.note ? ': ' + sk.note : '');
 	applyLook(); renderList(); refreshText();
 }
 function showFields() {
@@ -372,6 +457,7 @@ function readForm() {
 	if (form.speed.value !== '' && +form.speed.value !== 1 && kv.power !== 'speed') kv.speed = form.speed.value; else delete kv.speed;
 	if (form.scale.value !== '' && +form.scale.value !== 1) kv.scale = form.scale.value; else delete kv.scale;
 	kv.handscale = form.handscale.value || '1.0'; kv.handoffset = form.handoffset.value || '0 0 0'; kv.handangles = form.handangles.value || '0 0 0';
+	document.querySelectorAll('#skins button').forEach((b) => { if (b.style.backgroundImage) b.style.backgroundColor = toHex(kv.color); });
 	applyLook(); renderList(); refreshText();
 }
 function refreshText() { $('text').value = showingAll ? allText() : emblemText(emblems[current], ''); }

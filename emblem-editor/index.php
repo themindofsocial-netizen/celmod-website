@@ -15,12 +15,23 @@ $head = <<<'HEAD'
 #list li:hover { color: #FFCD5B; }
 #list li.sel { background-color: #222222; color: #71E100; font-weight: bold; }
 #list .dot { width: 11px; height: 11px; border-radius: 50%; border: 1px solid black; flex: none; }
-#stage { width: 100%; aspect-ratio: 4 / 3; background-color: #222222; border: 1px solid black; display: block; touch-action: none; cursor: grab; }
+#stage { width: 100%; aspect-ratio: 4 / 3; background: radial-gradient(circle at 50% 40%, #3a3d42, #16171a 75%); border: 1px solid black; display: block; touch-action: none; cursor: grab; }
 .skins { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; margin-top: 8px; }
 .skins button { height: 36px; border: 1px solid black; cursor: pointer; color: #fff; text-shadow: 0 0 3px #000, 0 0 3px #000; font-family: Pu; font-weight: bold; background-size: cover; background-position: center; padding: 0; }
 .skins button:hover { outline: 1px solid #FFCD5B; }
 .skins button.sel { outline: 2px solid #71E100; }
-#form { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; }
+#form { display: flex; flex-direction: column; gap: 10px; margin: 0; }
+#form fieldset { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; padding: 6px 10px 10px; border: 1px solid #000; background: rgba(0, 0, 0, 0.2); min-width: 0; }
+#form legend { padding: 0 6px; color: #FFB200; font-weight: bold; font-size: 0.9em; }
+#form fieldset:not(:has(label:not([hidden]))) { display: none; }
+.stage-bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 6px; }
+.stage-bar .seg { display: inline-flex; }
+.stage-bar .seg .cmbutton + .cmbutton { border-left: none; }
+.stage-bar .cmbutton.sel { color: #71E100; background-image: none; background-color: #1d1d1d; box-shadow: inset 0 -2px 0 #71E100; }
+.skin-name { margin: 8px 0 0; font-weight: bold; color: #9CF; }
+.skins { grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); }
+.skins button { height: 42px; background-blend-mode: multiply; position: relative; }
+.skins button span { position: absolute; left: 3px; bottom: 1px; font-size: 11px; }
 #form label { display: flex; flex-direction: column; gap: 2px; font-size: 0.8em; color: #9CF; min-width: 0; }
 #form label.wide { grid-column: 1 / -1; }
 #form label[hidden] { display: none; }
@@ -77,8 +88,15 @@ the emblems on the server can't be changed or removed from this page.</p>
 	<div>
 	<p class="title"><b>:Preview:</b></p>
 	<div class="panel">
+		<div class="stage-bar">
+			<span class="seg"><button type="button" class="cmbutton sel" data-backdrop="studio">Studio</button><button type="button" class="cmbutton" data-backdrop="game">In game</button></span>
+			<span class="seg"><button type="button" class="cmbutton" data-view="front">Front</button><button type="button" class="cmbutton" data-view="side">Side</button><button type="button" class="cmbutton" data-view="top">Top</button><button type="button" class="cmbutton" data-view="hand">In hand</button></span>
+			<button type="button" class="cmbutton sel" id="spin" title="Spin the emblem">Spin</button>
+			<button type="button" class="cmbutton" id="snap" title="Save a picture of the preview">Save picture</button>
+		</div>
 		<canvas id="stage"></canvas>
-		<p class="hint">Drag to rotate, scroll to zoom. The selected skin plays its animation. Skins that use stock Half-Life 2 textures are shown as a flat stand-in color.</p>
+		<p class="hint">Drag to rotate, scroll to zoom. Skins play their animations, use the game's own textures and are tinted by the emblem's colour, as in game.</p>
+		<p class="skin-name" id="skinName">Skin 0</p>
 		<div class="skins" id="skins"></div>
 	</div>
 
@@ -87,10 +105,13 @@ the emblems on the server can't be changed or removed from this page.</p>
 	<p class="title"><b>:Settings:</b></p>
 	<div class="panel">
 		<form id="form" autocomplete="off">
+			<fieldset><legend>Looks</legend>
 			<label>Id (what players type)<input name="id" pattern="[a-z0-9_]+" required></label>
 			<label>Name<input name="name"></label>
 			<label>Color<input name="color" type="color"></label>
 			<label>Drop weight (0 = never drops)<input name="dropweight" type="number" min="0" step="1"></label>
+			</fieldset>
+			<fieldset><legend>Power (left click)</legend>
 			<label class="wide">Power<select name="power"></select></label>
 			<label data-f="value"><span id="valueLabel">Value</span><input name="value" type="number" step="any"></label>
 			<label data-f="cooldown">Cooldown (seconds)<input name="cooldown" type="number" min="0.05" step="any"></label>
@@ -104,6 +125,8 @@ the emblems on the server can't be changed or removed from this page.</p>
 			<label data-f="normaljump">Jumps<select name="normaljump"><option value="0">Changed by the speed</option><option value="1">Normal height (like Purple (S))</option></select></label>
 			<label data-f="chain">Jumps to more players<input name="chain" type="number" min="0" max="10" step="1"></label>
 			<label>Speed multiplier while held<input name="speed" type="number" min="0.1" step="any"></label>
+			</fieldset>
+			<fieldset><legend>Right click and effects</legend>
 			<label class="wide">Right click attack<select name="secondary"><option value="none">None</option><option value="fireball">Fireball: flies and explodes</option><option value="icestorm">Ice storm: burst that hurts and slows</option><option value="bigshot">Big shot: heavy bolt with recoil</option></select></label>
 			<label data-f="secondaryvalue">Right click damage / blast size<input name="secondaryvalue" type="number" min="0" step="any"></label>
 			<label data-f="secondarycooldown">Right click cooldown (seconds)<input name="secondarycooldown" type="number" min="0.1" step="any"></label>
@@ -111,11 +134,14 @@ the emblems on the server can't be changed or removed from this page.</p>
 			<label data-f="sprite" class="wide">Effect sprite<input name="sprite" list="sprites"></label>
 			<label data-f="beamcolor">Effect color<input name="beamcolor" type="color"></label>
 			<label data-f="beamcolor">Use emblem color for effect<select name="beamauto"><option value="1">Yes</option><option value="0">No, use effect color</option></select></label>
+			</fieldset>
+			<fieldset><legend>Model and placement</legend>
 			<label class="wide">Model<input name="model"></label>
 			<label>Hand scale<input name="handscale" type="number" min="0.01" step="any"></label>
 			<label>World scale<input name="scale" type="number" min="0.01" step="any"></label>
 			<label>Hand offset (forward left up)<input name="handoffset"></label>
 			<label>Hand angles (pitch yaw roll)<input name="handangles"></label>
+			</fieldset>
 		</form>
 		<datalist id="sprites">
 			<option value="sprites/flamelet1.vmt"><option value="sprites/glow04_noz.vmt"><option value="sprites/plasmaember.vmt">
