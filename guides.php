@@ -172,7 +172,7 @@ Upgraded basic emblems have <b>(S)</b> in their name: Fire (S) burns hotter, Blu
 Purple (S) keeps Purple's speed with normal jumps and Yellow (S) is electric. Several copies also make a <b>big</b> emblem, about half again as strong.</p>
 <p><b>Breaker Booth:</b> the Power Booth's red opposite. A map that gets a booth has a coin flip's chance of this one instead. Bring a big or
 upgraded emblem and press <span class="h">E</span>: it's taken apart into the emblems it was made from (a big emblem back into its copies,
-an upgraded one back into the ones it took). Either booth is invisible until you're close, and works once a map.</p>
+an upgraded one back into the ones it took). It costs <b>50,000 CL</b>. Either booth is invisible until you're close, and works once a map.</p>
 <p><b>Hats:</b> <span class="h">!hat &lt;name&gt;</span> puts one on; <span class="h">!thirdperson</span> lets you see your hat and emblem.
 Design your own emblem in the <a href="emblem-editor/"><b>Emblem Editor</b></a>.</p>
 </div>
