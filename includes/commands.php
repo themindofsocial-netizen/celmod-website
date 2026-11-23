@@ -41,6 +41,7 @@ return [
 		[['smove', 'pmove'], '<x> <y> <z>', 'Moves the prop you are looking at along its own axes.'],
 		[['solid'], '', 'Makes the prop you are looking at solid or not solid.'],
 		[['spawn', 'p', 's'], '<prop name>', 'Spawns a prop by name.'],
+		[['spin'], '<yaw/pitch/roll/off> [speed]', 'Spins the prop you are looking at forever: !spin <yaw/pitch/roll/off> [speed].'],
 		[['stack'], '<x> <y> <z> [copies]', 'Copies the prop you are looking at, moved by x, y and z: !stack <x> <y> <z> [copies].'],
 		[['stackinfo'], '', 'Gets the origin difference between props for help stacking.'],
 		[['stand', 'straight', 'straighten'], '', 'Resets the angles on the prop you are looking at.'],
