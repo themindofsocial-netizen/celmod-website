@@ -59,6 +59,7 @@ return [
 		[['anim'], '', 'Animates a prop (same as !animate).'],
 		[['animate'], '<1-10> | speed <seconds> | play | clear', 'Animates a prop: !animate <1-10> saves where it is now as that frame; !link a button to it to play the frames. !animate speed <seconds>, play, clear.'],
 		[['button'], '[model] (switch, combine, elevator, keypad, firetrap, switchbox, lever or a prop)', 'Spawns a button trigger bit: !button [model], where the model is switch, combine, elevator, keypad, firetrap, switchbox, lever or any prop\'s name (!button list).'],
+		[['camera'], '', 'Spawns a camera cel: look through it with E, a button or an internet cel, or show it on a TV.'],
 		[['celmusic'], '', 'Lists the songs the music cel can play.'],
 		[['charger'], '<health or suit>', 'Creates a health/suit charger bit that will give health/suit to the player.'],
 		[['door'], '<door skin>', 'Spawns a working door cel.'],
