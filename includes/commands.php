@@ -196,7 +196,7 @@ return [
 		[['goto'], '<player>', 'Teleports you to a player: !goto <name>.'],
 		[['guessbooth'], '', 'Moves the Guess Booth to where you are standing for this map only, with new props.'],
 		[['nudge'], '', 'Moves where held emblems, celweps or your hat sit a little, and saves it.'],
-		[['powerbooth'], '', 'Moves the Power Booth to where you are looking.'],
+		[['powerbooth'], '[power or breaker]', 'Moves this map\'s booth to where you are looking: !powerbooth [power/breaker] picks the Power or Breaker Booth.'],
 		[['punban'], '<player> <minutes, 0 = forever> [reason]', 'Bans a player: !punban <name> <minutes, 0 = forever> [reason].'],
 		[['punfreeze'], '<player> (again to unfreeze)', 'Freezes a player in place (they can\'t move or shoot), or unfreezes them: !punfreeze <name>.'],
 		[['pungag'], '<player> [minutes] [reason]', 'Stops a player chatting: !pungag <name> [minutes, 0 = until lifted] [reason].'],

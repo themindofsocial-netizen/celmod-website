@@ -68,7 +68,8 @@ look. You find them at <b>emblem drops</b> (an admin's or the server's), now and
 <span class="h">!emblem &lt;name&gt;</span>.</p>
 <p>At the <b>Power Booth</b>, a few copies of an emblem turn into its upgrade. Upgraded basic emblems use the second
 skin and have <b>(S)</b> in their name. Any emblem also has a <b>big</b> version, made the same way, that's about half
-again as strong. Powers don't work in event areas.</p>
+again as strong. The red <b>Breaker Booth</b>, which some maps get instead, does the opposite: it takes a big or
+upgraded emblem apart into the emblems it was made from. Powers don't work in event areas.</p>
 </div>
 
 <?php if (!$emblems): ?>
