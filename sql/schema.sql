@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS cm_players (
 	deaths           INT UNSIGNED NOT NULL DEFAULT 0,
 	enemy_kills      INT UNSIGNED NOT NULL DEFAULT 0, -- dungeon enemies (spawn pads)
 	presents_given   INT UNSIGNED NOT NULL DEFAULT 0,
+	props_given      INT UNSIGNED NOT NULL DEFAULT 0, -- props and cels handed over with !give
 	emblems_owned    INT UNSIGNED NOT NULL DEFAULT 0,
 	is_online        TINYINT(1)   NOT NULL DEFAULT 0,
 	first_seen       DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,

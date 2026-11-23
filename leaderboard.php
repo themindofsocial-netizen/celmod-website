@@ -26,7 +26,7 @@ $groups = [
 	],
 	'Social' => [
 		'hated'    => ['Most Hated', 'land_bans', 'Land Bans', 'num', 'Banned from the most lands. Wear it with pride.'],
-		'generous' => ['Most Generous', 'presents_given', 'Presents', 'num', 'Emblems, hats and celweps wrapped up for other players.'],
+		'generous' => ['Most Generous', 'presents_given + props_given', 'Gifts', 'num', 'Presents wrapped up for other players (emblems, hats and celweps), and props and cels handed over with !give.'],
 		'emblems'  => ['Biggest Collectors', 'emblems_owned', 'Emblems', 'num', 'The most emblems owned.'],
 	],
 ];

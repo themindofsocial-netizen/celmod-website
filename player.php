@@ -39,7 +39,7 @@ cm_page_start('|CelMod| - ' . ($player ? $player['name'] : 'Player'));
 	<span class="stat"><b><?= number_format((int)$player['emblems_owned']) ?></b>Emblems Owned</span>
 	<br>
 	<span class="stat"><b><?= number_format((int)$player['land_bans']) ?></b>Times Land-Banned</span>
-	<span class="stat"><b><?= number_format((int)$player['presents_given']) ?></b>Presents Given</span>
+	<span class="stat"><b><?= number_format((int)$player['presents_given'] + (int)($player['props_given'] ?? 0)) ?></b>Gifts Given</span>
 	<span class="stat"><b><?= number_format((int)$player['deaths']) ?></b>Deaths</span>
 <?php endif; ?>
 </p>
