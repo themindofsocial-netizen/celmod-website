@@ -38,6 +38,7 @@ $powers = [
 	'gold'         => 'Earn money',
 	'phase'        => 'Pass through walls',
 	'time'         => 'Fast-forward and rewind',
+	'boss'         => "Wide Eyes' blood laser and Bloodletting",
 	'gas'          => 'Sprays a gas',
 	'waterwalk'    => 'Walk on water',
 ];

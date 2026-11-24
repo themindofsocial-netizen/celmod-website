@@ -158,7 +158,7 @@ function cm_emblem_rules(): array
 		'handoffset'        => ['vec', 500],
 		'handangles'        => ['vec', 360],
 		// Every power celmod-collectibles knows (keep in step with the plugin).
-		'power'             => ['enum', ['none', 'shot', 'flamethrower', 'spray', 'medic', 'magnitude', 'portal', 'chaos', 'blast', 'demon', 'blink', 'flash', 'smog', 'nuke', 'speed', 'sprint', 'gravity', 'jump', 'feather', 'heal', 'armor', 'resist', 'cloak', 'drain', 'gold', 'fire', 'blizzard', 'shock', 'push', 'phase', 'time', 'gas', 'waterwalk']],
+		'power'             => ['enum', ['none', 'shot', 'flamethrower', 'spray', 'medic', 'magnitude', 'portal', 'chaos', 'blast', 'demon', 'blink', 'flash', 'smog', 'nuke', 'speed', 'sprint', 'gravity', 'jump', 'feather', 'heal', 'armor', 'resist', 'cloak', 'drain', 'gold', 'fire', 'blizzard', 'shock', 'push', 'phase', 'time', 'gas', 'waterwalk', 'boss']],
 		'value'             => $num(-100000, 100000),
 		'cooldown'          => $num(0, 600),
 		'duration'          => $num(0, 600),
