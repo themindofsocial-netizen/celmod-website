@@ -79,7 +79,6 @@ upgraded emblem apart into the emblems it was made from. Powers don't work in ev
 <span class="count" id="embcount" aria-live="polite"></span></div>
 <div class="tabs" id="embtabs">
 	<a href="#" data-r="all" class="active">All <span class="count"><?= count($emblems) ?></span></a>
-	<?php foreach (CM_RARITIES as $i => $r): ?><a href="#" data-r="<?= $i ?>"><?= h($r) ?></a><?php endforeach; ?>
 	<a href="#" data-r="special">Special</a>
 </div>
 
@@ -92,11 +91,11 @@ upgraded emblem apart into the emblems it was made from. Powers don't work in ev
 	$swatch = cm_drop_swatch($e['color']);
 	$find = strtolower($id . ' ' . $e['name'] . ' ' . $power . ' ' . ($powers[$power] ?? '') . ' ' . $source);
 ?>
-	<div class="drop-card emb-card" data-r="<?= $special ? 'special' : (int)$e['rarity'] ?>" data-find="<?= h($find) ?>" id="e-<?= h($id) ?>">
+	<div class="drop-card emb-card" data-r="<?= $special ? 'special' : 'standard' ?>" data-find="<?= h($find) ?>" id="e-<?= h($id) ?>">
 		<span class="swatch" style="<?= $swatch !== '' ? 'background:' . h($swatch) : '' ?>"></span>
 		<div class="drop-name">
 			<b data-copy="!emblem <?= h($id) ?>" title="Copy !emblem <?= h($id) ?>"><?= h($e['name']) ?></b>
-			<?php if (!$special): ?><span class="rarity r<?= (int)$e['rarity'] ?>"><?= h(CM_RARITIES[$e['rarity']]) ?></span><?php endif; ?><br>
+<br>
 			<span class="muted"><?= h($powers[$power] ?? ucfirst($power)) ?> &middot; <?= h($source) ?></span>
 			<?php if (!empty($kv['upgradesto']) && isset($emblems[strtolower($kv['upgradesto'])])): ?>
 			<br><span class="muted">Upgrades to <a href="#e-<?= h(strtolower($kv['upgradesto'])) ?>"><?= h($emblems[strtolower($kv['upgradesto'])]['name']) ?></a> (<?= (int)($kv['upgradecost'] ?? 3) ?> copies)</span>
